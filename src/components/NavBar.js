@@ -1,7 +1,5 @@
 import Container from 'react-bootstrap/Container';
-import Nav from 'react-bootstrap/Nav';
-import Navbar from 'react-bootstrap/Navbar';
-
+import { Button, Badge, Nav, Navbar } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCartShopping, faHeart } from '@fortawesome/free-solid-svg-icons'
 import AuthenticatedButton from './AuthenticatedButton'
@@ -22,18 +20,19 @@ const NavBar = () => {
         </Navbar.Collapse>
         <Nav>
           <Nav.Link href="favorites">
-            <FontAwesomeIcon icon={faHeart} size="xl" inverse/>
-          </Nav.Link>
-          <Nav.Link href="#" disabled>
-            Favorites
+            <Button variant="light" className="position-relative"><FontAwesomeIcon icon={faHeart} size="l"/>
+              <Badge pill bg="danger" className="position-absolute top-0 start-100 translate-middle">5</Badge>
+            </Button>             
           </Nav.Link>
           <Nav.Link href="cart">
-            <FontAwesomeIcon icon={faCartShopping} size="xl" inverse/>
+            <Button variant="light" className="position-relative"><FontAwesomeIcon icon={faCartShopping} size="l" />
+              <Badge pill bg="danger" className="position-absolute top-0 start-100 translate-middle">10</Badge>
+            </Button>
           </Nav.Link>
-          <Nav.Link href="#" disabled>
-            Cart
-          </Nav.Link>
-          <AuthenticatedButton />
+          
+        </Nav>
+        <Nav>
+            <AuthenticatedButton />
         </Nav>
       </Container>
     </Navbar>
