@@ -20,12 +20,12 @@ const NavBar = () => {
         </Navbar.Collapse>
         <Nav>
           <Nav.Link href="favorites">
-            <Button variant="light" className="position-relative"><FontAwesomeIcon icon={faHeart} size="l"/>
+            <Button variant="light" className="position-relative"><FontAwesomeIcon icon={faHeart}/>
               <Badge pill bg="danger" className="position-absolute top-0 start-100 translate-middle">5</Badge>
             </Button>             
           </Nav.Link>
           <Nav.Link href="cart">
-            <Button variant="light" className="position-relative"><FontAwesomeIcon icon={faCartShopping} size="l" />
+            <Button variant="light" className="position-relative"><FontAwesomeIcon icon={faCartShopping} />
               <Badge pill bg="danger" className="position-absolute top-0 start-100 translate-middle">10</Badge>
             </Button>
           </Nav.Link>
