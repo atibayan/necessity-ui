@@ -1,0 +1,33 @@
+#imageUploaderCont{
+
+}
+
+#tagsContainer{
+  border: 2px solid black;
+  min-width: 60%;
+  display: flex;
+  flex-wrap: wrap;
+  min-height: 50px;
+  padding: 5px;
+  margin: 10px;
+}
+
+#tagsContainer input {
+  border: none;
+  outline: none;
+  flex: 1;
+}
+
+.tag {
+  border: 1px solid black;
+  margin: 2px 5px 2px 0px;
+  display: flex;
+  align-items: center;
+  padding: 3px;
+  height: 25px;
+}
+
+.tag span {
+  margin-left: 5px;
+  cursor: pointer;
+}

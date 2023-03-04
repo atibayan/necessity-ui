@@ -1,5 +1,4 @@
 import { useAuth0 } from '@auth0/auth0-react';
-import axios from 'axios';
 import {useState} from "react";
 
 const FetchCart = () => {
@@ -9,16 +8,15 @@ const FetchCart = () => {
 
   const callSecureApi = async () => {
     try {
-
-      const token = await getAccessTokenSilently();
-      const response = await axios.get(serverUrl,
+      const token = await getAccessTokenSilently()//{
+      const response = await fetch(
+        `${serverUrl}/`,
         {
           headers: {
-            Authorization: `Bearer ${token}`
-          }
-        })
-      setCart(response.data)
-
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
     } catch (error) {
       console.log(error);
     }
