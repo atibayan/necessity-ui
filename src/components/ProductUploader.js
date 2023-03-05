@@ -7,7 +7,6 @@ const serverUrl = process.env.REACT_APP_SERVER_URL
 
 
 const ImageUploader = () => {
-  
   const [selectedImages, setSelectedImages] = useState([]);
   const [name, setName] = useState("");
   const [price, setPrice] = useState(0);
@@ -49,7 +48,7 @@ const ImageUploader = () => {
     tags.map(tag => {
       formData.append("tags", tag)
     })
-    await axios.post(`${serverUrl}admin/product`, formData, { headers: {'Content-Type': 'multipart/form-data'}})
+    await axios.post(`${serverUrl}product`, formData, { headers: {'Content-Type': 'multipart/form-data'}})
   }
 
   const addTag = e => {

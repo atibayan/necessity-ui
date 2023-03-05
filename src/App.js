@@ -9,29 +9,26 @@ const serverUrl = process.env.REACT_APP_SERVER_URL;
 
 const App = () => {
   const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
-  const [userRole, setUserRole] = useState("");
   
   useEffect(() => {
     if(isAuthenticated){
       (async () => {
         const token = await getAccessTokenSilently()
-        const response = await axios.post(`${serverUrl}user`, {
-          user_id: user.sub,
-          email: user.email,
-          nickname: user.nickname,
-          picture: user.picture
+        const response = await axios.post(`${serverUrl}user`,
+        {
+          user_id: user.sub
         },
         {
           headers: {
             Authorization: `Bearer ${token}`,
-          },
+          }
         })
-        setUserRole(response.data.role)
+        console.log(response)
       })()
     }
-  }, [getAccessTokenSilently, isAuthenticated, userRole, setUserRole]);
+  }, [isAuthenticated]);
 
-  if(userRole === `admin`){
+  if(user?.user_role == `admin`){
     return (
       <>
         <NavBar />
@@ -39,11 +36,19 @@ const App = () => {
       </>
     )
   }
+  else if (user?.user_role == `user`){
+    return (
+      <>
+        <NavBar />
+        <p>Welcome {user.nickname}!</p>
+      </>
+    );
+  }
   else {
     return (
       <>
         <NavBar />
-        <Profile />
+        <p>Welcome Guest!</p>
       </>
     );
   }
