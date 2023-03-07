@@ -1,6 +1,10 @@
 import NavBar from './components/NavBar';
 import Profile from './components/Profile';
 import AdminPanel from './components/AdminPanel';
+import Home from './pages/Home';
+import ProductList from './pages/ProductList';
+import Product from './pages/Product';
+import Cart from './pages/Cart';
 
 import React, { useEffect, useState } from "react";
 import { useAuth0 } from '@auth0/auth0-react';
@@ -41,6 +45,10 @@ const App = () => {
       <>
         <NavBar />
         <p>Welcome {user.nickname}!</p>
+        <Home/>
+        <ProductList/>
+        <Product/>
+        <Cart/>
       </>
     );
   }
@@ -49,6 +57,10 @@ const App = () => {
       <>
         <NavBar />
         <p>Welcome Guest!</p>
+        <Home/>
+        <ProductList/>
+        <Product/>
+        <Cart/>
       </>
     );
   }
