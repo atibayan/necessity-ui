@@ -1,0 +1,129 @@
+/* AdminPanelRouter.css
+
+.router_container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 50px;
+  }
+  
+  .router_row {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    max-width: 1200px;
+    margin-top: 30px;
+  }
+  
+  .router_links {
+    flex: 0 0 200px;
+  }
+  
+  .router_links ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .router_links li {
+    margin-bottom: 10px;
+  }
+  
+  .router_links a {
+    display: block;
+    padding: 10px;
+    border-radius: 5px;
+    color: #555;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+  }
+  
+  .router_links a:hover {
+    background-color: #eee;
+  }
+  
+  .router_links .active {
+    background-color: #617143;
+    color: #fff;
+  }
+  
+  .router_result {
+    flex: 1;
+    margin-left: 30px;
+  }
+  
+  p {
+    font-size: 24px;
+    text-align: center;
+  }
+   */
+
+   .router_container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 50px;
+}
+
+.router_row {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  max-width: 1200px;
+  margin-top: 30px;
+}
+
+.router_links {
+  flex: 0 0 200px;
+}
+
+.router_links ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.router_links li {
+  margin-bottom: 10px;
+}
+
+.router_links a {
+  display: block;
+  padding: 10px;
+  border-radius: 5px;
+  color: #555;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+
+.router_links a:hover {
+  background-color: #eee;
+}
+
+.router_links .active {
+  background-color: #617143;
+  color: #fff;
+}
+
+.router_result {
+  flex: 1;
+  margin-left: 30px;
+}
+
+.add-product-button {
+    display: inline-block;
+    padding: 6px 24px;
+    background-color: #609966;
+    color: #fff;
+    font-size: 16px;
+    text-decoration: none;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .add-product-button:hover {
+    background-color: #A6BB8D;
+  }
+  
