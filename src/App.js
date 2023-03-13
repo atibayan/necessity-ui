@@ -1,4 +1,3 @@
-import NavBar from './components/NavBar';
 import Profile from './components/Profile';
 import AdminPanel from './components/AdminPanel';
 import Home from './pages/Home';
@@ -16,6 +15,7 @@ const App = () => {
   
   useEffect(() => {
     if(isAuthenticated){
+      console.log(`Sending user authentication to backend....`);
       (async () => {
         const token = await getAccessTokenSilently()
         const response = await axios.post(`${serverUrl}user`,
@@ -32,38 +32,9 @@ const App = () => {
     }
   }, [isAuthenticated]);
 
-  if(user?.user_role == `admin`){
-    return (
-      <>
-        <NavBar />
-        <AdminPanel />
-      </>
-    )
-  }
-  else if (user?.user_role == `user`){
-    return (
-      <>
-        <NavBar />
-        <p>Welcome {user.nickname}!</p>
-        <Home/>
-        <ProductList/>
-        <Product/>
-        <Cart/>
-      </>
-    );
-  }
-  else {
-    return (
-      <>
-        <NavBar />
-        <p>Welcome Guest!</p>
-        <Home/>
-        <ProductList/>
-        <Product/>
-        <Cart/>
-      </>
-    );
-  }
+  return (
+    <Home />
+  )
 }
 
 export default App;

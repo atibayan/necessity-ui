@@ -25,7 +25,7 @@ const TransactionApprovalRoute = () => {
   return <p>Transaction Approval</p>;
 };
 
-const AdminPanelRouter = () => {
+const PanelRoutes = () => {
   return (
     <div className="router_container">
       <div className="router_row">
@@ -51,12 +51,12 @@ const AdminPanelRouter = () => {
   );
 }
 
-const App = () => {
+const AdminPanelRouter = () => {
   return (
     <BrowserRouter>
-      <AdminPanelRouter />
+      <PanelRoutes />
     </BrowserRouter>
   );
 }
 
-export default App;
+export default AdminPanelRouter;

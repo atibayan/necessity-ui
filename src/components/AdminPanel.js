@@ -5,8 +5,8 @@ import AdminPanelRouter from "./AdminPanelRouter";
 const AdminPanel = () => {
   return(
     <div>
-      <AdminPanelRouter />
-      {/* <ProductUploader /> */}
+      {/* <AdminPanelRouter /> */}
+      <ProductUploader />
     </div>
   )
 }
