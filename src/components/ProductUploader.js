@@ -4,6 +4,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import axios from 'axios'
 import './ProductUploader.css'
 import Resizer from 'react-image-file-resizer'
+import TextField from '@mui/material/TextField';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import InputLabel from '@mui/material/InputLabel';
+import InputAdornment from '@mui/material/InputAdornment';
+import FormControl from '@mui/material/FormControl';
+import Button from '@mui/material/Button';
+import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 const serverUrl = process.env.REACT_APP_SERVER_URL
 
 const Product = (props) => {
@@ -121,42 +128,39 @@ const ImageUploader = () => {
     }
 
   return (
-    <div>
+    <div style={{ maxHeight: "80vh", minWidth: "100%", maxWidth: "1200px", overflowY: "auto", overflowX: "hidden" }}>
+      <br></br>
       <form onSubmit={submit} >
-        <label>Product Name</label>
-        <input value={name} onChange={e => setName(e.target.value)} type="text" placeholder='Product Name' required/>
+        <TextField style={{ width: "100%", marginBottom: "1rem"}}
+          id="outlined-required" label="Product Name" value={name} onChange={e => setName(e.target.value)} type="text" placeholder='Product Name' required/>
+        <TextField style={{ width: "100%", marginBottom: "1rem"  }}
+          id="outlined-required" label="Product Description"  value={description} onChange={e => setDescription(e.target.value)} type="text" placeholder='Product Description' required />
 
-        <label>Product Description</label>
-        <input value={description} onChange={e => setDescription(e.target.value)} type="text" placeholder='Product Description' required />
+        <FormControl style={{ width: "100%", marginBottom: "1rem"  }} required>
+          <InputLabel htmlFor="outlined-adornment-amount">Amount</InputLabel>
+          <OutlinedInput sx={{ fontSize: 'smaller' }}
+            id="outlined-adornment-amount" value={price} step="0.01" onChange={e => setPrice(e.target.value)} type="number"
+            startAdornment={<InputAdornment position="start">$</InputAdornment>}
+            label="Price" required/>
+        </FormControl>
 
-        <label>Price</label>
-        <input value={price} step="0.01" onChange={e => setPrice(e.target.value)} type="number" placeholder='Price' required />
+        <TextField style={{ width: "100%", marginBottom: "1rem"}}
+          value={qtyOnHand} onChange={e => setQtyOnHand(e.target.value)} type="number"
+          id="outlined-number" label="Quantity on Hand" InputLabelProps={{shrink: true,}} required/>
 
-        <label>Initial Qty On Hand</label>
-        <input value={qtyOnHand} onChange={e => setQtyOnHand(e.target.value)} type="number" placeholder='Qty on Hand' />
-
-        <label>Tags</label>
         <div id="tagsContainer">
           {
             tags.map((tag, idx) => {
               return (<div key={idx} className='tag'>{tag}<span onClick={() => {deleteTag(tag)}}>x</span></div>)
             })
           }
-          <input type="text" placeholder="add tags" onKeyUp={addTag}></input>
+          <TextField style={{ width: "100%", marginBottom: "1rem" }}
+          id="outlined-required" label="Tags" type="text" placeholder="Click right arrow key to add more tags." onKeyUp={addTag}/>
         </div>
 
         <div id="imageUploaderCont">
-          <label htmlFor="choose-file">
-            <FontAwesomeIcon icon={faPlus} id="plus" />
-          </label>
-          <input
-            id="choose-file"
-            type="file"
-            name="images"
-            onChange={onSelectFile}
-            multiple
-            accept="image/jpeg, image/png, image/gif"
-          />
+          <label htmlFor="choose-file"><AddPhotoAlternateIcon icon={faPlus} id="plus"/>Add Image</label>
+          <input id="choose-file" type="file" name="images" onChange={onSelectFile} multiple accept="image/jpeg, image/png, image/gif" hidden required />
           
           <div className="images">
             {selectedImages &&
@@ -168,13 +172,14 @@ const ImageUploader = () => {
                       <FontAwesomeIcon icon={faTrashCan}/>
                     </button>
                   </div>
+                 
                 );
-              })}
+              }) }
           </div>
-          <button className="upload-btn" type="submit">Submit</button>
+          <Button variant="outlined" className="upload-btn" type="submit" style={{ borderColor: "#609966", color: "#609966" }}>Submit</Button>
         </div>
       </form>
-      <button className="upload-btn" onClick={getProducts}>Get Products</button>
+      <Button className="upload-btn" onClick={getProducts}>Get Products</Button>
       <div className='product-viewer'>
         {
           products.map(p => {

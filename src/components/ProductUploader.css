@@ -1,33 +1,97 @@
-#imageUploaderCont{
-
+.form-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
 }
 
-#tagsContainer{
-  border: 2px solid black;
-  min-width: 60%;
+#imageUploaderCont {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 2rem;
+}
+
+#tagsContainer {
   display: flex;
   flex-wrap: wrap;
-  min-height: 50px;
-  padding: 5px;
-  margin: 10px;
-}
+  gap: 0.5rem;
 
-#tagsContainer input {
-  border: none;
-  outline: none;
-  flex: 1;
 }
 
 .tag {
-  border: 1px solid black;
-  margin: 2px 5px 2px 0px;
   display: flex;
   align-items: center;
-  padding: 3px;
-  height: 25px;
+  justify-content: center;
+  background-color: #f0f0f0;
+  border-radius: 2rem;
+  padding: 0.5rem;
+  font-size: 0.8rem;
+  color: #555;
 }
 
 .tag span {
-  margin-left: 5px;
+  margin-left: 0.5rem;
   cursor: pointer;
+  color: #888;
+}
+
+.images {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.image {
+  position: relative;
+}
+
+.image img {
+  max-width: 100%;
+  max-height: 200px;
+}
+
+.image button {
+  position: absolute;
+  top: -0.5rem;
+  right: -0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f0f0f0;
+  border-radius: 50%;
+  border: none;
+  width: 2rem;
+  height: 2rem;
+  cursor: pointer;
+}
+
+.image button:hover {
+  background-color: #e0e0e0;
+}
+
+#plus {
+  font-size: 2rem;
+  color: #555;
+  cursor: pointer;
+}
+
+.upload-btn {
+  margin-top: 1rem;
+}
+
+#outlined-adornment-amount {
+  font-size: 1rem;
+}
+
+#outlined-required {
+  margin-top: 1rem;
+}
+
+@media (min-width: 768px) {
+  .form-container {
+    width: 50%;
+  }
 }
