@@ -65,7 +65,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-const NavBar = () => {
+const Navbar = () => {
   const { isAuthenticated, user } = useAuth0();
   const [anchorElUser, setAnchorElUser] = useState(null);
   const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -216,4 +216,4 @@ const NavBar = () => {
   );
 };
 
-export default NavBar;
+export default Navbar;
