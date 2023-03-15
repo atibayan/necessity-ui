@@ -1,6 +1,6 @@
 import React from 'react';
 import Header from '../components/Header';
-import NavBar from '../components/NavBar';
+import Navbar from '../components/Navbar';
 import Announcement from '../components/Announcement';
 import Slider from '../components/Slider';
 import Categories from '../components/Categories';
@@ -14,15 +14,15 @@ const Home = () => {
     return(
         <div>
             <Announcement/>
-            <NavBar />
+            <Navbar />
 
             {user?.user_role == 'admin' ? <AdminPanel /> : <></>}
 
             {!user || user?.user_role != 'admin' ? 
             <>
-                {/* <Slider/>
+                <Slider/>
                 <Categories/>
-                <Products/>  */}
+                <Products/>
                 <Footer />
             </> :
             <></>}
