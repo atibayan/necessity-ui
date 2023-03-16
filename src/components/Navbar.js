@@ -2,9 +2,6 @@ import {
   AppBar,
   Toolbar,
   Typography,
-  styled,
-  alpha,
-  InputBase,
   Box,
   Tooltip,
   IconButton,
@@ -12,9 +9,11 @@ import {
   Avatar,
   Menu,
   Button,
+  Badge,
+  Drawer,
+  Divider
 } from '@mui/material';
 import React, { useState } from 'react';
-import SearchIcon from '@mui/icons-material/Search';
 import MenuIcon from '@mui/icons-material/Menu';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
@@ -22,53 +21,25 @@ import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import { useAuth0 } from '@auth0/auth0-react';
 import LoginButton from './LoginButton';
 import LogoutButton from './LogoutButton';
+import SearchBar from './SearchBar';
+import { useShoppingCart } from '../context/ShoppingCartContext';
+
+
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemButton from "@mui/material/ListItemButton";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
+import InboxIcon from "@mui/icons-material/MoveToInbox";
+import MailIcon from "@mui/icons-material/Mail";
+
 
 const pages = ['Women', 'Men', 'Kids', 'Home'];
-
-const Search = styled('div')(({ theme }) => ({
-  position: 'relative',
-  borderRadius: '50px',
-  backgroundColor: alpha(theme.palette.common.white, 0.15),
-  '&:hover': {
-    backgroundColor: alpha(theme.palette.common.white, 0.25),
-  },
-  marginRight: theme.spacing(2),
-  marginLeft: 0,
-  width: '100%',
-  [theme.breakpoints.up('sm')]: {
-    marginLeft: theme.spacing(3),
-    width: 'auto',
-  },
-}));
-
-const SearchIconWrapper = styled('div')(({ theme }) => ({
-  padding: theme.spacing(0, 2),
-  height: '100%',
-  position: 'absolute',
-  pointerEvents: 'none',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-}));
-
-const StyledInputBase = styled(InputBase)(({ theme }) => ({
-  color: 'inherit',
-  '& .MuiInputBase-input': {
-    padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
-    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-    transition: theme.transitions.create('width'),
-    width: '100%',
-    [theme.breakpoints.up('md')]: {
-      width: '20ch',
-    },
-  },
-}));
 
 const Navbar = () => {
   const { isAuthenticated, user } = useAuth0();
   const [anchorElUser, setAnchorElUser] = useState(null);
-  const [anchorElNav, setAnchorElNav] = React.useState(null);
+  const [anchorElNav, setAnchorElNav] = useState(null);
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -85,6 +56,41 @@ const Navbar = () => {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
+
+  const { cartQuantity, wishlistQuantity, drawerState, toggleDrawer } = useShoppingCart()
+
+  const list = (anchor) => (
+    <Box
+      sx={{ width: anchor === "top" || anchor === "bottom" ? "auto" : 250 }}
+      role="presentation"
+    >
+      <List>
+        {["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
+          <ListItem key={text} disablePadding>
+            <ListItemButton>
+              <ListItemIcon>
+                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+              </ListItemIcon>
+              <ListItemText primary={text} />
+            </ListItemButton>
+          </ListItem>
+        ))}
+      </List>
+      <Divider />
+      <List>
+        {["All mail", "Trash", "Spam"].map((text, index) => (
+          <ListItem key={text} disablePadding>
+            <ListItemButton>
+              <ListItemIcon>
+                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+              </ListItemIcon>
+              <ListItemText primary={text} />
+            </ListItemButton>
+          </ListItem>
+        ))}
+      </List>
+    </Box>
+  );
 
   return (
     <AppBar position='static' className='header' color='secondary'>
@@ -167,26 +173,17 @@ const Navbar = () => {
           ))}
         </Box>
         
-        <Search sx={{ display: { xs: 'none', md: 'flex' } }}>
-          <SearchIconWrapper>
-            <SearchIcon />
-          </SearchIconWrapper>
-          <StyledInputBase
-            placeholder='Search…'
-            inputProps={{ 'aria-label': 'search' }}
-          />
-        </Search>
-        
+        <SearchBar />
 
-        <Box sx={{ flexGrow: 0.1 }}>
+        <Box sx={{ display: 'flex', flexGrow: 0.08, justifyContent: 'space-around', mr: 5 }}>
           <Tooltip title='Wishlist'>
-            <IconButton disableRipple={true} style={{ color: 'white' }}>
-              <FavoriteBorderIcon />
-            </IconButton>
+            <Badge badgeContent={wishlistQuantity} color="primary">
+                <FavoriteBorderIcon sx={{cursor: 'pointer'}}/>
+            </Badge>
           </Tooltip>
-          <IconButton disableRipple={true} style={{ color: 'white' }}>
-            <ShoppingCartOutlinedIcon />
-          </IconButton>
+          <Badge badgeContent={cartQuantity} color="primary">
+            <ShoppingCartOutlinedIcon sx={{cursor: 'pointer'}} onClick={() => toggleDrawer()}/>
+          </Badge>
         </Box>
 
         {/* Profile menu */}
@@ -194,7 +191,7 @@ const Navbar = () => {
           isAuthenticated ? 
             <Box sx={{ flexGrow: 0.1}}>
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0}}>
-                <Avatar alt={user.nickname} src={user.picture} />
+                <Avatar alt={user.nickname} src={user.picture} sx={{minHeight: 45, minWidth: 45}}/>
               </IconButton>
               <LogoutButton />
               <Typography

@@ -1,21 +1,25 @@
-import React from 'react';
-import styled from "styled-components";
-import {products} from '../data'
-import Product from './Product';
-
-const Container = styled.div`
-    display: flex;
-    padding:20px;
-    flex-wrap:wrap;
-    justify-content: space-between;
-`;
+import React, { useState, useEffect } from "react";
+import ProductCard from './ProductCard';
+import {Container} from '@mui/material'
+import { useShoppingCart } from '../context/ShoppingCartContext';
 
 const Products = () => {
+    const {products} = useShoppingCart();
+
     return(
-        <Container>
+        <Container sx={{display: 'flex', gap: '1rem', flexWrap: 'wrap', my: '20px', justifyContent:'center'}}>
             {products.map((item)=>(
-                <Product item={item} key={item.id}/>
+                <ProductCard item={item} key={item._id}/>
             ))}
+            {/* {products.map((item)=>(
+                <ProductCard item={item} key={item._id}/>
+            ))}
+            {products.map((item)=>(
+                <ProductCard item={item} key={item._id}/>
+            ))}
+            {products.map((item)=>(
+                <ProductCard item={item} key={item._id}/>
+            ))} */}
         </Container>
     )
 }
