@@ -1,3 +1,4 @@
+import {Link} from 'react-router-dom'
 import {
   AppBar,
   Toolbar,
@@ -23,7 +24,6 @@ import LoginButton from './LoginButton';
 import LogoutButton from './LogoutButton';
 import SearchBar from './SearchBar';
 import { useShoppingCart } from '../context/ShoppingCartContext';
-
 
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
@@ -138,7 +138,7 @@ const Navbar = () => {
           variant='h5'
           noWrap
           component='a'
-          href=''
+          href='/'
           sx={{
             display: { xs: 'flex', md: 'flex' },
             flexGrow: {xs: 1, md: 0},
@@ -176,11 +176,13 @@ const Navbar = () => {
         <SearchBar />
 
         <Box sx={{ display: 'flex', flexGrow: 0.08, justifyContent: 'space-around', mr: 5 }}>
-          <Tooltip title='Wishlist'>
-            <Badge badgeContent={wishlistQuantity} color="primary">
-                <FavoriteBorderIcon sx={{cursor: 'pointer'}}/>
-            </Badge>
-          </Tooltip>
+          <Link to="/wishlist" style={{color: 'white'}}>
+            <Tooltip title='Wishlist'>
+              <Badge badgeContent={wishlistQuantity} color="primary">
+                  <FavoriteBorderIcon />
+              </Badge>
+            </Tooltip>
+          </Link>
           <Badge badgeContent={cartQuantity} color="primary">
             <ShoppingCartOutlinedIcon sx={{cursor: 'pointer'}} onClick={() => toggleDrawer()}/>
           </Badge>

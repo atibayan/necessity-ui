@@ -1,6 +1,7 @@
 import * as React from "react";
-import {Box, Typography, Stack, Drawer, Avatar, Divider, List, ListItem} from "@mui/material";
+import {Box, Typography, Stack, Drawer, Avatar, Divider, List, ListItem, Button} from "@mui/material";
 import {AddCartBtn, MinusCartBtn, QtyBtn, CartBtn, DeleteBtn} from './CartButtons';
+import {Link} from 'react-router-dom'
 
 import { useShoppingCart } from '../context/ShoppingCartContext';
 
@@ -79,7 +80,7 @@ export default function CartDrawer() {
       </Stack>
       <Divider sx={{ my: 1, backgroundColor: 'black', opacity: 0.3 }} />
       <Stack>
-        
+        <Link to="/checkout">Checkout</Link>
       </Stack>
     </Drawer>
   );
