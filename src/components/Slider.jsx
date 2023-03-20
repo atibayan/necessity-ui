@@ -8,7 +8,7 @@ import {sliderItems} from "../data";
 
 const Container = styled.div`
     width: 100%;
-    height: 100vh;
+    height: 50vh;
     display:flex;
     background-color:#f6f6f6;
     position:relative;
@@ -43,24 +43,25 @@ const Wrapper = styled.div`
 
 const Slide = styled.div`
     width: 100vw;
-    height:100vh;
+    height:50vh;
     display:flex;
     align-items: center;
     background-color: ${props=>props.background}
 `;
 
 const ImgContainer = styled.div`
-    heigh:100%;
+    height:100%;
     flex:1;
 `;
 
 const Img = styled.img`
-    heigh:80%;
-    width:80%;
+    height:100%;
+    width: auto;
+    float: right;
 `;
 
 const InfoContainer = styled.div`
-    flex:1;
+    flex:1.5;
     padding: 50px;
 `;
 
@@ -98,17 +99,17 @@ const Slider = () => {
                 <KeyboardDoubleArrowLeftOutlinedIcon/>
             </Arrow>
             <Wrapper slideIndex={slideIndex}>
-                {sliderItems.map(item=>(
-                    <Slide background={item.background}>
-                    <ImgContainer>
-                        <Img src={item.img}/>
-                    </ImgContainer>
-                    <InfoContainer>
-                        <Title>{item.title}</Title>
-                        <Description>{item.description}</Description>
-                        <Button>Discover Now</Button>
-                    </InfoContainer>
-                </Slide>
+                {sliderItems.map((item, idx)=>(
+                    <Slide background={item.background} key={idx}>
+                        <ImgContainer>
+                            <Img src={item.img}/>
+                        </ImgContainer>
+                        <InfoContainer>
+                            <Title>{item.title}</Title>
+                            <Description>{item.description}</Description>
+                            <Button>Discover Now</Button>
+                        </InfoContainer>
+                    </Slide>
                 ))}
             </Wrapper>
             <Arrow direction="right" onClick={()=>handleClick("right")}>

@@ -4,6 +4,7 @@ import Home from './pages/Home';
 import ProductList from './pages/ProductList';
 import Product from './pages/Product';
 import Cart from './pages/Cart';
+import { BrowserRouter } from "react-router-dom";
 
 import React, { useEffect, useState } from "react";
 import { useAuth0 } from '@auth0/auth0-react';
@@ -33,7 +34,9 @@ const App = () => {
   }, [isAuthenticated]);
 
   return (
-    <Home />
+    <BrowserRouter>
+      <Home />
+    </BrowserRouter>
   )
 }
 
