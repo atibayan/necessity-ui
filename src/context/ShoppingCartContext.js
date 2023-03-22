@@ -1,3 +1,4 @@
+import React from 'react'
 import { createContext, useContext, useEffect, useState } from 'react';
 import axios from 'axios'
 
@@ -25,6 +26,11 @@ export function ShoppingCartProvider( { children } ) {
 
   const cartQuantity = cartItems.reduce((quantity, item) => item.quantity + quantity, 0)
   const wishlistQuantity = wishlistItems.length
+  const subTotalCart = cartItems.reduce((sum, item) => {
+    const product = products.find(p => p._id === item.id)
+    return sum + product.price * item.quantity
+  }, 0)
+  const totalCart = subTotalCart >= 100 ? subTotalCart * 1.12 : subTotalCart * 1.12 + 10;  
 
   function increaseCartQuantity(id){
     setCartItems(currItems => {
@@ -104,7 +110,9 @@ export function ShoppingCartProvider( { children } ) {
       isInWishlist,
       drawerState,
       toggleDrawer,
-      products }} >
+      products,
+      subTotalCart,
+      totalCart }} >
       {children}
     </ShoppingCartContext.Provider>
   )
