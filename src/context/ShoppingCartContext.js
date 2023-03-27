@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import axios from 'axios'
+import {Link} from 'react-router-dom';
 
 const serverUrl = process.env.REACT_APP_SERVER_URL
 const ShoppingCartContext = createContext({})
@@ -13,6 +14,11 @@ export function ShoppingCartProvider( { children } ) {
   const [wishlistItems, setWishlistItems] = useState([])
   const [drawerState, setDrawerState] = useState(false);
   const [products, setProducts] = useState([])
+  const [selected, setSelected] = useState(null)
+
+  const handleSelected = (item) => {
+    setSelected(item);
+  }
 
   useEffect(() => {
       console.log(`Triggered getProduct`)
@@ -104,6 +110,9 @@ export function ShoppingCartProvider( { children } ) {
       isInWishlist,
       drawerState,
       toggleDrawer,
+      wishlistItems,
+      handleSelected,
+      selected,
       products }} >
       {children}
     </ShoppingCartContext.Provider>

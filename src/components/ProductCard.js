@@ -6,7 +6,9 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import {AddCartBtn, MinusCartBtn, QtyBtn, CartBtn} from './CartButtons';
 
 import "@fontsource/akshar"
-import { useShoppingCart } from '../context/ShoppingCartContext';
+import { useShoppingCart, ShoppingCartProvider } from '../context/ShoppingCartContext';
+import {Link} from 'react-router-dom';
+
 
 const heartInactiveStyle = {
   color: '#a9a9a9',
@@ -16,15 +18,21 @@ const heartInactiveStyle = {
 }
 
 export default function ProductCard({item}) {
-  const { isInCart, addToWishlist, isInWishlist } = useShoppingCart()
+  const { isInCart, addToWishlist, isInWishlist, handleSelected, selected, } = useShoppingCart()
+
+  {console.log(selected)}
+
   return (
     <Card sx={{ maxWidth: 230, minWidth: 230, minHeight: '350px', position: 'relative' }}>
       
-      <CardMedia //image of the product, need to handle onClick
-        sx={{ height: 230, width: 230 }}
+      
+      <Link to={`/product/${item._id}`}>
+        <CardMedia //image of the product, need to handle onClick
+        sx={{ height: 230, width: 230, cursor: 'pointer' }}
         image={item.images[0].signedImage}
         title={item.name}
-      />
+        onClick={()=>handleSelected(item)}
+      /></Link>
 
       <CardContent >
         <Typography gutterBottom variant="h6" component="div" sx={{

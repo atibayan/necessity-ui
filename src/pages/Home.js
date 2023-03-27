@@ -9,10 +9,11 @@ import Products from '../components/Products';
 import Wishlist from '../pages/Wishlist';
 import Checkout from '../pages/Checkout';
 import Footer from '../components/Footer';
+import ProductScreen from '../pages/ProductScreen';
 import { useAuth0 } from '@auth0/auth0-react';
 import AdminPanel from '../components/AdminPanel';
 import { ShoppingCartProvider } from '../context/ShoppingCartContext';
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, Navigate } from 'react-router-dom'
 
 
 const Landing = () => {
@@ -41,6 +42,8 @@ const Home = () => {
                     <Route path="/products" element={<Products />} />
                     <Route path="/checkout" element={<Checkout />} />
                     <Route path="/wishlist" element={<Wishlist />} />
+                    <Route path="/product/:id" element={<ProductScreen />} />
+                    <Route path="*" element={<Navigate to="/" replace />} />
                 </Routes>
                 <Footer />
             </> :
