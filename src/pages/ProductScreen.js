@@ -37,27 +37,7 @@ const ProductScreen = () => {
             </InfoContainer>
         </Wrapper>
         </Container>
-    // <Box>
-    //   Info goes here!
-    //   <Card style={{margin: 50 , height: '300px', fontFamily:'monospace'}} sx={{fontFamily:'monospace'}}>
-    //           <CardMedia //image of the product, need to handle onClick
-    //             sx={{ height: 230, width: 230}}
-    //             style={{margin:30, display:'inline-block', textAlign:'left'}}
-    //             image={selected.images[0].signedImage}
-    //             title={selected.name}
-    //           />
-    //           <CardContent style={{color: 'grey',display: 'inline-block', verticalAlign: 'top',width: 'calc(100% - 300px)',height: '100%',textAlign: 'left'}} >
-    //           <Typography 
-    //           style={{padding: 7, fontSize:35 , color: 'black', fontFamily:'monospace'}}>{selected.name.toUpperCase()}
-    //           </Typography>
-    //           <Typography style={{padding: 5, fontFamily: 'monospace'}}>Product ID: {selected._id}</Typography>
-    //           <Typography style={{padding: 5, fontFamily: 'monospace'}}>Product Description: {selected.description}</Typography>
-    //           <Typography style={{padding: 5, fontFamily: 'monospace'}}>Price: CAD  ${(selected.price * 1).toFixed(2)}</Typography>
-    //           <Typography style={{padding: 5, fontFamily: 'monospace'}}>Stock: {selected.quantity_on_hand}</Typography>
-    //           <Typography style={{padding: 5, fontFamily: 'monospace'}}>Rating: {selected.rating}</Typography>
-    //           </CardContent>
-    //         </Card>
-    // </Box>
+
   )
 }
 

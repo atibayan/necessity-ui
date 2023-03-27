@@ -1,3 +1,4 @@
+import React from 'react'
 import { createContext, useContext, useEffect, useState } from 'react';
 import axios from 'axios'
 import {Link} from 'react-router-dom';
@@ -31,6 +32,11 @@ export function ShoppingCartProvider( { children } ) {
 
   const cartQuantity = cartItems.reduce((quantity, item) => item.quantity + quantity, 0)
   const wishlistQuantity = wishlistItems.length
+  const subTotalCart = cartItems.reduce((sum, item) => {
+    const product = products.find(p => p._id === item.id)
+    return sum + product.price * item.quantity
+  }, 0)
+  const totalCart = subTotalCart >= 100 ? subTotalCart * 1.12 : subTotalCart * 1.12 + 10;  
 
   function increaseCartQuantity(id){
     setCartItems(currItems => {
@@ -110,10 +116,16 @@ export function ShoppingCartProvider( { children } ) {
       isInWishlist,
       drawerState,
       toggleDrawer,
+<<<<<<< HEAD
       wishlistItems,
       handleSelected,
       selected,
       products }} >
+=======
+      products,
+      subTotalCart,
+      totalCart }} >
+>>>>>>> fcd02c63f426c361b674c5d210b599f84f4435e4
       {children}
     </ShoppingCartContext.Provider>
   )
