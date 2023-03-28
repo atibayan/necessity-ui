@@ -20,9 +20,9 @@ export function ShoppingCartProvider( { children } ) {
   const handleSelected = (item) => {
     setSelected(item);
   }
+  const [deliveryMethod, setDeliveryMethod] = useState("standard")
 
   useEffect(() => {
-      console.log(`Triggered getProduct`)
       const getProducts = async () => {
           const { data } = await axios.get(`${serverUrl}product`)
           setProducts(data.products)
@@ -35,8 +35,23 @@ export function ShoppingCartProvider( { children } ) {
   const subTotalCart = cartItems.reduce((sum, item) => {
     const product = products.find(p => p._id === item.id)
     return sum + product.price * item.quantity
-  }, 0)
-  const totalCart = subTotalCart >= 100 ? subTotalCart * 1.12 : subTotalCart * 1.12 + 10;  
+  }, 0).toFixed(2)
+  const gst = (subTotalCart * 0.05).toFixed(2)
+  const pst = (subTotalCart * 0.07).toFixed(2)
+  const totalCart = (parseFloat(subTotalCart) + parseFloat(gst) + parseFloat(pst) + parseFloat(getShippingFee())).toFixed(2);
+  
+  // const totalCart = subTotalCart >= 100 ? subTotalCart * 1.12 : subTotalCart * 1.12 + 10;  
+
+  function getShippingFee(){
+    let fee = 0;
+    if(subTotalCart >= 100 && deliveryMethod == "standard")
+      fee = 0
+    else if (subTotalCart < 100 && deliveryMethod == "standard")
+      fee = 10
+    else if (deliveryMethod == "express")
+      fee = 40
+    return fee.toFixed(2)
+  }
 
   function increaseCartQuantity(id){
     setCartItems(currItems => {
@@ -121,7 +136,12 @@ export function ShoppingCartProvider( { children } ) {
       selected,
       products,
       subTotalCart,
-      totalCart }} >
+      totalCart,
+      getShippingFee,
+      deliveryMethod,
+      setDeliveryMethod,
+      gst,
+      pst }} >
       {children}
     </ShoppingCartContext.Provider>
   )

@@ -62,7 +62,13 @@ const CartEmpty = () => {
 };
 
 const CartSummary = () => {
-  const { subTotalCart, totalCart } = useShoppingCart();
+  const {
+    subTotalCart,
+    totalCart,
+    gst,
+    pst,
+    getShippingFee,
+  } = useShoppingCart();
   return (
     <TableContainer>
       <Table sx={{ width: "90%", mx: "auto" }}>
@@ -70,33 +76,44 @@ const CartSummary = () => {
           <TableRow>
             <TableCell sx={styledTableCell}>Subtotal</TableCell>
             <TableCell align="right" sx={styledTableCell}>
-              {subTotalCart.toFixed(2)}
+              {subTotalCart}
             </TableCell>
           </TableRow>
           <TableRow>
             <TableCell sx={styledTableCell}>GST (5%)</TableCell>
             <TableCell sx={styledTableCell} align="right">
-              {(subTotalCart * 0.05).toFixed(2)}
+              {/* {subTotalCart * 0.05} */}
+              {gst}
             </TableCell>
           </TableRow>
           <TableRow>
             <TableCell sx={styledTableCell}>PST (7%)</TableCell>
             <TableCell align="right" sx={styledTableCell}>
-              {(subTotalCart * 0.07).toFixed(2)}
+              {/* {subTotalCart * 0.07} */}
+              {pst}
             </TableCell>
           </TableRow>
           <TableRow>
-            <TableCell sx={styledTableCell}>Shipping</TableCell>
+            <TableCell sx={styledTableCell}>Estimated Shipping</TableCell>
             <TableCell align="right" sx={styledTableCell}>
-              {subTotalCart >= 100 ? "0" : "10.00"}
+              {subTotalCart >= 100 ? "FREE" : "10.00"}
+              {/* {getShippingFee()} */}
             </TableCell>
           </TableRow>
           <TableRow>
             <TableCell sx={styledTableCell}>
-              <Typography variant="h6">Total</Typography>
+              <Typography variant="h6">Estimated Total</Typography>
             </TableCell>
             <TableCell align="right" sx={styledTableCell}>
-              <Typography variant="h6">CAD ${totalCart.toFixed(2)}</Typography>
+              <Typography variant="h6">
+                CAD $
+                {(
+                  parseFloat(subTotalCart) +
+                  parseFloat(gst) +
+                  parseFloat(pst) +
+                  (subTotalCart >= 100 ? 0 : 10)
+                ).toFixed(2)}
+              </Typography>
             </TableCell>
           </TableRow>
         </TableBody>
@@ -124,7 +141,7 @@ const CartItem = ({ id, quantity }) => {
       />
       <Box sx={{ width: 1 / 2 }}>
         <Box>{product.name.toUpperCase()}</Box>
-        <Box>${(product.price * 1).toFixed(2)}</Box>
+        <Box>${product.price * 1}</Box>
         <Box>
           <MinusCartBtn item={{ _id: id, quantity }} />
           <QtyBtn item={{ _id: id, quantity }} />
@@ -139,7 +156,7 @@ const CartItem = ({ id, quantity }) => {
 
       <Box sx={{ width: 1 / 3, textAlign: "right" }}>
         Subtotal
-        <br />${(product.price * getQuantity(id)).toFixed(2)}
+        <br />${product.price * getQuantity(id)}
       </Box>
 
       <Box>
