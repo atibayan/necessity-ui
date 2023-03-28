@@ -116,16 +116,12 @@ export function ShoppingCartProvider( { children } ) {
       isInWishlist,
       drawerState,
       toggleDrawer,
-<<<<<<< HEAD
       wishlistItems,
       handleSelected,
       selected,
-      products }} >
-=======
       products,
       subTotalCart,
       totalCart }} >
->>>>>>> fcd02c63f426c361b674c5d210b599f84f4435e4
       {children}
     </ShoppingCartContext.Provider>
   )
