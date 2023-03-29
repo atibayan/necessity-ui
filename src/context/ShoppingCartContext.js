@@ -42,6 +42,10 @@ export function ShoppingCartProvider( { children } ) {
   
   // const totalCart = subTotalCart >= 100 ? subTotalCart * 1.12 : subTotalCart * 1.12 + 10;  
 
+  function resetCart(){
+    setCartItems([])
+  }
+
   function getShippingFee(){
     let fee = 0;
     if(subTotalCart >= 100 && deliveryMethod == "standard")
@@ -141,7 +145,9 @@ export function ShoppingCartProvider( { children } ) {
       deliveryMethod,
       setDeliveryMethod,
       gst,
-      pst }} >
+      pst,
+      resetCart,
+      setDrawerState }} >
       {children}
     </ShoppingCartContext.Provider>
   )

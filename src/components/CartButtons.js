@@ -9,7 +9,7 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 
 import { useShoppingCart } from '../context/ShoppingCartContext';
 
-const cardActionBtnStyle = {minHeight: 0, minWidth: 0, p: 0.7, m: 1}
+const cardActionBtnStyle = {minHeight: 0, minWidth: 0, p: 0.3, m: 0.5}
 
 const MinusCartBtn = ({item}) => {
   console.log(item)

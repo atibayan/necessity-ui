@@ -33,7 +33,6 @@ import ListItemText from "@mui/material/ListItemText";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MailIcon from "@mui/icons-material/Mail";
 
-
 const pages = ['Women', 'Men', 'Kids', 'Home'];
 
 const Navbar = () => {
@@ -133,43 +132,29 @@ const Navbar = () => {
           </Menu>
         </Box>
         
-        
+        <Link to="/" style={{textDecoration: 'none',color: 'white',}}>
         <Typography
-          variant='h5'
+          variant='h4'
           noWrap
-          component='a'
-          href='/'
           sx={{
             display: { xs: 'flex', md: 'flex' },
             flexGrow: {xs: 1, md: 0},
-            fontFamily: 'monospace',
-            fontWeight: 500,
-            letterSpacing: '.2rem',
             color: 'inherit',
             textDecoration: 'none',
-            borderRadius: '5px',
-            padding: '0px 5px',
-            justifyContent: 'center'
           }}
         >
           NECESSITY
         </Typography>
+        </Link>
       
         <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, justifyContent: 'center' }}>
           {pages.map((page) => (
-            <Button
-              key={page}
-              onClick={handleCloseNavMenu}
-              sx={{
+            <Link to={"/product/category/" + page} style={{textDecoration: 'none',color: 'white',}}>
+              <Typography variant="h6" sx={{
                 my: 2,
-                color: 'white',
-                display: 'block',
-                textTransform: 'none',
-                fontWeight: 400,
-              }}
-            >
-              {page}
-            </Button>
+                mx: 2,
+              }}>{page}</Typography>
+           </Link>
           ))}
         </Box>
         

@@ -13,7 +13,7 @@ export function useCheckout() {
 }
 
 export function CheckoutProvider({ children }) {
-  const { totalCart, deliveryMethod } = useShoppingCart();
+  const { totalCart, deliveryMethod, resetCart } = useShoppingCart();
 
   const [countryList, setCountryList] = useState([]);
   const [country, setSelectedCountry] = useState("");
@@ -50,6 +50,8 @@ export function CheckoutProvider({ children }) {
   const [cardName, setCardName] = useState("");
   const [isValidCardName, setIsValidCardName] = useState(false);
   const [waitForServer, setWaitForServer] = useState(false);
+  const [orderJustPlaced, setOrderJustPlaced] = useState(false);
+  const [orderData, setOrderData] = useState({});
 
   useEffect(() => {
     console.log(`CheckoutContext TRIGGERED`);
@@ -204,6 +206,7 @@ export function CheckoutProvider({ children }) {
 
   const placeOrder = async () => {
     setWaitForServer(true);
+    setOrderJustPlaced(true);
     const datePaid = new Date().toString();
 
     const order = {
@@ -225,11 +228,18 @@ export function CheckoutProvider({ children }) {
       totalCart,
     };
 
-    console.log(order);
+    const { data, status } = await axios.post(`${serverUrl}order`, order);
+    console.log(`Server responded with...`);
+    console.log(data);
 
-    // const { data } = await axios.post(`${serverUrl}order`, order);
-    // console.log(`Server responded with...`);
-    // console.log(data);
+    if (status == 201) {
+      resetCart();
+      setOrderData({ oid: data.oid, status });
+    } else {
+      setOrderData({ oid: null, status });
+    }
+
+    setWaitForServer(false);
   };
 
   return (
@@ -289,6 +299,10 @@ export function CheckoutProvider({ children }) {
         validateCardName,
         placeOrder,
         waitForServer,
+        orderJustPlaced,
+        setOrderJustPlaced,
+        orderData,
+        setOrderData,
       }}>
       {children}
     </CheckoutContext.Provider>

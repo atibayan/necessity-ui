@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useState, Fragment } from "react";
 import {
   Box,
   Typography,
@@ -15,50 +15,12 @@ import {
 } from "@mui/material";
 import { AddCartBtn, MinusCartBtn, QtyBtn, DeleteBtn } from "./CartButtons";
 import { Link } from "react-router-dom";
+import CartEmpty from "./CartEmpty";
 
 import { useShoppingCart } from "../context/ShoppingCartContext";
 
 const styledTableCell = {
   padding: 0.5,
-};
-
-const CartEmpty = () => {
-  const { toggleDrawer } = useShoppingCart();
-  return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
-      <Typography
-        variant="h5"
-        noWrap
-        sx={{
-          display: { xs: "flex", md: "flex" },
-          flexGrow: { xs: 1, md: 0 },
-          fontFamily: "monospace",
-          fontWeight: 500,
-          letterSpacing: ".2rem",
-          color: "inherit",
-          textDecoration: "none",
-          borderRadius: "5px",
-          padding: "0px 5px",
-          justifyContent: "center",
-          m: 3,
-        }}
-      >
-        Your Cart is empty
-      </Typography>
-      <Link to="/products">
-        <Button variant="contained" onClick={() => toggleDrawer()}>
-          Browse Products
-        </Button>
-      </Link>
-    </Box>
-  );
 };
 
 const CartSummary = () => {
@@ -71,7 +33,7 @@ const CartSummary = () => {
   } = useShoppingCart();
   return (
     <TableContainer>
-      <Table sx={{ width: "90%", mx: "auto" }}>
+      <Table sx={{ mx: "auto" }}>
         <TableBody>
           <TableRow>
             <TableCell sx={styledTableCell}>Subtotal</TableCell>
@@ -82,14 +44,12 @@ const CartSummary = () => {
           <TableRow>
             <TableCell sx={styledTableCell}>GST (5%)</TableCell>
             <TableCell sx={styledTableCell} align="right">
-              {/* {subTotalCart * 0.05} */}
               {gst}
             </TableCell>
           </TableRow>
           <TableRow>
             <TableCell sx={styledTableCell}>PST (7%)</TableCell>
             <TableCell align="right" sx={styledTableCell}>
-              {/* {subTotalCart * 0.07} */}
               {pst}
             </TableCell>
           </TableRow>
@@ -97,7 +57,6 @@ const CartSummary = () => {
             <TableCell sx={styledTableCell}>Estimated Shipping</TableCell>
             <TableCell align="right" sx={styledTableCell}>
               {subTotalCart >= 100 ? "FREE" : "10.00"}
-              {/* {getShippingFee()} */}
             </TableCell>
           </TableRow>
           <TableRow>
@@ -180,7 +139,7 @@ export default function CartDrawer() {
       anchor="right"
       PaperProps={{
         sx: {
-          width: "calc(320px + 10vw)",
+          width: "calc(320px + 15vw)",
           p: 2,
         },
       }}
@@ -204,8 +163,6 @@ export default function CartDrawer() {
             sx={{
               display: { xs: "flex", md: "flex" },
               flexGrow: { xs: 1, md: 0 },
-              fontFamily: "monospace",
-              fontWeight: 500,
               letterSpacing: ".2rem",
               color: "inherit",
               textDecoration: "none",
@@ -217,7 +174,12 @@ export default function CartDrawer() {
           >
             Your Cart
           </Typography>
-          <Stack direction={"column"} spacing={2} divider={<Divider />}>
+          <Stack
+            direction={"column"}
+            spacing={2}
+            divider={<Divider />}
+            width={1}
+          >
             {cartItems.map((item) => (
               <CartItem key={item.id} {...item} />
             ))}

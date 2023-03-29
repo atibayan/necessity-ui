@@ -8,13 +8,56 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
+import { useEffectOnce } from "../utils/useEffectOnce";
+import { Link } from "react-router-dom";
 import { CheckoutProvider, useCheckout } from "../context/CheckoutContext";
 import Shipping from "../components/Shipping";
 import Payment from "../components/Payment";
 import ReviewOrder from "../components/ReviewOrder";
 import { useShoppingCart } from "../context/ShoppingCartContext";
+import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
+import DangerousIcon from "@mui/icons-material/Dangerous";
+import { GridLoader } from "react-spinners";
+import CartEmpty from "../components/CartEmpty";
 
 const steps = ["Shipping", "Payment and Billing", "Review and Place Order"];
+
+const StyledStack = (props) => {
+  return (
+    <Stack
+      sx={{
+        width: "calc(350px + 20vw)",
+        my: "5vh",
+        mx: "auto",
+        p: 2,
+      }}>
+      {props.children}
+    </Stack>
+  );
+};
+
+const StyledHeading = () => {
+  return (
+    <Typography
+      variant="h6"
+      sx={{
+        backgroundColor: "black",
+        height: "60px",
+        color: "white",
+        p: 2,
+      }}>
+      CHECKOUT
+    </Typography>
+  );
+};
+
+const StyledBox = (props) => {
+  return (
+    <Box sx={{ border: "2px solid gray", p: 2, borderTop: "none" }}>
+      {props.children}
+    </Box>
+  );
+};
 
 const CheckoutPanes = () => {
   const [activeStep, setActiveStep] = useState(0);
@@ -83,33 +126,18 @@ const CheckoutPanes = () => {
   };
 
   return (
-    <Stack
-      sx={{
-        width: "calc(350px + 20vw)",
-        my: "5vh",
-        mx: "auto",
-        p: 2,
-      }}>
-      <Typography
-        variant="h6"
-        sx={{
-          backgroundColor: "black",
-          height: "60px",
-          color: "white",
-          p: 2,
-        }}>
-        CHECKOUT
-      </Typography>
-      <Box sx={{ border: "2px solid gray", p: 2, borderTop: "none" }}>
-        <Stepper activeStep={activeStep} alternativeLabel sx={{ mb: 5 }}>
-          {steps.map((label) => (
-            <Step key={label}>
-              <StepLabel>{label}</StepLabel>
-            </Step>
-          ))}
-        </Stepper>
-        <Fragment>
-          {activeStep === steps.length ? null : (
+    <StyledStack>
+      <StyledHeading />
+      <StyledBox>
+        {activeStep === steps.length ? null : (
+          <Fragment>
+            <Stepper activeStep={activeStep} alternativeLabel sx={{ mb: 5 }}>
+              {steps.map((label) => (
+                <Step key={label}>
+                  <StepLabel>{label}</StepLabel>
+                </Step>
+              ))}
+            </Stepper>
             <Box
               sx={{
                 display: "flex",
@@ -119,13 +147,12 @@ const CheckoutPanes = () => {
               <Button disabled={activeStep === 0} onClick={handleBack}>
                 Back
               </Button>
-
               <Button onClick={handleNext} disabled={!isValidStep()}>
                 {activeStep === steps.length - 1 ? "Confirm and Pay" : "Next"}
               </Button>
             </Box>
-          )}
-        </Fragment>
+          </Fragment>
+        )}
         {activeStep == 0 ? (
           <Shipping />
         ) : activeStep == 1 ? (
@@ -133,22 +160,160 @@ const CheckoutPanes = () => {
         ) : activeStep == 2 ? (
           <ReviewOrder />
         ) : waitForServer ? (
-          <p>Loading...</p>
-        ) : (
-          <p>Order Placed!</p>
-        )}
-      </Box>
-    </Stack>
+          <Loading />
+        ) : null}
+      </StyledBox>
+    </StyledStack>
   );
+};
+
+// const CartEmpty = () => {
+//   return (
+//     <Fragment>
+//       <StyledStack>
+//         <Typography
+//           variant="h5"
+//           sx={{
+//             display: { xs: "flex", md: "flex" },
+//             letterSpacing: ".2rem",
+//             justifyContent: "center",
+//             m: 3,
+//           }}>
+//           Your Cart is empty!
+//         </Typography>
+//         <Box
+//           sx={{
+//             display: "flex",
+//             justifyContent: "center",
+//             alignItems: "center",
+//           }}>
+//           <RemoveShoppingCartIcon
+//             color="secondary"
+//             sx={{ fontSize: "100px" }}
+//           />
+//           <Typography
+//             variant="h6"
+//             sx={{
+//               display: { xs: "flex", md: "flex" },
+//               justifyContent: "center",
+//               m: 3,
+//             }}>
+//             Looks like you have not added anything to your cart. Go find
+//             products you like before check out.
+//           </Typography>
+//         </Box>
+//         <Box
+//           sx={{
+//             display: "flex",
+//             justifyContent: "center",
+//             alignItems: "center",
+//           }}>
+//           <Link to="/products" style={{ textDecoration: "none" }}>
+//             <Button variant="contained" color="secondary">
+//               Back to Shop
+//             </Button>
+//           </Link>
+//         </Box>
+//       </StyledStack>
+//     </Fragment>
+//   );
+// };
+
+const OrderAcknowledgment = () => {
+  const { setOrderJustPlaced, orderData, setOrderData } = useCheckout();
+  useEffectOnce(() => {
+    return () => {
+      setOrderJustPlaced(false);
+      setOrderData({});
+    };
+  }, []);
+  return (
+    <Fragment>
+      <StyledStack>
+        <StyledHeading />
+        <StyledBox>
+          <Typography variant="h5" align="center">
+            {orderData.oid != null
+              ? "Order placed successfully!"
+              : "Oopss... Something went wrong. :("}
+          </Typography>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+            }}>
+            {orderData.status == 201 ? (
+              <CheckCircleOutlineIcon
+                color="secondary"
+                sx={{ fontSize: "100px" }}
+              />
+            ) : (
+              <DangerousIcon color="error" sx={{ fontSize: "100px" }} />
+            )}
+          </Box>
+
+          {orderData.status == 201 ? (
+            <Typography variant="subtitle2" align="center">
+              Your order reference number is : {orderData.oid}
+            </Typography>
+          ) : null}
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              padding: 2,
+            }}>
+            <Link to="/products">
+              <Button
+                variant="contained"
+                onClick={() => {
+                  setOrderJustPlaced(false);
+                  setOrderData({});
+                }}>
+                Back to Shopping
+              </Button>
+            </Link>
+          </Box>
+        </StyledBox>
+      </StyledStack>
+    </Fragment>
+  );
+};
+
+const Loading = () => {
+  return (
+    <Fragment>
+      <Typography variant="h5" align="center">
+        Your order is being processed
+      </Typography>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          p: 5,
+        }}>
+        <GridLoader color={"#7b1fa2"} size={30} speedMultiplier={1} />
+      </Box>
+      <Typography variant="h6" align="center">
+        Please do not leave this page
+      </Typography>
+    </Fragment>
+  );
+};
+
+const CheckoutCartEmpty = () => {
+  const { orderJustPlaced } = useCheckout();
+  return orderJustPlaced ? <OrderAcknowledgment /> : <CartEmpty />;
 };
 
 const Checkout = () => {
   const { cartQuantity } = useShoppingCart();
-  return cartQuantity == 0 ? (
-    <p>Your cart is empty</p>
-  ) : (
+
+  return (
     <CheckoutProvider>
-      <CheckoutPanes />
+      {cartQuantity == 0 ? <CheckoutCartEmpty /> : <CheckoutPanes />}
     </CheckoutProvider>
   );
 };
