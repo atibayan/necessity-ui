@@ -124,8 +124,8 @@ const Navbar = () => {
               display: { xs: 'block', md: 'none' },
             }}
           >
-            {pages.map((page) => (
-              <MenuItem key={page} onClick={handleCloseNavMenu}>
+            {pages.map((page, idx) => (
+              <MenuItem key={idx} onClick={handleCloseNavMenu}>
                 <Typography textAlign='center'>{page}</Typography>
               </MenuItem>
             ))}
@@ -148,8 +148,8 @@ const Navbar = () => {
         </Link>
       
         <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, justifyContent: 'center' }}>
-          {pages.map((page) => (
-            <Link to={"/product/category/" + page} style={{textDecoration: 'none',color: 'white',}}>
+          {pages.map((page, idx) => (
+            <Link to={"/product/category/" + page} style={{textDecoration: 'none',color: 'white',}} key={idx}>
               <Typography variant="h6" sx={{
                 my: 2,
                 mx: 2,

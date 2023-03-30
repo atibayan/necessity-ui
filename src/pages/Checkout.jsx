@@ -167,58 +167,6 @@ const CheckoutPanes = () => {
   );
 };
 
-// const CartEmpty = () => {
-//   return (
-//     <Fragment>
-//       <StyledStack>
-//         <Typography
-//           variant="h5"
-//           sx={{
-//             display: { xs: "flex", md: "flex" },
-//             letterSpacing: ".2rem",
-//             justifyContent: "center",
-//             m: 3,
-//           }}>
-//           Your Cart is empty!
-//         </Typography>
-//         <Box
-//           sx={{
-//             display: "flex",
-//             justifyContent: "center",
-//             alignItems: "center",
-//           }}>
-//           <RemoveShoppingCartIcon
-//             color="secondary"
-//             sx={{ fontSize: "100px" }}
-//           />
-//           <Typography
-//             variant="h6"
-//             sx={{
-//               display: { xs: "flex", md: "flex" },
-//               justifyContent: "center",
-//               m: 3,
-//             }}>
-//             Looks like you have not added anything to your cart. Go find
-//             products you like before check out.
-//           </Typography>
-//         </Box>
-//         <Box
-//           sx={{
-//             display: "flex",
-//             justifyContent: "center",
-//             alignItems: "center",
-//           }}>
-//           <Link to="/products" style={{ textDecoration: "none" }}>
-//             <Button variant="contained" color="secondary">
-//               Back to Shop
-//             </Button>
-//           </Link>
-//         </Box>
-//       </StyledStack>
-//     </Fragment>
-//   );
-// };
-
 const OrderAcknowledgment = () => {
   const { setOrderJustPlaced, orderData, setOrderData } = useCheckout();
   useEffectOnce(() => {
@@ -305,7 +253,13 @@ const Loading = () => {
 
 const CheckoutCartEmpty = () => {
   const { orderJustPlaced } = useCheckout();
-  return orderJustPlaced ? <OrderAcknowledgment /> : <CartEmpty />;
+  return orderJustPlaced ? (
+    <OrderAcknowledgment />
+  ) : (
+    <StyledStack>
+      <CartEmpty />
+    </StyledStack>
+  );
 };
 
 const Checkout = () => {
