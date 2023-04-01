@@ -12,7 +12,6 @@ import { useShoppingCart } from '../context/ShoppingCartContext';
 const cardActionBtnStyle = {minHeight: 0, minWidth: 0, p: 0.3, m: 0.5}
 
 const MinusCartBtn = ({item}) => {
-  console.log(item)
   const { decreaseCartQuantity } = useShoppingCart()
   return (
     <Button variant="contained" color="secondary" sx={cardActionBtnStyle}

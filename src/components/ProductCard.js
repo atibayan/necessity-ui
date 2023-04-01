@@ -19,9 +19,6 @@ const heartInactiveStyle = {
 
 export default function ProductCard({item}) {
   const { isInCart, addToWishlist, isInWishlist, handleSelected, selected, } = useShoppingCart()
-
-  {console.log(selected)}
-
   return (
     <Card sx={{ maxWidth: 230, minWidth: 230, minHeight: '350px', position: 'relative' }}>
       

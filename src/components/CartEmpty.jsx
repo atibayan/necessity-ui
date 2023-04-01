@@ -1,14 +1,13 @@
 import React, { Fragment } from "react";
 import { Box, Typography, Button, Stack } from "@mui/material";
 import { Link } from "react-router-dom";
-import RemoveShoppingCartIcon from "@mui/icons-material/RemoveShoppingCart";
 import { useShoppingCart } from "../context/ShoppingCartContext";
 
 const StyledStack = (props) => {
   return (
     <Stack
       sx={{
-        my: "10vh",
+        my: "5vh",
         mx: "auto",
         p: 2,
       }}>
@@ -38,10 +37,24 @@ const CartEmpty = () => {
             justifyContent: "center",
             alignItems: "center",
           }}>
-          <RemoveShoppingCartIcon
-            color="secondary"
-            sx={{ fontSize: "100px" }}
-          />
+          <figure style={{ display: "flex", flexFlow: "column" }}>
+            <img
+              src="/img/shopping-cart.png"
+              style={{ width: "calc(80px + 50%)" }}
+            />
+            <Button
+              variant="text"
+              color="secondary"
+              size="small"
+              href="https://www.flaticon.com/free-icons/shopping-cart"
+              sx={{
+                ":hover": {
+                  backgroundColor: "transparent",
+                },
+              }}>
+              Credits: Flaticon
+            </Button>
+          </figure>
           <Typography
             variant="h6"
             sx={{

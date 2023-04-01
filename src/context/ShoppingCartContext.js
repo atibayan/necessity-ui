@@ -2,6 +2,7 @@ import React from 'react'
 import { createContext, useContext, useEffect, useState } from 'react';
 import axios from 'axios'
 import {Link} from 'react-router-dom';
+import {useEffectOnce} from '../utils/useEffectOnce'
 
 const serverUrl = process.env.REACT_APP_SERVER_URL
 const ShoppingCartContext = createContext({})
@@ -22,20 +23,29 @@ export function ShoppingCartProvider( { children } ) {
   }
   const [deliveryMethod, setDeliveryMethod] = useState("standard")
 
-  useEffect(() => {
+  useEffectOnce(() => {
       const getProducts = async () => {
           const { data } = await axios.get(`${serverUrl}product`)
           setProducts(data.products)
       }
       getProducts();
+      const items = JSON.parse(window.localStorage.getItem('cartItems'));
+      if (items) {
+        setCartItems(items);
+      }
   }, [])
 
-  const cartQuantity = cartItems.reduce((quantity, item) => item.quantity + quantity, 0)
+  useEffect(() => {
+    window.localStorage.setItem('cartItems', JSON.stringify(cartItems));
+    // window.localStorage.setItem('name', 'miatibayan');
+}, [cartItems]);
+
+  const cartQuantity = cartItems != 0 ? cartItems.reduce((quantity, item) => item.quantity + quantity, 0) : 0;
   const wishlistQuantity = wishlistItems.length
-  const subTotalCart = cartItems.reduce((sum, item) => {
+  const subTotalCart =  cartItems != 0 ? cartItems.reduce((sum, item) => {
     const product = products.find(p => p._id === item.id)
-    return sum + product.price * item.quantity
-  }, 0).toFixed(2)
+    return product ? sum + product.price * item.quantity : 0;
+  }, 0).toFixed(2) : 0;
   const gst = (subTotalCart * 0.05).toFixed(2)
   const pst = (subTotalCart * 0.07).toFixed(2)
   const totalCart = (parseFloat(subTotalCart) + parseFloat(gst) + parseFloat(pst) + parseFloat(getShippingFee())).toFixed(2);
