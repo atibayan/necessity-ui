@@ -1,18 +1,12 @@
-import Profile from './components/Profile';
-import AdminPanel from './components/AdminPanel';
 import Home from './pages/Home';
-import ProductList from './pages/ProductList';
-import Product from './pages/Product';
-import Cart from './pages/Cart';
 import { BrowserRouter } from "react-router-dom";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useAuth0 } from '@auth0/auth0-react';
 import axios from 'axios';
 import './App.css'
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 const serverUrl = process.env.REACT_APP_SERVER_URL;
-
 
 const THEME = createTheme({
    typography: {
@@ -20,9 +14,8 @@ const THEME = createTheme({
    }
 });
 
-
 const App = () => {
-  const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
+  const { user, isAuthenticated, getAccessTokenSilently, isLoading } = useAuth0();
   
   useEffect(() => {
     if(isAuthenticated){
@@ -38,7 +31,6 @@ const App = () => {
             Authorization: `Bearer ${token}`,
           }
         })
-        console.log(response)
       })()
     }
   }, [isAuthenticated]);
@@ -46,7 +38,7 @@ const App = () => {
   return (
     <BrowserRouter>
     <ThemeProvider theme={THEME}>
-      <Home />
+      {!isLoading ? <Home /> : null}
     </ThemeProvider>
     </BrowserRouter>
   )

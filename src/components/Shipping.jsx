@@ -17,18 +17,17 @@ import { useCheckout } from "../context/CheckoutContext";
 import { useShoppingCart } from "../context/ShoppingCartContext";
 
 const ShippingPhone = () => {
-  const { shippingPhone, isValidShippingPhone, validateShippingPhone } =
+  const { shippingPhone, isValidShippingPhone, setShippingPhone } =
     useCheckout();
   const [touched, setTouched] = useState(false);
   return (
     <TextField
       required
-      id="phone"
       label="Shipping Phone"
       variant="filled"
       fullWidth
       value={shippingPhone}
-      onChange={validateShippingPhone}
+      onChange={(e) => setShippingPhone(e.target.value)}
       onFocus={() => setTouched(true)}
       error={touched && !isValidShippingPhone}
       helperText={
@@ -39,7 +38,7 @@ const ShippingPhone = () => {
 };
 
 const PostalCode = () => {
-  const { postalCode, isValidPostalCode, validatePostalCode } = useCheckout();
+  const { postalCode, isValidPostalCode, setPostalCode } = useCheckout();
   const [touched, setTouched] = useState(false);
   return (
     <TextField
@@ -49,7 +48,7 @@ const PostalCode = () => {
       variant="filled"
       fullWidth
       value={postalCode}
-      onChange={validatePostalCode}
+      onChange={(e) => setPostalCode(e.target.value)}
       onFocus={() => setTouched(true)}
       error={touched && !isValidPostalCode}
       helperText={
@@ -60,7 +59,7 @@ const PostalCode = () => {
 };
 
 const Address = () => {
-  const { address, isValidAddress, validateAddress } = useCheckout();
+  const { address, isValidAddress, setAddress } = useCheckout();
   const [touched, setTouched] = useState(false);
 
   return (
@@ -71,7 +70,7 @@ const Address = () => {
       variant="filled"
       fullWidth
       value={address}
-      onChange={validateAddress}
+      onChange={(e) => setAddress(e.target.value)}
       onFocus={() => setTouched(true)}
       error={touched && !isValidAddress}
       helperText={touched && !isValidAddress && "Required."}
@@ -80,7 +79,7 @@ const Address = () => {
 };
 
 const LastName = () => {
-  const { lastName, isValidLastName, validateLastName } = useCheckout();
+  const { lastName, isValidLastName, setLastName } = useCheckout();
   const [touched, setTouched] = useState(false);
 
   return (
@@ -91,7 +90,7 @@ const LastName = () => {
       variant="filled"
       value={lastName}
       fullWidth
-      onChange={validateLastName}
+      onChange={(e) => setLastName(e.target.value)}
       onFocus={() => setTouched(true)}
       error={touched && !isValidLastName}
       helperText={
@@ -104,7 +103,7 @@ const LastName = () => {
 };
 
 const FirstName = () => {
-  const { firstName, isValidFirstName, validateFirstName } = useCheckout();
+  const { firstName, isValidFirstName, setFirstName } = useCheckout();
   const [touched, setTouched] = useState(false);
 
   return (
@@ -115,7 +114,7 @@ const FirstName = () => {
       variant="filled"
       value={firstName}
       fullWidth
-      onChange={validateFirstName}
+      onChange={(e) => setFirstName(e.target.value)}
       onFocus={() => setTouched(true)}
       error={touched && !isValidFirstName}
       helperText={
@@ -128,7 +127,7 @@ const FirstName = () => {
 };
 
 const Email = () => {
-  const { email, isValidEmail, validateEmail } = useCheckout();
+  const { email, isValidEmail, setEmail } = useCheckout();
   const [touched, setTouched] = useState(false);
 
   return (
@@ -140,7 +139,7 @@ const Email = () => {
       fullWidth
       value={email}
       helperText={touched && !isValidEmail && "Invalid email."}
-      onChange={validateEmail}
+      onChange={(e) => setEmail(e.target.value)}
       onFocus={() => setTouched(true)}
       error={touched && !isValidEmail}
     />
@@ -173,7 +172,7 @@ const DeliveryMethod = () => {
 };
 
 const CountrySelector = () => {
-  const { country, countryList, changeSelectedCountry } = useCheckout();
+  const { country, countryList, setSelectedCountry } = useCheckout();
   const [touched, setTouched] = useState(false);
 
   return (
@@ -184,7 +183,9 @@ const CountrySelector = () => {
         id="country"
         defaultValue=""
         value={country}
-        onChange={changeSelectedCountry}
+        onChange={(e) => {
+          setSelectedCountry(e.target.value);
+        }}
         onFocus={() => setTouched(true)}
         error={touched && country === ""}
         inputProps={{
@@ -210,7 +211,7 @@ const CountrySelector = () => {
 };
 
 const ProvinceSelector = () => {
-  const { provinceList, changeSelectedState, state } = useCheckout();
+  const { provinceList, setSelectedState, state } = useCheckout();
   const [touched, setTouched] = useState(false);
 
   return (
@@ -225,7 +226,9 @@ const ProvinceSelector = () => {
         id="state"
         value={state}
         defaultValue=""
-        onChange={changeSelectedState}
+        onChange={(e) => {
+          setSelectedState(e.target.value);
+        }}
         onFocus={() => setTouched(true)}
         error={touched && provinceList.length > 0 && state === ""}
         inputProps={{

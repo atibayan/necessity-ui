@@ -3,6 +3,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { isEmail, isEmpty, isNumeric } from "validator";
 import { useShoppingCart } from "./ShoppingCartContext";
+import { useAuth0 } from "@auth0/auth0-react";
 
 const countryListUrl = process.env.REACT_APP_COUNTRY_STATE_LIST_API;
 const CheckoutContext = createContext({});
@@ -13,7 +14,8 @@ export function useCheckout() {
 }
 
 export function CheckoutProvider({ children }) {
-  const { totalCart, deliveryMethod, resetCart } = useShoppingCart();
+  const { user, isAuthenticated } = useAuth0();
+  const { totalCart, deliveryMethod, resetCart, session } = useShoppingCart();
 
   const [countryList, setCountryList] = useState([]);
   const [country, setSelectedCountry] = useState("");
@@ -31,6 +33,8 @@ export function CheckoutProvider({ children }) {
   const [address, setAddress] = useState("");
   const [postalCode, setPostalCode] = useState("");
   const [shippingPhone, setShippingPhone] = useState("");
+  const [awaitingLoadState, setAwaitingLoadState] = useState(false);
+  const [waitingState, setWaitingState] = useState("");
 
   const [isBillingAddressSame, setIsBillingAddressSame] = useState(true);
   const [billingAddress, setBillingAddress] = useState("");
@@ -54,76 +58,86 @@ export function CheckoutProvider({ children }) {
   const [orderData, setOrderData] = useState({});
 
   useEffect(() => {
-    console.log(`CheckoutContext TRIGGERED`);
     const fetchData = async () => {
       const { data } = await axios.get(countryListUrl);
       setCountryList(data.data);
     };
     fetchData();
+
+    const getShippingDetailsFromDB = async () => {
+      const { data } = await axios.get(`${serverUrl}user_shipping/${user.sub}`);
+
+      if (data.shipping) {
+        const {
+          firstName,
+          lastName,
+          address,
+          country,
+          state,
+          postalCode,
+          shippingPhone,
+          email,
+        } = data.shipping;
+
+        setFirstName(firstName);
+        setLastName(lastName);
+        setAddress(address);
+        setPostalCode(postalCode);
+        setShippingPhone(shippingPhone);
+        setEmail(email);
+
+        setWaitingState(state);
+        setAwaitingLoadState(true);
+        setSelectedCountry(country);
+      }
+    };
+
+    if (isAuthenticated) getShippingDetailsFromDB();
   }, []);
 
-  const changeSelectedCountry = (event) => {
-    const country = countryList.find(
-      (country) => country.name == event.target.value
-    );
-    setProvinceList(null);
-    setSelectedState("");
-    setSelectedCountry(country.name);
-    setProvinceList(country.states);
-  };
-
-  const changeSelectedState = (event) => {
-    const state = provinceList.find(
-      (state) => state.name == event.target.value
-    );
-    setSelectedState(state.name);
-  };
-
-  const validateEmail = (event) => {
-    const val = event.target.value;
-    isEmail(val) ? setIsValidEmail(true) : setIsValidEmail(false);
-    setEmail(val);
-  };
-
-  const validateFirstName = (event) => {
-    const val = event.target.value;
-
-    !isEmpty(val) && /^[a-zA-Z ]+$/.test(val)
-      ? setIsValidFirstName(true)
-      : setIsValidFirstName(false);
-    setFirstName(val);
-  };
-
-  const validateLastName = (event) => {
-    const val = event.target.value;
-
-    !isEmpty(val) && /^[a-zA-Z ]+$/.test(val)
-      ? setIsValidLastName(true)
-      : setIsValidLastName(false);
-    setLastName(val);
-  };
-
-  const validateAddress = (event) => {
-    const val = event.target.value;
-    !isEmpty(val) ? setIsValidAddress(true) : setIsValidAddress(false);
-    setAddress(val);
-  };
-
-  const validatePostalCode = (event) => {
-    const val = event.target.value;
-    !isEmpty(val) && /^[a-zA-Z0-9]+$/.test(val)
-      ? setIsValidPostalCode(true)
-      : setIsValidPostalCode(false);
-    setPostalCode(val);
-  };
-
-  const validateShippingPhone = (event) => {
-    const val = event.target.value;
-    !isEmpty(val) && isNumeric(val)
+  useEffect(() => {
+    !isEmpty(shippingPhone) && isNumeric(shippingPhone)
       ? setIsValidShippingPhone(true)
       : setIsValidShippingPhone(false);
-    setShippingPhone(val);
-  };
+  }, [shippingPhone]);
+
+  useEffect(() => {
+    setProvinceList([]);
+    setSelectedState("");
+    const c = countryList.find((item) => item.name == country);
+    if (c) setProvinceList(c.states);
+    if (awaitingLoadState) {
+      setSelectedState(waitingState);
+      setWaitingState("");
+      setAwaitingLoadState(false);
+    }
+  }, [country]);
+
+  useEffect(() => {
+    isEmail(email) ? setIsValidEmail(true) : setIsValidEmail(false);
+  }, [email]);
+
+  useEffect(() => {
+    !isEmpty(firstName) && /^[a-zA-Z ]+$/.test(firstName)
+      ? setIsValidFirstName(true)
+      : setIsValidFirstName(false);
+  }, [firstName]);
+
+  useEffect(() => {
+    !isEmpty(lastName) && /^[a-zA-Z ]+$/.test(lastName)
+      ? setIsValidLastName(true)
+      : setIsValidLastName(false);
+  }, [lastName]);
+
+  useEffect(() => {
+    !isEmpty(address) ? setIsValidAddress(true) : setIsValidAddress(false);
+  }, [address]);
+
+  useEffect(() => {
+    !isEmpty(postalCode) && /^[a-zA-Z0-9]+$/.test(postalCode)
+      ? setIsValidPostalCode(true)
+      : setIsValidPostalCode(false);
+  }, [postalCode]);
 
   const changeBillingSelectedCountry = (event) => {
     const country = countryList.find(
@@ -210,6 +224,7 @@ export function CheckoutProvider({ children }) {
     const datePaid = new Date().toString();
 
     const order = {
+      userId: session,
       firstName,
       lastName,
       address,
@@ -229,41 +244,35 @@ export function CheckoutProvider({ children }) {
     };
 
     const { data, status } = await axios.post(`${serverUrl}order`, order);
-    console.log(`Server responded with...`);
-    console.log(data);
-
     if (status == 201) {
       resetCart();
       setOrderData({ oid: data.oid, status });
     } else {
       setOrderData({ oid: null, status });
     }
-
     setWaitForServer(false);
   };
 
   return (
     <CheckoutContext.Provider
       value={{
-        changeSelectedCountry,
         countryList,
         provinceList,
-        changeSelectedState,
-        validateEmail,
         isValidEmail,
-        validateFirstName,
-        validateLastName,
-        validateAddress,
-        validatePostalCode,
-        validateShippingPhone,
         firstName,
+        setFirstName,
         lastName,
+        setLastName,
         address,
+        setAddress,
         country,
         state,
         postalCode,
+        setPostalCode,
         shippingPhone,
+        setShippingPhone,
         email,
+        setEmail,
         isValidFirstName,
         isValidLastName,
         isValidAddress,
@@ -303,6 +312,10 @@ export function CheckoutProvider({ children }) {
         setOrderJustPlaced,
         orderData,
         setOrderData,
+        setShippingPhone,
+        setPostalCode,
+        setSelectedCountry,
+        setSelectedState,
       }}>
       {children}
     </CheckoutContext.Provider>
