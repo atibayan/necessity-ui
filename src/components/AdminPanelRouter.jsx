@@ -1,7 +1,7 @@
-import { useState } from 'react';
-import { Routes, Route, NavLink } from 'react-router-dom';
-import ManageProducts from './ManageProducts';
-import './AdminPanelRouter.css';
+import { useState } from "react";
+import { Routes, Route, NavLink } from "react-router-dom";
+import ManageProducts from "./ManageProducts";
+import "./AdminPanelRouter.css";
 
 const ManageProductsRoute = () => {
   const [open, setOpen] = useState(false);
@@ -31,7 +31,6 @@ const TransactionApprovalRoute = () => {
 
 const AdminPanelRouter = () => {
   return (
-    
     <div className="router_container">
       <div className="router_row">
         <div className="router_links">
@@ -59,7 +58,10 @@ const AdminPanelRouter = () => {
           <Routes>
             <Route path="/manageproducts" element={<ManageProductsRoute />} />
             <Route path="/viewsales" element={<ViewSalesRoute />} />
-            <Route path="/transactionapproval" element={<TransactionApprovalRoute />}/>
+            <Route
+              path="/transactionapproval"
+              element={<TransactionApprovalRoute />}
+            />
             <Route path="*" element={<ManageProductsRoute />} />
           </Routes>
         </div>

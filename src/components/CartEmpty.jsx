@@ -40,6 +40,7 @@ const CartEmpty = () => {
           <figure style={{ display: "flex", flexFlow: "column" }}>
             <img
               src="/img/shopping-cart.png"
+              alt="/img/shopping-cart.png"
               style={{ width: "calc(80px + 50%)" }}
             />
             <Button

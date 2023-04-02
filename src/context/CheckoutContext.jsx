@@ -15,7 +15,8 @@ export function useCheckout() {
 
 export function CheckoutProvider({ children }) {
   const { user, isAuthenticated } = useAuth0();
-  const { totalCart, deliveryMethod, resetCart, session } = useShoppingCart();
+  const { totalCart, deliveryMethod, resetCart, session, cartItems } =
+    useShoppingCart();
 
   const [countryList, setCountryList] = useState([]);
   const [country, setSelectedCountry] = useState("");
@@ -93,7 +94,7 @@ export function CheckoutProvider({ children }) {
     };
 
     if (isAuthenticated) getShippingDetailsFromDB();
-  }, []);
+  }, [isAuthenticated, user]);
 
   useEffect(() => {
     !isEmpty(shippingPhone) && isNumeric(shippingPhone)
@@ -104,14 +105,14 @@ export function CheckoutProvider({ children }) {
   useEffect(() => {
     setProvinceList([]);
     setSelectedState("");
-    const c = countryList.find((item) => item.name == country);
+    const c = countryList.find((item) => item.name === country);
     if (c) setProvinceList(c.states);
     if (awaitingLoadState) {
       setSelectedState(waitingState);
       setWaitingState("");
       setAwaitingLoadState(false);
     }
-  }, [country]);
+  }, [country, awaitingLoadState, countryList, waitingState]);
 
   useEffect(() => {
     isEmail(email) ? setIsValidEmail(true) : setIsValidEmail(false);
@@ -141,19 +142,19 @@ export function CheckoutProvider({ children }) {
 
   const changeBillingSelectedCountry = (event) => {
     const country = countryList.find(
-      (country) => country.name == event.target.value
+      (country) => country.name === event.target.value
     );
     setBillingProvinceList(null);
     setSelectedBillingState("");
-    setSelectedBillingCountry(country.name);
-    setBillingProvinceList(country.states);
+    setSelectedBillingCountry(country?.name);
+    setBillingProvinceList(country?.states);
   };
 
   const changeBillingSelectedState = (event) => {
     const state = billingProvinceList.find(
-      (state) => state.name == event.target.value
+      (state) => state.name === event.target.value
     );
-    setSelectedBillingState(state.name);
+    setSelectedBillingState(state?.name);
   };
 
   const validateBillingAddress = (event) => {
@@ -195,7 +196,7 @@ export function CheckoutProvider({ children }) {
   };
 
   const validateCardExpiration = (newValue, ctx) => {
-    newValue != null && ctx.validationError == null
+    newValue != null && ctx.validationError === null
       ? setIsValidCardExpiration(true)
       : setIsValidCardExpiration(false);
     setCardExpiration(newValue);
@@ -241,10 +242,11 @@ export function CheckoutProvider({ children }) {
       billingPostalCode,
       datePaid,
       totalCart,
+      cartItems,
     };
 
     const { data, status } = await axios.post(`${serverUrl}order`, order);
-    if (status == 201) {
+    if (status === 201) {
       resetCart();
       setOrderData({ oid: data.oid, status });
     } else {
@@ -288,7 +290,6 @@ export function CheckoutProvider({ children }) {
         isValidBillingAddress,
         validateBillingAddress,
         billingCountry,
-        countryList,
         changeBillingSelectedCountry,
         billingProvinceList,
         changeBillingSelectedState,
@@ -312,8 +313,6 @@ export function CheckoutProvider({ children }) {
         setOrderJustPlaced,
         orderData,
         setOrderData,
-        setShippingPhone,
-        setPostalCode,
         setSelectedCountry,
         setSelectedState,
       }}>

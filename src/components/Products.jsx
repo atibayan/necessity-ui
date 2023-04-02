@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import ProductCard from "./ProductCard";
 import { Container } from "@mui/material";
 import { useShoppingCart } from "../context/ShoppingCartContext";

@@ -47,7 +47,7 @@ const Wishlist = () => {
   // console.log("wishlist", wishlistItems);
   // console.log("products", products);
 
-  return wishlistQuantity == 0 ? (
+  return wishlistQuantity === 0 ? (
     <EmptyWishlist />
   ) : (
     <Box>

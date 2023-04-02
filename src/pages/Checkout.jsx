@@ -7,6 +7,7 @@ import {
   Button,
   Stack,
   Typography,
+  useTheme,
 } from "@mui/material";
 import { useEffectOnce } from "../utils/useEffectOnce";
 import { Link } from "react-router-dom";
@@ -37,14 +38,14 @@ const StyledStack = (props) => {
 };
 
 const StyledHeading = () => {
+  const theme = useTheme();
   return (
     <Typography
-      variant="h6"
+      variant="h5"
       sx={{
-        backgroundColor: "black",
-        height: "60px",
-        color: "white",
+        height: "70px",
         p: 2,
+        backgroundColor: theme.palette.bg.paper,
       }}>
       CHECKOUT
     </Typography>
@@ -52,11 +53,7 @@ const StyledHeading = () => {
 };
 
 const StyledBox = (props) => {
-  return (
-    <Box sx={{ border: "2px solid gray", p: 2, borderTop: "none" }}>
-      {props.children}
-    </Box>
-  );
+  return <Box p={2}>{props.children}</Box>;
 };
 
 const CheckoutPanes = () => {
@@ -97,7 +94,7 @@ const CheckoutPanes = () => {
   };
 
   const isValidStep = () => {
-    if (activeStep == 0)
+    if (activeStep === 0)
       return (
         isValidEmail &&
         isValidFirstName &&
@@ -106,9 +103,9 @@ const CheckoutPanes = () => {
         isValidAddress &&
         isValidPostalCode &&
         country !== "" &&
-        (provinceList.length == 0 || (provinceList.length > 0 && state !== ""))
+        (provinceList.length === 0 || (provinceList.length > 0 && state !== ""))
       );
-    else if (activeStep == 1)
+    else if (activeStep === 1)
       return (
         isValidCardName &&
         isValidCardExpiration &&
@@ -119,7 +116,7 @@ const CheckoutPanes = () => {
             isValidBillingAddress &&
             isValidBillingPostalCode &&
             billingCountry !== "" &&
-            (billingProvinceList.length == 0 ||
+            (billingProvinceList.length === 0 ||
               (billingProvinceList.length > 0 && billingState !== ""))))
       );
     else return true;
@@ -153,11 +150,11 @@ const CheckoutPanes = () => {
             </Box>
           </Fragment>
         )}
-        {activeStep == 0 ? (
+        {activeStep === 0 ? (
           <Shipping />
-        ) : activeStep == 1 ? (
+        ) : activeStep === 1 ? (
           <Payment />
-        ) : activeStep == 2 ? (
+        ) : activeStep === 2 ? (
           <ReviewOrder />
         ) : waitForServer ? (
           <Loading />
@@ -181,7 +178,7 @@ const OrderAcknowledgment = () => {
         <StyledHeading />
         <StyledBox>
           <Typography variant="h5" align="center">
-            {orderData.oid != null
+            {orderData.oid !== null
               ? "Order placed successfully!"
               : "Oopss... Something went wrong. :("}
           </Typography>
@@ -190,17 +187,14 @@ const OrderAcknowledgment = () => {
               display: "flex",
               justifyContent: "center",
             }}>
-            {orderData.status == 201 ? (
-              <CheckCircleOutlineIcon
-                color="secondary"
-                sx={{ fontSize: "100px" }}
-              />
+            {orderData.status === 201 ? (
+              <CheckCircleOutlineIcon sx={{ fontSize: "100px" }} />
             ) : (
               <DangerousIcon color="error" sx={{ fontSize: "100px" }} />
             )}
           </Box>
 
-          {orderData.status == 201 ? (
+          {orderData.status === 201 ? (
             <Typography variant="subtitle2" align="center">
               Your order reference number is : {orderData.oid}
             </Typography>
@@ -242,7 +236,7 @@ const Loading = () => {
           justifyContent: "center",
           p: 5,
         }}>
-        <GridLoader color={"#7b1fa2"} size={30} speedMultiplier={1} />
+        <GridLoader size={30} speedMultiplier={1} />
       </Box>
       <Typography variant="h6" align="center">
         Please do not leave this page
@@ -267,7 +261,7 @@ const Checkout = () => {
 
   return (
     <CheckoutProvider>
-      {cartQuantity == 0 ? <CheckoutCartEmpty /> : <CheckoutPanes />}
+      {cartQuantity === 0 ? <CheckoutCartEmpty /> : <CheckoutPanes />}
     </CheckoutProvider>
   );
 };

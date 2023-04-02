@@ -10,9 +10,10 @@ import {
   Avatar,
   Menu,
   Badge,
-  Divider,
+  Stack,
+  useTheme,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useState, Fragment } from "react";
 import MenuIcon from "@mui/icons-material/Menu";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
@@ -23,20 +24,14 @@ import LogoutButton from "./LogoutButton";
 import SearchBar from "./SearchBar";
 import { useShoppingCart } from "../context/ShoppingCartContext";
 
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import MailIcon from "@mui/icons-material/Mail";
-
 const pages = ["Women", "Men", "Kids", "All"];
 
 const Navbar = () => {
+  const theme = useTheme();
   const { isAuthenticated, user } = useAuth0();
   const [anchorElUser, setAnchorElUser] = useState(null);
   const [anchorElNav, setAnchorElNav] = useState(null);
+  const open = Boolean(anchorElUser);
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -54,54 +49,20 @@ const Navbar = () => {
     setAnchorElUser(null);
   };
 
-  const { cartQuantity, wishlistQuantity, drawerState, toggleDrawer } =
-    useShoppingCart();
-
-  const list = (anchor) => (
-    <Box
-      sx={{ width: anchor === "top" || anchor === "bottom" ? "auto" : 250 }}
-      role="presentation">
-      <List>
-        {["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
-          <ListItem key={text} disablePadding>
-            <ListItemButton>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
-      <Divider />
-      <List>
-        {["All mail", "Trash", "Spam"].map((text, index) => (
-          <ListItem key={text} disablePadding>
-            <ListItemButton>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
-    </Box>
-  );
+  const { cartQuantity, wishlistQuantity, toggleDrawer } = useShoppingCart();
 
   return (
-    <AppBar position="static" className="header" color="secondary">
+    <AppBar
+      position="static"
+      className="header"
+      sx={{ backgroundColor: theme.palette.bg.heading }}>
       <Toolbar className="toolbar">
         {/* Menus */}
         <Box sx={{ flexGrow: 0, display: { xs: "flex", md: "none" } }}>
-          <IconButton
-            size="large"
-            aria-label="account of current user"
-            aria-controls="menu-appbar"
-            aria-haspopup="true"
-            onClick={handleOpenNavMenu}
-            color="inherit">
-            <MenuIcon />
+          <IconButton size="large" onClick={handleOpenNavMenu} color="white">
+            <MenuIcon
+              sx={{ cursor: "pointer", color: theme.palette.text.custom }}
+            />
           </IconButton>
           <Menu
             id="menu-appbar"
@@ -128,15 +89,21 @@ const Navbar = () => {
           </Menu>
         </Box>
 
-        <Link to="/" style={{ textDecoration: "none", color: "white" }}>
+        <Link
+          to="/"
+          style={{
+            textDecoration: "none",
+            color: theme.palette.text.custom,
+          }}>
           <Typography
             variant="h4"
             noWrap
             sx={{
-              display: { xs: "flex", md: "flex" },
-              flexGrow: { xs: 1, md: 0 },
-              color: "inherit",
+              display: "flex",
+              flexGrow: { xs: 1, md: 2 },
               textDecoration: "none",
+              mx: 2,
+              color: theme.palette.text.custom,
             }}>
             NECESSITY
           </Typography>
@@ -144,14 +111,17 @@ const Navbar = () => {
 
         <Box
           sx={{
-            flexGrow: 1,
+            flexGrow: 0.7,
             display: { xs: "none", md: "flex" },
             justifyContent: "center",
           }}>
           {pages.map((page, idx) => (
             <Link
               to={"/product/category/" + page}
-              style={{ textDecoration: "none", color: "white" }}
+              style={{
+                textDecoration: "none",
+                color: theme.palette.text.custom,
+              }}
               key={idx}>
               <Typography
                 variant="h6"
@@ -167,14 +137,17 @@ const Navbar = () => {
 
         <SearchBar />
 
-        <Box
+        <Stack
+          direction="row"
+          gap={1}
           sx={{
             display: "flex",
-            flexGrow: 0.08,
+            flexGrow: 1,
             justifyContent: "space-around",
-            mr: 5,
+            alignItems: "center",
+            mx: 2,
           }}>
-          <Link to="/wishlist" style={{ color: "white" }}>
+          <Link to="/wishlist" style={{ color: theme.palette.text.custom }}>
             <Tooltip title="Wishlist">
               <Badge badgeContent={wishlistQuantity} color="primary">
                 <FavoriteBorderIcon />
@@ -183,37 +156,41 @@ const Navbar = () => {
           </Link>
           <Badge badgeContent={cartQuantity} color="primary">
             <ShoppingCartOutlinedIcon
-              sx={{ cursor: "pointer" }}
+              sx={{ cursor: "pointer", color: theme.palette.text.custom }}
               onClick={() => toggleDrawer()}
             />
           </Badge>
-        </Box>
 
-        {/* Profile menu */}
-        {isAuthenticated ? (
-          <Box sx={{ flexGrow: 0.1 }}>
-            <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-              <Avatar
-                alt={user.nickname}
-                src={user.picture}
-                sx={{ minHeight: 45, minWidth: 45 }}
-              />
-            </IconButton>
-            <LogoutButton />
-            <Typography
-              sx={{
-                display: { xs: "none", md: "inline-block" },
-                width: "50px",
-                fontSize: "10px",
-                textDecoration: "none",
-                verticalAlign: "middle",
-              }}>
-              Logged in as {user.user_role.toUpperCase()}
-            </Typography>
-          </Box>
-        ) : (
-          <LoginButton />
-        )}
+          {isAuthenticated ? (
+            <Fragment>
+              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                <Avatar
+                  alt={user.nickname}
+                  src={user.picture}
+                  sx={{ minHeight: 45, minWidth: 45 }}
+                />
+              </IconButton>
+              {user.user_role === "user" ? (
+                <Menu
+                  anchorEl={anchorElUser}
+                  open={open}
+                  onClose={handleCloseUserMenu}
+                  MenuListProps={{
+                    "aria-labelledby": "basic-button",
+                  }}>
+                  <Link to="/orderhistory">
+                    <MenuItem onClick={handleCloseUserMenu}>
+                      Order History
+                    </MenuItem>
+                  </Link>
+                </Menu>
+              ) : null}
+              <LogoutButton />
+            </Fragment>
+          ) : (
+            <LoginButton />
+          )}
+        </Stack>
       </Toolbar>
     </AppBar>
   );

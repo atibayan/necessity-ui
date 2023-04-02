@@ -1,4 +1,4 @@
-import React, { useState, Fragment } from "react";
+import React from "react";
 import {
   Box,
   Typography,
@@ -24,13 +24,7 @@ const styledTableCell = {
 };
 
 const CartSummary = () => {
-  const {
-    subTotalCart,
-    totalCart,
-    gst,
-    pst,
-    getShippingFee,
-  } = useShoppingCart();
+  const { subTotalCart, gst, pst } = useShoppingCart();
   return (
     <TableContainer>
       <Table sx={{ mx: "auto" }}>
@@ -86,13 +80,12 @@ const CartItem = ({ id, quantity }) => {
 
   const product = products.find((item) => item._id === id);
 
-  if (product == null) return null;
+  if (product === null) return null;
   return (
     <Stack
       direction={{ sm: "column", md: "row" }}
       spacing={2}
-      justifyContent="space-between"
-    >
+      justifyContent="space-between">
       <Avatar
         src={product.images[0].signedImage}
         variant="rounded"
@@ -126,13 +119,8 @@ const CartItem = ({ id, quantity }) => {
 };
 
 export default function CartDrawer() {
-  const {
-    drawerState,
-    toggleDrawer,
-    cartItems,
-    subTotalCart,
-    cartQuantity,
-  } = useShoppingCart();
+  const { drawerState, toggleDrawer, cartItems, cartQuantity } =
+    useShoppingCart();
 
   return (
     <Drawer
@@ -144,9 +132,8 @@ export default function CartDrawer() {
         },
       }}
       open={drawerState}
-      onClose={() => toggleDrawer()}
-    >
-      {cartQuantity == 0 ? (
+      onClose={() => toggleDrawer()}>
+      {cartQuantity === 0 ? (
         <CartEmpty />
       ) : (
         <Box
@@ -155,8 +142,7 @@ export default function CartDrawer() {
             flexDirection: "column",
             alignItems: "center",
             justifyContent: "center",
-          }}
-        >
+          }}>
           <Typography
             variant="h5"
             noWrap
@@ -170,16 +156,14 @@ export default function CartDrawer() {
               padding: "0px 5px",
               justifyContent: "center",
               m: 3,
-            }}
-          >
+            }}>
             Your Cart
           </Typography>
           <Stack
             direction={"column"}
             spacing={2}
             divider={<Divider />}
-            width={1}
-          >
+            width={1}>
             {cartItems.map((item) => (
               <CartItem key={item.id} {...item} />
             ))}

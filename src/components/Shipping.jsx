@@ -47,7 +47,7 @@ const PostalCode = () => {
       label="Postal Code"
       variant="filled"
       fullWidth
-      value={postalCode}
+      value={postalCode.toUpperCase()}
       onChange={(e) => setPostalCode(e.target.value)}
       onFocus={() => setTouched(true)}
       error={touched && !isValidPostalCode}
@@ -69,7 +69,7 @@ const Address = () => {
       label="Street Address"
       variant="filled"
       fullWidth
-      value={address}
+      value={address.toUpperCase()}
       onChange={(e) => setAddress(e.target.value)}
       onFocus={() => setTouched(true)}
       error={touched && !isValidAddress}
@@ -88,7 +88,7 @@ const LastName = () => {
       id="lname"
       label="Last Name"
       variant="filled"
-      value={lastName}
+      value={lastName.toUpperCase()}
       fullWidth
       onChange={(e) => setLastName(e.target.value)}
       onFocus={() => setTouched(true)}
@@ -112,7 +112,7 @@ const FirstName = () => {
       id="fname"
       label="First Name"
       variant="filled"
-      value={firstName}
+      value={firstName.toUpperCase()}
       fullWidth
       onChange={(e) => setFirstName(e.target.value)}
       onFocus={() => setTouched(true)}
@@ -137,7 +137,7 @@ const Email = () => {
       label="Email"
       variant="filled"
       fullWidth
-      value={email}
+      value={email.toUpperCase()}
       helperText={touched && !isValidEmail && "Invalid email."}
       onChange={(e) => setEmail(e.target.value)}
       onFocus={() => setTouched(true)}
@@ -199,7 +199,7 @@ const CountrySelector = () => {
         }}>
         {countryList.map((country, idx) => (
           <MenuItem value={country.name} key={idx} dense>
-            {country.name}
+            {country.name.toUpperCase()}
           </MenuItem>
         ))}
       </Select>
@@ -219,7 +219,7 @@ const ProvinceSelector = () => {
       required
       variant="filled"
       fullWidth
-      disabled={provinceList.length == 0}>
+      disabled={provinceList.length === 0}>
       <InputLabel id="stateLbl">State/Province</InputLabel>
       <Select
         labelId="stateLbl"
@@ -242,7 +242,7 @@ const ProvinceSelector = () => {
         }}>
         {provinceList.map((state, idx) => (
           <MenuItem value={state.name} key={idx} dense>
-            {state.name}
+            {state.name.toUpperCase()}
           </MenuItem>
         ))}
       </Select>

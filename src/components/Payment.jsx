@@ -52,7 +52,7 @@ const PostalCode = () => {
       label="Postal Code"
       variant="filled"
       fullWidth
-      value={billingPostalCode}
+      value={billingPostalCode.toUpperCase()}
       onChange={validateBillingPostalCode}
       onFocus={() => setTouched(true)}
       error={touched && !isValidBillingPostalCode}
@@ -77,7 +77,7 @@ const Address = () => {
       label="Street Address"
       variant="filled"
       fullWidth
-      value={billingAddress}
+      value={billingAddress.toUpperCase()}
       onChange={validateBillingAddress}
       onFocus={() => setTouched(true)}
       error={touched && !isValidBillingAddress}
@@ -113,7 +113,7 @@ const CountrySelector = () => {
         }}>
         {countryList.map((country, idx) => (
           <MenuItem value={country.name} key={idx} dense>
-            {country.name}
+            {country.name.toUpperCase()}
           </MenuItem>
         ))}
       </Select>
@@ -134,7 +134,7 @@ const ProvinceSelector = () => {
       required
       variant="filled"
       fullWidth
-      disabled={billingProvinceList.length == 0}>
+      disabled={billingProvinceList.length === 0}>
       <InputLabel id="stateLbl">State/Province</InputLabel>
       <Select
         labelId="stateLbl"
@@ -155,7 +155,7 @@ const ProvinceSelector = () => {
         }}>
         {billingProvinceList.map((state, idx) => (
           <MenuItem value={state.name} key={idx} dense>
-            {state.name}
+            {state.name.toUpperCase()}
           </MenuItem>
         ))}
       </Select>
@@ -213,9 +213,9 @@ const CardExpiration = () => {
           touched &&
           !isValidCardExpiration &&
           (validationError != null
-            ? validationError == "disablePast"
+            ? validationError === "disablePast"
               ? "Card is expired."
-              : validationError == "invalidDate"
+              : validationError === "invalidDate"
               ? "Invalid Date."
               : null
             : "Required field.")
@@ -254,7 +254,7 @@ const CardName = () => {
       id="cardName"
       label="Card Owner"
       variant="filled"
-      value={cardName}
+      value={cardName.toUpperCase()}
       fullWidth
       onChange={validateCardName}
       onFocus={() => setTouched(true)}

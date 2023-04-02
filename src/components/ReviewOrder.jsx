@@ -6,7 +6,7 @@ import {
   TableRow,
   TableCell,
   TableBody,
-  styled,
+  useTheme,
 } from "@mui/material";
 import { tableCellClasses } from "@mui/material/TableCell";
 
@@ -14,14 +14,14 @@ import { useCheckout } from "../context/CheckoutContext";
 import { useShoppingCart } from "../context/ShoppingCartContext";
 
 const StyledHeading = (props) => {
+  const theme = useTheme();
   return (
     <Typography
       variant="body"
       sx={{
         display: "block",
-        backgroundColor: "black",
+        backgroundColor: theme.palette.bg.paper,
         textAlign: "center",
-        color: "white",
         p: 1,
       }}>
       {props.children}
@@ -75,7 +75,7 @@ const ShippingDetails = () => {
               <TableCell>Address</TableCell>
               <TableCell>
                 {address.toUpperCase() + ", "}
-                {state != "" ? state.toUpperCase() + ", " : ""}{" "}
+                {state !== "" ? state.toUpperCase() + ", " : ""}{" "}
                 {(country + ", " + postalCode).toUpperCase()}
               </TableCell>
             </TableRow>
@@ -120,11 +120,11 @@ const PaymentDetails = () => {
               <TableCell>Billing Address</TableCell>
               <TableCell>
                 {isBillingAddressSame
-                  ? "Same as Shipping Address"
+                  ? "Same as Shipping Address".toUpperCase()
                   : (
                       billingAddress +
                       ", " +
-                      (billingState == "" ? "" : billingState + ", ") +
+                      (billingState === "" ? "" : billingState + ", ") +
                       billingCountry +
                       ", " +
                       billingPostalCode
@@ -160,8 +160,6 @@ const PaymentDetails = () => {
 const OrderSummary = () => {
   const { subTotalCart, totalCart, pst, gst, getShippingFee } =
     useShoppingCart();
-  const { cardName } = useCheckout();
-  // const total = subTotalCart * 1.12 + deliveryMethod == "standard" ? 10 : 40;
 
   return (
     <Fragment>

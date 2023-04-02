@@ -1,9 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { ImageAspectRatioOutlined } from "@mui/icons-material";
 import KeyboardDoubleArrowLeftOutlinedIcon from "@mui/icons-material/KeyboardDoubleArrowLeftOutlined";
 import KeyboardDoubleArrowRightOutlinedIcon from "@mui/icons-material/KeyboardDoubleArrowRightOutlined";
-import background from "../assets/background.png";
 import { sliderItems } from "../data";
 import { NavLink } from "react-router-dom";
 

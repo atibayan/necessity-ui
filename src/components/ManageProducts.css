@@ -21,11 +21,11 @@ tr:nth-child(even) {
   background-color: #f2f2f2;
 }
 
-tr:hover {
+/* tr:hover {
   background-color: #A6BB8D;
   color: white;
   ;
-}
+} */
 
 .image-column {
   display: flex;
