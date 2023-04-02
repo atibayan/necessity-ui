@@ -31,7 +31,7 @@ import ListItemText from "@mui/material/ListItemText";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MailIcon from "@mui/icons-material/Mail";
 
-const pages = ["Women", "Men", "Kids", "Home"];
+const pages = ["Women", "Men", "Kids", "All"];
 
 const Navbar = () => {
   const { isAuthenticated, user } = useAuth0();

@@ -43,7 +43,11 @@ const Home = () => {
                     <Route path="/checkout" element={<Checkout />} />
                     <Route path="/wishlist" element={<Wishlist />} />
                     <Route path="/product/:id" element={<ProductScreen />} />
-                    <Route path="/product/category/:cat" element={<CategoryScreen />} />
+                    <Route path="/product/category/:cat" element={<CategoryScreen />}>
+                        <Route path="/product/category/:cat/top" element={<CategoryScreen />} ></Route>
+                        <Route path="/product/category/:cat/bottom" element={<CategoryScreen />} ></Route>
+                        <Route path="/product/category/:cat/footwear" element={<CategoryScreen />} ></Route> 
+                    </Route>  
                     <Route path="*" element={<Navigate to="/" replace />} />
                 </Routes>
                 <Footer />

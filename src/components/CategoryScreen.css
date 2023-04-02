@@ -1,0 +1,22 @@
+.subroute {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 20px;
+  }
+  
+  .subroute a {
+    text-decoration: none;
+    color: black;
+    font-size: 1.2rem;
+    font-weight: bold;
+    padding: 5px 10px;
+    border-radius: 5px;
+    background-color: lightgray;
+    transition: background-color 0.2s ease-in-out;
+  }
+  
+  .subroute a:hover {
+    background-color: gray;
+    color: white;
+  }
+  

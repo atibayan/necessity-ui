@@ -5,6 +5,7 @@ import KeyboardDoubleArrowLeftOutlinedIcon from "@mui/icons-material/KeyboardDou
 import KeyboardDoubleArrowRightOutlinedIcon from "@mui/icons-material/KeyboardDoubleArrowRightOutlined";
 import background from "../assets/background.png";
 import { sliderItems } from "../data";
+import { NavLink } from "react-router-dom";
 
 const Container = styled.div`
   width: 100%;
@@ -79,6 +80,11 @@ const Button = styled.button`
   font-size: 25px;
   background-color: transparent;
   cursor: pointer;
+
+  a {
+    text-decoration: none;
+    color: black;
+  }
 `;
 
 const Slider = () => {
@@ -105,7 +111,7 @@ const Slider = () => {
             <InfoContainer>
               <Title>{item.title}</Title>
               <Description>{item.description}</Description>
-              <Button>Discover Now</Button>
+              <Button><NavLink to="/product/category/All">Discover Now</NavLink></Button>
             </InfoContainer>
           </Slide>
         ))}

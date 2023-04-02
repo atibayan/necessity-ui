@@ -7,6 +7,8 @@ import TwitterIcon from '@mui/icons-material/Twitter';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import PhoneInTalkIcon from '@mui/icons-material/PhoneInTalk';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
+import { NavLink } from "react-router-dom";
+import logo from './logo.png';
 
 const Container = styled.div`
     display:flex;
@@ -21,7 +23,10 @@ const Left = styled.div`
 `;
 
 const Logo = styled.h1`
-
+  img {
+    width: 50px;
+    height: auto;
+  }
 `;
 
 const Description = styled.p`
@@ -64,6 +69,10 @@ const List = styled.ul`
 const ListItem = styled.li`
     width: 50%;
     margin-bottom:10px;
+    a {
+        text-decoration: none;
+        color: black;
+    }
 `;
 
 const Right = styled.div`
@@ -81,10 +90,10 @@ const Footer = () => {
         <Container>
             <Left>
                 <Logo>
-                    LOGO
+                    <img src={logo}/>
                 </Logo>
                 <Description>
-                LOGO is an online fashion brand founded in 2023 with the latest trendy and convenient fashion clothes. 
+                Necessity is an online fashion brand founded in 2023 with the latest trendy and convenient fashion clothes. 
                 </Description>
                 <SocialContainer>
                     <SocialIcon>
@@ -104,9 +113,9 @@ const Footer = () => {
             <Center>
                 <Title>More Links</Title>
                 <List>
-                    <ListItem>Home</ListItem>
+                    <ListItem><NavLink to="/">Home</NavLink></ListItem>
                     <ListItem>Cart</ListItem>
-                    <ListItem>Woman Fashion</ListItem>
+                    <ListItem><NavLink to="/product/category/Women">Woman Fashion</NavLink></ListItem>
                     <ListItem>Account Info</ListItem>
                     <ListItem>Terms and Conditions</ListItem>
                     <ListItem>QNAs</ListItem>
