@@ -27,7 +27,7 @@ const StyledStack = (props) => {
   return (
     <Stack
       sx={{
-        width: "calc(350px + 20vw)",
+        width: "calc(350px + 30vw)",
         my: "5vh",
         mx: "auto",
         p: 2,
@@ -165,6 +165,7 @@ const CheckoutPanes = () => {
 };
 
 const OrderAcknowledgment = () => {
+  const theme = useTheme();
   const { setOrderJustPlaced, orderData, setOrderData } = useCheckout();
   useEffectOnce(() => {
     return () => {
@@ -196,7 +197,7 @@ const OrderAcknowledgment = () => {
 
           {orderData.status === 201 ? (
             <Typography variant="subtitle2" align="center">
-              Your order reference number is : {orderData.oid}
+              Your order reference number is : <strong>{orderData.oid}</strong>
             </Typography>
           ) : null}
           <Box
@@ -225,6 +226,7 @@ const OrderAcknowledgment = () => {
 };
 
 const Loading = () => {
+  const theme = useTheme();
   return (
     <Fragment>
       <Typography variant="h5" align="center">
@@ -236,7 +238,11 @@ const Loading = () => {
           justifyContent: "center",
           p: 5,
         }}>
-        <GridLoader size={30} speedMultiplier={1} />
+        <GridLoader
+          size={30}
+          color={theme.palette.primary.main}
+          speedMultiplier={1}
+        />
       </Box>
       <Typography variant="h6" align="center">
         Please do not leave this page

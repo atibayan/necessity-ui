@@ -3,7 +3,6 @@ import { faPlus, faTrashCan, faX } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
 import "./ProductUploader.css";
-import Resizer from "react-image-file-resizer";
 import TextField from "@mui/material/TextField";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import InputLabel from "@mui/material/InputLabel";
@@ -55,22 +54,6 @@ const ProductEditor = (props) => {
     setSelectedImages(selectedImages.filter((e) => e.url !== imageUrl));
     URL.revokeObjectURL(imageUrl);
   }
-
-  const resizeFile = (file) =>
-    new Promise((resolve) => {
-      Resizer.imageFileResizer(
-        file,
-        300,
-        300,
-        "JPEG",
-        100,
-        0,
-        (uri) => {
-          resolve(uri);
-        },
-        "blob"
-      );
-    });
 
   const handleTagsChange = (event) => {
     setTags(event.target.value);

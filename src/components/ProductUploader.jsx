@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { faPlus, faTrashCan, faX } from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
 import "./ProductUploader.css";

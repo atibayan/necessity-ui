@@ -82,10 +82,7 @@ const CartItem = ({ id, quantity }) => {
 
   if (product === null) return null;
   return (
-    <Stack
-      direction={{ sm: "column", md: "row" }}
-      spacing={2}
-      justifyContent="space-between">
+    <Stack direction="row" spacing={2} justifyContent="space-between">
       <Avatar
         src={product.images[0].signedImage}
         variant="rounded"
@@ -127,7 +124,7 @@ export default function CartDrawer() {
       anchor="right"
       PaperProps={{
         sx: {
-          width: "calc(320px + 15vw)",
+          width: "calc(350px + 15vw)",
           p: 2,
         },
       }}
