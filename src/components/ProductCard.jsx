@@ -1,14 +1,15 @@
 import React from "react";
 import {
-  IconButton,
   Box,
   Card,
   CardActions,
   CardContent,
   CardMedia,
   Typography,
+  Checkbox,
 } from "@mui/material";
-import FavoriteIcon from "@mui/icons-material/Favorite";
+import FavoriteBorder from "@mui/icons-material/FavoriteBorder";
+import Favorite from "@mui/icons-material/Favorite";
 import { AddCartBtn, MinusCartBtn, QtyBtn, CartBtn } from "./CartButtons";
 import { useShoppingCart } from "../context/ShoppingCartContext";
 import { Link } from "react-router-dom";
@@ -91,17 +92,17 @@ export default function ProductCard({ item }) {
           margin: "5px",
           padding: 0,
         }}>
-        <IconButton
-          aria-label="add to wishlist"
-          p={0}
-          m={0}
-          onClick={() => addToWishlist(item._id)}>
-          {isInWishlist(item._id) ? (
-            <FavoriteIcon color="secondary" />
-          ) : (
-            <FavoriteIcon sx={heartInactiveStyle} />
-          )}
-        </IconButton>
+        <Box
+          sx={{
+            backgroundColor: "rgba(255, 255, 255, 0.2)",
+            borderRadius: "50%",
+          }}>
+          <Checkbox
+            icon={<FavoriteBorder />}
+            checkedIcon={<Favorite />}
+            onClick={() => addToWishlist(item._id)}
+          />
+        </Box>
       </CardActions>
     </Card>
   );
