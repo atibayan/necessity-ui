@@ -8,7 +8,6 @@ import LocationOnIcon from "@mui/icons-material/LocationOn";
 import PhoneInTalkIcon from "@mui/icons-material/PhoneInTalk";
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
 import { NavLink } from "react-router-dom";
-import logo from "./logo.png";
 
 const Container = styled.div`
   display: flex;
@@ -90,7 +89,7 @@ const Footer = () => {
     <Container>
       <Left>
         <Logo>
-          <img src={logo} />
+          <img src={`/img/logo.png`} />
         </Logo>
         <Description>
           Necessity is an online fashion brand founded in 2023 with the latest

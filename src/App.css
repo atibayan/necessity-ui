@@ -3,3 +3,41 @@
 * {
   font-family: 'Oswald', monospace;
 }
+
+
+/* Product Uploader/Editor*/
+.image {
+  position: relative;
+}
+
+.image button {
+  position: absolute;
+  top: -0.5rem;
+  right: -0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f0f0f0;
+  border-radius: 50%;
+  border: none;
+  width: 2rem;
+  height: 2rem;
+  cursor: pointer;
+}
+
+.tag {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f0f0f0;
+  border-radius: 2rem;
+  padding: 0.5rem;
+  font-size: 0.8rem;
+  color: #555;
+}
+
+.tag span {
+  margin-left: 0.5rem;
+  cursor: pointer;
+  color: #888;
+}

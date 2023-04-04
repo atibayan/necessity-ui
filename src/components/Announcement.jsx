@@ -1,3 +1,4 @@
+import { useAuth0 } from "@auth0/auth0-react";
 import React from "react";
 import styled from "styled-components";
 
@@ -13,7 +14,10 @@ const Container = styled.div`
 `;
 
 const Announcement = () => {
-  return <Container>Free Shipping on Orders Over $100</Container>;
+  const { isAuthenticated, user } = useAuth0();
+  return isAuthenticated && user.user_role == "admin" ? null : (
+    <Container>Free Shipping on Orders Over $100</Container>
+  );
 };
 
 export default Announcement;

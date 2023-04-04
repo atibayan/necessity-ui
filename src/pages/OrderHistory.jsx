@@ -117,7 +117,7 @@ const OHBody = ({ productId, quantity }) => {
           flexDirection: { xs: "row", md: "row" },
           gap: { xs: 2, md: 2 },
         }}>
-        <Box sx={{ width: "80px", height: "80px", bgColor: "red" }}>
+        <Box sx={{ width: "80px", height: "80px" }}>
           <Badge
             overlap="circular"
             anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
@@ -125,7 +125,7 @@ const OHBody = ({ productId, quantity }) => {
             <Avatar
               variant="rounded"
               src={product.images[0].signedImage}
-              sx={{ width: "80px", height: "80px", bgColor: "red" }}
+              sx={{ width: "80px", height: "80px" }}
             />
           </Badge>
         </Box>
@@ -217,7 +217,10 @@ const ArchiveOrder = ({ oh, onUpdateCb }) => {
         Archive Order
       </Button>
 
-      <Dialog open={open} onClose={handleClose}>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        sx={{ backdropFilter: "blur(3px)" }}>
         <DialogTitle color="error">
           {"You are about to archive this order!"}
         </DialogTitle>
