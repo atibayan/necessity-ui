@@ -1,42 +1,70 @@
 import React, { useState, useEffect } from "react";
-import { faPlus, faTrashCan, faX } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
-import "./ProductUploader.css";
-import TextField from "@mui/material/TextField";
-import OutlinedInput from "@mui/material/OutlinedInput";
+import { faPlus, faTrashCan } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import InputLabel from "@mui/material/InputLabel";
 import InputAdornment from "@mui/material/InputAdornment";
 import FormControl from "@mui/material/FormControl";
-import Button from "@mui/material/Button";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
-import Snackbar from "@mui/material/Snackbar";
-import Alert from "@mui/material/Alert";
+import { useSnackbar } from "notistack";
+import {
+  Box,
+  Button,
+  Stack,
+  Dialog,
+  DialogTitle,
+  TextField,
+  FilledInput,
+  Avatar,
+  useTheme,
+} from "@mui/material";
+import { PropagateLoader } from "react-spinners";
+import { useProductManagement } from "../context/ProductManagementContext";
 const serverUrl = process.env.REACT_APP_SERVER_URL;
 
-const ProductEditor = (props) => {
-  const [selectedImages, setSelectedImages] = useState([]);
+const ProductEditor = ({ open, handleClose, selected }) => {
+  const theme = useTheme();
+  const { products, updateProducts, handleImageUpload } =
+    useProductManagement();
+  const { enqueueSnackbar } = useSnackbar();
+
   const [name, setName] = useState("");
   const [price, setPrice] = useState(0);
+  const [discount, setDiscount] = useState(0);
   const [description, setDescription] = useState("");
   const [tags, setTags] = useState([]);
   const [qtyOnHand, setQtyOnHand] = useState(0);
 
-  const [products, setProducts] = useState([]);
-  const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const [imagesFromDB, setImagesFromDB] = useState([]);
+  const [selectedImages, setSelectedImages] = useState([]);
+  const [initialTags, setInitialTags] = useState([]);
+  const [initialImages, setInitialImages] = useState([]);
+  const [nameChanged, setNameChanged] = useState(false);
+  const [priceChanged, setPriceChanged] = useState(false);
+  const [discountChanged, setDiscountChanged] = useState(false);
+  const [descriptionChanged, setDescriptionChanged] = useState(false);
+  const [quantityChanged, setQuantityChanged] = useState(false);
+  const [product, setProduct] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    if (props.product) {
-      setName(props.product.name);
-      setDescription(props.product.description);
-      setPrice(props.product.price);
-      setQtyOnHand(props.product.quantity_on_hand);
-      setTags(props.product.tags);
-      setSelectedImages(props.product.images);
+    setProduct(products.find((item) => item._id === selected));
+  }, [products]);
+
+  useEffect(() => {
+    if (product) {
+      setName(product.name);
+      setDescription(product.description);
+      setPrice(product.price);
+      setDiscount(product.discount);
+      setQtyOnHand(product.quantity_on_hand);
+      setTags(product.tags);
+      setInitialTags(product.tags);
+      setImagesFromDB(product.images);
+      setInitialImages(product.images);
+      setSelectedImages([]);
     }
-  }, [props.product]);
+  }, [product]);
 
   const onSelectFile = (e) => {
     const selectedFilesArray = Array.from(e.target.files);
@@ -50,150 +78,13 @@ const ProductEditor = (props) => {
     setSelectedImages((previousImages) => previousImages.concat(imagesArray));
   };
 
-  function deleteHandler(imageUrl) {
+  function deletePhotoFromLocal(imageUrl) {
     setSelectedImages(selectedImages.filter((e) => e.url !== imageUrl));
     URL.revokeObjectURL(imageUrl);
   }
-
-  const handleTagsChange = (event) => {
-    setTags(event.target.value);
-  };
-
-  //   const submit = async e => {
-  //     e.preventDefault();
-  //     const product_info = {
-  //       name,
-  //       price,
-  //       description,
-  //       qtyOnHand
-  //     }
-  //     const prod_info = await axios.post(`${serverUrl}product`, product_info)
-  //     console.log(prod_info.data)
-
-  //     const formData = new FormData();
-  //     for (let i = 0; i < selectedImages.length; i++) {
-  //       const blob = await fetch(selectedImages[i].url).then(r => r.blob())
-  //       const resized_blob = await resizeFile(blob)
-  //       formData.append("image", resized_blob)
-  //     }
-
-  //     const prod_photo = await axios.post(
-  //       `${serverUrl}product/${prod_info.data.pid}/photos`,
-  //       formData,
-  //       {
-  //         headers: { 'Content-Type': 'multipart/form-data' }
-  //       })
-
-  //     const prod_tag = await axios.post(
-  //       `${serverUrl}product/${prod_info.data.pid}/tags`,
-  //       { tags })
-
-  //     // Call handleOpen to show success alert toast
-  //     handleOpen();
-
-  //     // Call handleClose after 3 seconds to close success alert toast
-  //     setTimeout(() => {
-  //       handleClose();
-  //     }, 3000);
-  //   }
-
-  // const update = async e => {
-  //     e.preventDefault();
-  //     const product_info = {
-  //       name,
-  //       price,
-  //       description,
-  //       qtyOnHand,
-  //     }
-
-  //     let prod_info;
-  //     if (props.product) {
-  //       prod_info = await axios.patch(`${serverUrl}product/${props.product._id}`, product_info);
-  //     } else {
-  //       prod_info = await axios.post(`${serverUrl}product`, product_info);
-  //     }
-
-  //     const formData = new FormData();
-  //     for (let i = 0; i < selectedImages.length; i++) {
-  //       const blob = await fetch(selectedImages[i].url).then(r => r.blob())
-  //       const resized_blob = await resizeFile(blob)
-  //       formData.append("image", resized_blob)
-  //     }
-
-  //     const prod_photo = await axios.post(
-  //       `${serverUrl}product/${prod_info.data.pid}/photos`,
-  //       formData,
-  //       {
-  //         headers: { 'Content-Type': 'multipart/form-data' }
-  //       })
-
-  //     const prod_tag = await axios.put(
-  //       `${serverUrl}product/${prod_info.data.pid}/tags`,
-  //       { tags })
-
-  //     // Call handleOpen to show success alert toast
-  //     handleOpen();
-
-  //     // Call handleClose after 3 seconds to close success alert toast
-  //     setTimeout(() => {
-  //       handleClose();
-  //     }, 3000);
-  //   }
-
-  const update = async (e) => {
-    e.preventDefault();
-    const product_info = {
-      name,
-      price,
-      description,
-      quantity_on_hand: qtyOnHand,
-      tags,
-    };
-
-    let prod_info;
-    if (props.product) {
-      prod_info = await axios.patch(
-        `${serverUrl}product/${props.product._id}`,
-        product_info
-      );
-    } else {
-      prod_info = await axios.post(`${serverUrl}product`, product_info);
-    }
-
-    // const formData = new FormData();
-    // for (let i = 0; i < selectedImages.length; i++) {
-    //   const blob = await fetch(selectedImages[i].url).then(r => r.blob())
-    //   const resized_blob = await resizeFile(blob)
-    //   formData.append("image", resized_blob)
-    // }
-
-    // // Update product photos
-    // const prod_photo = await axios.put(
-    //   `${serverUrl}product/${prod_info.data.pid}/photos`,
-    //   formData,
-    //   {
-    //     headers: { 'Content-Type': 'multipart/form-data' }
-    //   })
-
-    // Update product tags
-    const prod_tag = await axios.put(
-      `${serverUrl}product/${props.product._id}/tags`,
-      { tags }
-    );
-
-    // // Update product quantity
-    // const prod_qty = await axios.put(
-    //   `${serverUrl}product/${prod_info.data.pid}/quantity`,
-    //   { qtyOnHand })
-
-    // Call handleOpen to show success alert toast
-    handleOpen();
-
-    // Call handleClose after 3 seconds to close success alert toast
-    setTimeout(() => {
-      handleClose();
-    }, 3000);
-  };
+  function deletePhotoFromDB(image_name) {
+    setImagesFromDB(imagesFromDB.filter((e) => e.image_name !== image_name));
+  }
 
   const addTag = (e) => {
     if (e.key === "ArrowRight") {
@@ -210,85 +101,221 @@ const ProductEditor = (props) => {
     setTags((prevTags) => prevTags.filter((tag) => tag !== deletedTag));
   };
 
-  const handleDeleteProduct = async (id) => {
-    const res = await axios.delete(`${serverUrl}product/${id}`);
-    if (res.status === 200)
-      setProducts((prevProducts) => prevProducts.filter((p) => p._id !== id));
+  const handleEditSubmit = async () => {
+    setIsLoading(true);
+    const body = {};
+    if (nameChanged) body.name = name;
+    if (descriptionChanged) body.description = description;
+    if (priceChanged) body.price = price;
+    if (discountChanged) body.discount = discount;
+    if (quantityChanged) body.quantity_on_hand = qtyOnHand;
+
+    const addedTags = [];
+    const deletedTags = [];
+
+    tags.forEach((item) => {
+      const newItem = initialTags.indexOf(item);
+      if (newItem === -1) addedTags.push(item);
+    });
+
+    initialTags.forEach((item) => {
+      const delItem = tags.indexOf(item);
+      if (delItem === -1) deletedTags.push(item);
+    });
+
+    if (addedTags.length > 0) {
+      await axios
+        .post(`${serverUrl}product/${product._id}/tags`, { tags: addedTags })
+        .then((response) => {
+          if (response.status === 200) {
+            enqueueSnackbar("Successfully added tags", {
+              variant: "success",
+            });
+          } else {
+            enqueueSnackbar("Failed to add tags!", {
+              variant: "error",
+            });
+          }
+        });
+    }
+
+    deletedTags.forEach(async (item) => {
+      await axios
+        .delete(`${serverUrl}product/${product._id}/tags/${item}`)
+        .then((response) => {
+          if (response.status === 200) {
+            enqueueSnackbar(`Successfully deleted tag: ${item}`, {
+              variant: "success",
+            });
+          } else {
+            enqueueSnackbar(`Failed to delete tag: ${item}!`, {
+              variant: "error",
+            });
+          }
+        });
+    });
+
+    const formData = new FormData();
+    for (let i = 0; i < selectedImages.length; i++) {
+      const blob = await fetch(selectedImages[i].url).then((r) => r.blob());
+      const resized_blob = await handleImageUpload(blob);
+      formData.append("image", resized_blob);
+    }
+
+    if (selectedImages.length > 0) {
+      await axios
+        .post(`${serverUrl}product/${product._id}/photos`, formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        })
+        .then((response) => {
+          if (response.status === 200) {
+            enqueueSnackbar("Successfully uploaded photo", {
+              variant: "success",
+            });
+          } else {
+            enqueueSnackbar("Failed to upload photo!", {
+              variant: "error",
+            });
+          }
+        })
+        .catch(() => {
+          enqueueSnackbar("Failed to upload photo!", {
+            variant: "error",
+          });
+        });
+    }
+
+    initialImages.forEach(async (prev) => {
+      const found = imagesFromDB.findIndex(
+        (curr) => curr.image_name === prev.image_name
+      );
+      if (found === -1) {
+        await axios
+          .delete(
+            `${serverUrl}product/${product._id}/photos/${prev.image_name}`
+          )
+          .then((response) => {
+            if (response.status === 200) {
+              enqueueSnackbar(
+                `Successfully deleted photo: ${prev.image_name}`,
+                {
+                  variant: "success",
+                }
+              );
+            } else {
+              enqueueSnackbar(`Failed to delete photo: ${prev.image_name}!`, {
+                variant: "error",
+              });
+            }
+          });
+      }
+    });
+
+    if (Object.keys(body).length) {
+      await axios
+        .patch(`${serverUrl}product/${product._id}`, body)
+        .then((response) => {
+          if (response.status === 200) {
+            enqueueSnackbar("Successfully updated product", {
+              variant: "success",
+            });
+          } else {
+            enqueueSnackbar("Failed to update product!", {
+              variant: "error",
+            });
+          }
+        })
+        .catch(() => {
+          enqueueSnackbar("Failed to update product!", {
+            variant: "error",
+          });
+        });
+    }
+    updateProducts();
+    setIsLoading(false);
   };
 
   return (
-    <div
-      style={{
-        maxHeight: "80vh",
-        minWidth: "100%",
-        maxWidth: "1200px",
-        overflowY: "auto",
-        overflowX: "hidden",
-      }}>
-      <br></br>
-
-      {/* Success alert toast */}
-      <Snackbar
-        open={open}
-        autoHideDuration={3000}
-        onClose={handleClose}
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}>
-        <Alert onClose={handleClose} severity="success" sx={{ width: "100%" }}>
-          Product uploaded successfully
-        </Alert>
-      </Snackbar>
-
-      <form onSubmit={update}>
+    <Dialog
+      open={open}
+      onClose={handleClose}
+      fullWidth
+      sx={{ backdropFilter: "blur(3px)" }}>
+      <DialogTitle>Edit Product</DialogTitle>
+      <Stack gap={2} p={2} sx={{ width: "100%" }}>
         <TextField
-          style={{ width: "100%", marginBottom: "1rem" }}
-          id="outlined-required"
+          variant="filled"
+          fullWidth
           label="Product Name"
           value={name}
-          onChange={(e) => setName(e.target.value)}
-          type="text"
-          placeholder="Product Name"
+          onChange={(e) => {
+            setName(e.target.value);
+            setNameChanged(true);
+          }}
           required
         />
-
         <TextField
-          style={{ width: "100%", marginBottom: "1rem" }}
-          id="outlined-required"
+          variant="filled"
+          fullWidth
           label="Product Description"
           value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          type="text"
-          placeholder="Product Description"
+          onChange={(e) => {
+            setDescription(e.target.value);
+            setDescriptionChanged(true);
+          }}
           required
         />
-
-        <FormControl style={{ width: "100%", marginBottom: "1rem" }} required>
-          <InputLabel htmlFor="outlined-adornment-amount">Amount</InputLabel>
-          <OutlinedInput
-            sx={{ fontSize: "smaller" }}
-            id="outlined-adornment-amount"
-            value={price}
-            step="0.01"
-            onChange={(e) => setPrice(e.target.value)}
+        <FormControl fullWidth variant="filled" required>
+          <InputLabel htmlFor="filled-adornment-amount">Amount</InputLabel>
+          <FilledInput
+            id="filled-adornment-amount"
+            value={parseFloat(price).toFixed(2)}
+            inputProps={{
+              step: "0.01",
+              min: 0,
+            }}
+            onChange={(e) => {
+              setPrice(e.target.value);
+              setPriceChanged(true);
+            }}
             type="number"
             startAdornment={<InputAdornment position="start">$</InputAdornment>}
-            label="Price"
-            required
           />
         </FormControl>
 
         <TextField
-          style={{ width: "100%", marginBottom: "1rem" }}
-          value={qtyOnHand}
-          onChange={(e) => setQtyOnHand(e.target.value)}
+          label="Discount (0-99)"
+          variant="filled"
+          value={parseInt(discount)}
+          inputProps={{
+            min: 0,
+            max: 99,
+          }}
+          onChange={(e) => {
+            setDiscount(e.target.value);
+            setDiscountChanged(true);
+          }}
           type="number"
-          id="outlined-number"
+        />
+        {/* </FormControl> */}
+        <TextField
+          variant="filled"
+          fullWidth
           label="Quantity on Hand"
-          InputLabelProps={{ shrink: true }}
+          value={parseInt(qtyOnHand)}
+          inputProps={{
+            step: "1",
+            min: 0,
+          }}
+          onChange={(e) => {
+            setQtyOnHand(e.target.value);
+            setQuantityChanged(true);
+          }}
+          type="number"
           required
         />
-
-        <div id="tagsContainer">
-          {tags.map((tag, idx) => {
+        <Stack direction="row">
+          {tags?.map((tag, idx) => {
             return (
               <div key={idx} className="tag">
                 {tag}
@@ -300,22 +327,21 @@ const ProductEditor = (props) => {
                 </span>
               </div>
             );
-          })}
-          <TextField
-            style={{ width: "100%", marginBottom: "1rem" }}
-            id="outlined-required"
-            label="Tags"
-            type="text"
-            placeholder="Click right arrow key to add more tags."
-            onKeyUp={addTag}
-          />
-        </div>
-
-        <div id="imageUploaderCont">
-          <label htmlFor="choose-file">
+          })}{" "}
+        </Stack>
+        <TextField
+          variant="filled"
+          fullWidth
+          label="Tags"
+          onKeyUp={addTag}
+          placeholder="Click right arrow key to add more tags."
+          required
+        />
+        <Stack>
+          <InputLabel htmlFor="choose-file" sx={{ mx: "auto" }}>
             <AddPhotoAlternateIcon icon={faPlus} id="plus" />
             Add Image
-          </label>
+          </InputLabel>
           <input
             id="choose-file"
             type="file"
@@ -326,30 +352,53 @@ const ProductEditor = (props) => {
             hidden
             required
           />
-
-          <div className="images">
-            {selectedImages &&
-              selectedImages.map((image) => {
-                return (
-                  <div key={image.url} className="image">
-                    <img src={image.url} alt="upload" />
-                    <button onClick={() => deleteHandler(image.url)}>
-                      <FontAwesomeIcon icon={faTrashCan} />
-                    </button>
-                  </div>
-                );
-              })}
-          </div>
-          <Button
-            variant="outlined"
-            className="upload-btn"
-            type="submit"
-            style={{ borderColor: "#609966", color: "#609966" }}>
-            Submit
-          </Button>
-        </div>
-      </form>
-    </div>
+          <Box
+            sx={{
+              display: "flex",
+              flexWrap: "wrap",
+              gap: "0.5rem",
+              my: "1rem",
+            }}>
+            {imagesFromDB?.map((image, idx) => (
+              <div key={idx} className="image">
+                <Avatar
+                  variant="rounded"
+                  src={image.signedImage}
+                  sx={{ width: "80px", height: "80px" }}
+                />
+                <button onClick={() => deletePhotoFromDB(image.image_name)}>
+                  <FontAwesomeIcon icon={faTrashCan} />
+                </button>
+              </div>
+            ))}
+            {selectedImages.map((image, idx) => (
+              <div key={idx} className="image">
+                <Avatar
+                  variant="rounded"
+                  src={image.url}
+                  sx={{ width: "80px", height: "80px" }}
+                />
+                <button onClick={() => deletePhotoFromLocal(image.url)}>
+                  <FontAwesomeIcon icon={faTrashCan} />
+                </button>
+              </div>
+            ))}
+          </Box>
+          {isLoading ? (
+            <Box mb={3} sx={{ display: "flex", justifyContent: "center" }}>
+              <PropagateLoader color={theme.palette.primary.main} />
+            </Box>
+          ) : (
+            <Button
+              variant="contained"
+              type="submit"
+              onClick={handleEditSubmit}>
+              Save
+            </Button>
+          )}
+        </Stack>
+      </Stack>
+    </Dialog>
   );
 };
 

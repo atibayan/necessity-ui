@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import {
   AppBar,
   Toolbar,
@@ -25,6 +25,7 @@ import SearchBar from "./SearchBar";
 import { useShoppingCart } from "../context/ShoppingCartContext";
 
 const pages = ["Women", "Men", "Kids", "All"];
+const adminPages = ["Manage Products", "View Transactions"];
 
 const Navbar = () => {
   const theme = useTheme();
@@ -50,6 +51,7 @@ const Navbar = () => {
   };
 
   const { cartQuantity, wishlistQuantity, toggleDrawer } = useShoppingCart();
+  const fGrow = user && user.user_role == "admin" ? 5 : 0.7;
 
   return (
     <AppBar
@@ -58,36 +60,40 @@ const Navbar = () => {
       sx={{ backgroundColor: theme.palette.bg.heading }}>
       <Toolbar className="toolbar">
         {/* Menus */}
-        <Box sx={{ flexGrow: 0, display: { xs: "flex", md: "none" } }}>
-          <IconButton size="large" onClick={handleOpenNavMenu} color="white">
-            <MenuIcon
-              sx={{ cursor: "pointer", color: theme.palette.text.custom }}
-            />
-          </IconButton>
-          <Menu
-            id="menu-appbar"
-            anchorEl={anchorElNav}
-            anchorOrigin={{
-              vertical: "bottom",
-              horizontal: "left",
-            }}
-            keepMounted
-            transformOrigin={{
-              vertical: "top",
-              horizontal: "left",
-            }}
-            open={Boolean(anchorElNav)}
-            onClose={handleCloseNavMenu}
-            sx={{
-              display: { xs: "block", md: "none" },
-            }}>
-            {pages.map((page, idx) => (
-              <MenuItem key={idx} onClick={handleCloseNavMenu}>
-                <Typography textAlign="center">{page.toUpperCase()}</Typography>
-              </MenuItem>
-            ))}
-          </Menu>
-        </Box>
+        {user && user.user_role == "admin" ? null : (
+          <Box sx={{ flexGrow: 0, display: { xs: "flex", md: "none" } }}>
+            <IconButton size="large" onClick={handleOpenNavMenu} color="white">
+              <MenuIcon
+                sx={{ cursor: "pointer", color: theme.palette.text.custom }}
+              />
+            </IconButton>
+            <Menu
+              id="menu-appbar"
+              anchorEl={anchorElNav}
+              anchorOrigin={{
+                vertical: "bottom",
+                horizontal: "left",
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: "top",
+                horizontal: "left",
+              }}
+              open={Boolean(anchorElNav)}
+              onClose={handleCloseNavMenu}
+              sx={{
+                display: { xs: "block", md: "none" },
+              }}>
+              {pages.map((page, idx) => (
+                <MenuItem key={idx} onClick={handleCloseNavMenu}>
+                  <Typography textAlign="center">
+                    {page.toUpperCase()}
+                  </Typography>
+                </MenuItem>
+              ))}
+            </Menu>
+          </Box>
+        )}
 
         <Link
           to="/"
@@ -111,32 +117,63 @@ const Navbar = () => {
 
         <Box
           sx={{
-            flexGrow: 0.7,
+            flexGrow: fGrow,
             display: { xs: "none", md: "flex" },
             justifyContent: "center",
           }}>
-          {pages.map((page, idx) => (
-            <Link
-              to={"/product/category/" + page}
-              style={{
-                textDecoration: "none",
-                color: theme.palette.text.custom,
-              }}
-              key={idx}>
-              <Typography
-                variant="h6"
-                sx={{
-                  my: 2,
-                  mx: 2,
-                }}>
-                {page.toUpperCase()}
-              </Typography>
-            </Link>
-          ))}
+          {user && user.user_role == "admin"
+            ? adminPages.map((page, idx) => (
+                <NavLink
+                  to={"/" + page.replace(/ /g, "").toLocaleLowerCase()}
+                  style={({ isActive, isPending }) => {
+                    return {
+                      textDecoration: "none",
+                      backgroundColor: isActive
+                        ? theme.palette.primary.main
+                        : "inherit",
+                      color: isActive
+                        ? theme.palette.bg.heading
+                        : theme.palette.text.custom,
+                    };
+                  }}
+                  key={idx}>
+                  <Typography
+                    variant="h6"
+                    sx={{
+                      my: 2,
+                      mx: 2,
+                    }}>
+                    {page.toUpperCase()}
+                  </Typography>
+                </NavLink>
+              ))
+            : pages.map((page, idx) => (
+                <NavLink
+                  to={"/product/category/" + page}
+                  style={({ isActive, isPending }) => {
+                    return {
+                      textDecoration: "none",
+                      backgroundColor: isActive
+                        ? theme.palette.primary.main
+                        : "inherit",
+                      color: isActive
+                        ? theme.palette.bg.heading
+                        : theme.palette.text.custom,
+                    };
+                  }}
+                  key={idx}>
+                  <Typography
+                    variant="h6"
+                    sx={{
+                      my: 2,
+                      mx: 2,
+                    }}>
+                    {page.toUpperCase()}
+                  </Typography>
+                </NavLink>
+              ))}
         </Box>
-
-        <SearchBar />
-
+        {user && user.user_role == "admin" ? null : <SearchBar />}
         <Stack
           direction="row"
           gap={1}
@@ -147,19 +184,23 @@ const Navbar = () => {
             alignItems: "center",
             mx: 2,
           }}>
-          <Link to="/wishlist" style={{ color: theme.palette.text.custom }}>
-            <Tooltip title="Wishlist">
-              <Badge badgeContent={wishlistQuantity} color="primary">
-                <FavoriteBorderIcon />
+          {user && user.user_role == "admin" ? null : (
+            <Fragment>
+              <Link to="/wishlist" style={{ color: theme.palette.text.custom }}>
+                <Tooltip title="Wishlist">
+                  <Badge badgeContent={wishlistQuantity} color="primary">
+                    <FavoriteBorderIcon />
+                  </Badge>
+                </Tooltip>
+              </Link>
+              <Badge badgeContent={cartQuantity} color="primary">
+                <ShoppingCartOutlinedIcon
+                  sx={{ cursor: "pointer", color: theme.palette.text.custom }}
+                  onClick={() => toggleDrawer()}
+                />
               </Badge>
-            </Tooltip>
-          </Link>
-          <Badge badgeContent={cartQuantity} color="primary">
-            <ShoppingCartOutlinedIcon
-              sx={{ cursor: "pointer", color: theme.palette.text.custom }}
-              onClick={() => toggleDrawer()}
-            />
-          </Badge>
+            </Fragment>
+          )}
 
           {isAuthenticated ? (
             <Fragment>
