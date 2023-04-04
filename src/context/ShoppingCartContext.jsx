@@ -18,7 +18,12 @@ export function ShoppingCartProvider({ children }) {
   const [wishlistItems, setWishlistItems] = useState([]);
   const [drawerState, setDrawerState] = useState(false);
   const [products, setProducts] = useState([]);
+  const [selected, setSelected] = useState(null);
   const [session, setSession] = useState(null);
+
+  const handleSelected = (item) => {
+    setSelected(item);
+  };
   const [deliveryMethod, setDeliveryMethod] = useState("standard");
 
   useEffectOnce(() => {
@@ -34,7 +39,7 @@ export function ShoppingCartProvider({ children }) {
     };
 
     const session_uuid = window.localStorage.getItem("session_uuid");
-    if (session_uuid === "" || !session_uuid) {
+    if (session_uuid == "" || !session) {
       const unique_id = uuid();
       window.localStorage.setItem("session_uuid", unique_id);
       setSession(unique_id);
@@ -72,30 +77,26 @@ export function ShoppingCartProvider({ children }) {
         })
         .catch((err) => console.log(err));
     }
+    console.log(`State of cartItems is: `);
+    console.log(cartItems);
   }, []);
 
   useEffect(() => {
-    async function updateCartInDB(userId) {
-      await axios.put(`${serverUrl}cart`, {
-        userId,
-        cartItems,
-      });
-    }
-
+    console.log(`is authenticatedssss` + isAuthenticated);
     if (!isAuthenticated) {
       window.localStorage.setItem("cartItems", JSON.stringify(cartItems));
     } else {
       updateCartInDB(user.sub);
     }
-  }, [cartItems, isAuthenticated, user]);
+  }, [cartItems]);
 
   const cartQuantity =
-    cartItems.length !== 0
+    cartItems.length != 0
       ? cartItems.reduce((quantity, item) => item.quantity + quantity, 0)
       : 0;
   const wishlistQuantity = wishlistItems.length;
   const subTotalCart =
-    cartItems.length !== 0
+    cartItems.length != 0
       ? cartItems
           .reduce((sum, item) => {
             const product = products.find((p) => p._id === item.id);
@@ -112,6 +113,13 @@ export function ShoppingCartProvider({ children }) {
     parseFloat(getShippingFee())
   ).toFixed(2);
 
+  async function updateCartInDB(userId) {
+    const { data } = await axios.put(`${serverUrl}cart`, {
+      userId,
+      cartItems,
+    });
+  }
+
   async function resetCart() {
     console.log(`Resetting cart...`);
     setCartItems([]);
@@ -119,15 +127,15 @@ export function ShoppingCartProvider({ children }) {
 
   function getShippingFee() {
     let fee = 0;
-    if (subTotalCart >= 100 && deliveryMethod === "standard") fee = 0;
-    else if (subTotalCart < 100 && deliveryMethod === "standard") fee = 10;
-    else if (deliveryMethod === "express") fee = 40;
+    if (subTotalCart >= 100 && deliveryMethod == "standard") fee = 0;
+    else if (subTotalCart < 100 && deliveryMethod == "standard") fee = 10;
+    else if (deliveryMethod == "express") fee = 40;
     return fee.toFixed(2);
   }
 
   function increaseCartQuantity(id) {
     setCartItems((currItems) => {
-      if (currItems.find((item) => item.id === id) === undefined) {
+      if (currItems.find((item) => item.id === id) == null) {
         return [...currItems, { id, quantity: 1 }];
       } else {
         return currItems.map((item) => {
@@ -143,7 +151,7 @@ export function ShoppingCartProvider({ children }) {
 
   function decreaseCartQuantity(id) {
     setCartItems((currItems) => {
-      if (currItems.find((item) => item.id === id)?.quantity === 1) {
+      if (currItems.find((item) => item.id === id)?.quantity == 1) {
         return currItems.filter((item) => item.id !== id);
       } else {
         return currItems.map((item) => {
@@ -174,7 +182,7 @@ export function ShoppingCartProvider({ children }) {
 
   function addToWishlist(id) {
     setWishlistItems((currItems) => {
-      if (currItems.find((item) => item === id) === undefined) {
+      if (currItems.find((item) => item === id) == null) {
         return [...currItems, id];
       } else {
         return currItems.filter((item) => item !== id);
@@ -183,7 +191,13 @@ export function ShoppingCartProvider({ children }) {
   }
 
   function isInWishlist(id) {
-    return wishlistItems.find((item) => item === id) !== undefined;
+    return wishlistItems.find((item) => item === id);
+  }
+
+  function removeFromWishlist(id) {
+    setWishlistItems((currItems) => {
+      return currItems.filter((item) => item.id !== id);
+    });
   }
 
   function toggleDrawer() {
@@ -206,6 +220,8 @@ export function ShoppingCartProvider({ children }) {
         drawerState,
         toggleDrawer,
         wishlistItems,
+        handleSelected,
+        selected,
         products,
         subTotalCart,
         totalCart,
@@ -217,6 +233,7 @@ export function ShoppingCartProvider({ children }) {
         resetCart,
         setDrawerState,
         session,
+        removeFromWishlist,
       }}>
       {children}
     </ShoppingCartContext.Provider>

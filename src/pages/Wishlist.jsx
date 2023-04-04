@@ -1,6 +1,7 @@
 import * as React from "react";
+import {Link} from 'react-router-dom'
 import { useShoppingCart } from "../context/ShoppingCartContext";
-import { Box, Card, CardMedia, CardContent, Typography } from "@mui/material";
+import { Button, Box, Card, CardMedia, CardContent, Typography } from "@mui/material";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 
 const EmptyWishlist = () => {
@@ -34,8 +35,8 @@ const EmptyWishlist = () => {
 };
 
 const Wishlist = () => {
-  const { products, wishlistQuantity, wishlistItems } = useShoppingCart();
-
+  const { products, wishlistQuantity, wishlistItems, removeFromWishlist, handleSelected, selected } = useShoppingCart();
+  console.log(typeof removeFromWishlist)
   //array.filter(function(currentValue, index, arr), thisValue)
   const getWishlistItems = () => {
     const items = products.filter((product) => {
@@ -74,16 +75,20 @@ const Wishlist = () => {
           key={idx}
           style={{ margin: 50, height: "300px", fontFamily: "monospace" }}
           sx={{ fontFamily: "monospace" }}>
+          <Link to={`/product/${item._id}`}>
           <CardMedia //image of the product, need to handle onClick
             sx={{ height: 230, width: 230 }}
             style={{
               margin: 30,
               display: "inline-block",
               textAlign: "left",
+              cursor: 'pointer'
             }}
             image={item.images[0].signedImage}
             title={item.name}
+            onClick={()=>handleSelected(item)}
           />
+          </Link>
           <CardContent
             style={{
               color: "grey",
@@ -93,6 +98,8 @@ const Wishlist = () => {
               height: "100%",
               textAlign: "left",
             }}>
+           <Button variant="contained" style={{float:'right', mt: 100, color:'white', backgroundColor: 'black' , fontSize:18}} 
+           onClick={(item)=>removeFromWishlist(item._id)}>Remove From Wish List</Button>
             <Typography
               style={{
                 padding: 7,
