@@ -2,7 +2,6 @@ import React from "react";
 import { createContext, useContext, useState } from "react";
 import axios from "axios";
 import { useEffectOnce } from "../utils/useEffectOnce";
-import { useAuth0 } from "@auth0/auth0-react";
 import imageCompression from "browser-image-compression";
 
 const serverUrl = process.env.REACT_APP_SERVER_URL;
@@ -13,8 +12,8 @@ export function useProductManagement() {
 }
 
 export function ProductManagementProvider({ children }) {
-  const { user, isAuthenticated, isLoading } = useAuth0();
   const [products, setProducts] = useState([]);
+  const [orders, setOrders] = useState([]);
 
   useEffectOnce(() => {
     const getProducts = async () => {
@@ -22,11 +21,22 @@ export function ProductManagementProvider({ children }) {
       setProducts(data.products);
     };
     getProducts();
+
+    const getOrders = async () => {
+      const { data } = await axios.get(`${serverUrl}order`);
+      setOrders(data.orders);
+    };
+    getOrders();
   }, []);
 
   const updateProducts = async () => {
     const { data } = await axios.get(`${serverUrl}product`);
     setProducts(data.products);
+  };
+
+  const updateOrders = async () => {
+    const { data } = await axios.get(`${serverUrl}order`);
+    setOrders(data.orders);
   };
 
   async function handleImageUpload(imageFile) {
@@ -54,6 +64,8 @@ export function ProductManagementProvider({ children }) {
         handleImageUpload,
         getProduct,
         setProducts,
+        orders,
+        updateOrders,
       }}>
       {children}
     </ProductManagementContext.Provider>

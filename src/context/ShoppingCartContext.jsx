@@ -38,6 +38,11 @@ export function ShoppingCartProvider({ children }) {
       return data.cartItems;
     };
 
+    const getWishlistItemsFromDB = async (userId) => {
+      const { data } = await axios.get(`${serverUrl}wishlist/${userId}`);
+      return data.wishlist;
+    };
+
     const session_uuid = window.localStorage.getItem("session_uuid");
     if (session_uuid == "" || !session) {
       const unique_id = uuid();
@@ -48,6 +53,11 @@ export function ShoppingCartProvider({ children }) {
     }
     if (isAuthenticated) {
       setSession(user.sub);
+      getWishlistItemsFromDB(user.sub).then((wishlist) => {
+        console.log(wishlist);
+        console.log(`setting wishlist`);
+        setWishlistItems(wishlist);
+      });
     }
 
     if (!isAuthenticated && !isLoading) {
@@ -89,6 +99,18 @@ export function ShoppingCartProvider({ children }) {
       updateCartInDB(user.sub);
     }
   }, [cartItems]);
+
+  useEffect(() => {
+    if (!isAuthenticated && !isLoading) return;
+    async function updateWishlistInDB(userId) {
+      if (wishlistItems != 0)
+        await axios.put(`${serverUrl}wishlist/`, {
+          userId,
+          wishlistItems,
+        });
+    }
+    updateWishlistInDB(user.sub);
+  }, [wishlistItems, isAuthenticated, user]);
 
   const cartQuantity =
     cartItems.length != 0

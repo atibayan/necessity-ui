@@ -32,7 +32,7 @@ const CartSummary = () => {
           <TableRow>
             <TableCell sx={styledTableCell}>Subtotal</TableCell>
             <TableCell align="right" sx={styledTableCell}>
-              {subTotalCart}
+              {parseFloat(subTotalCart).toFixed(2)}
             </TableCell>
           </TableRow>
           <TableRow>
@@ -105,7 +105,7 @@ const CartItem = ({ id, quantity }) => {
 
       <Box sx={{ width: 1 / 3, textAlign: "right" }}>
         Subtotal
-        <br />${product.price * getQuantity(id)}
+        <br />${(product.price * getQuantity(id)).toFixed(2)}
       </Box>
 
       <Box>

@@ -94,7 +94,9 @@ const Navbar = () => {
             </Menu>
           </Box>
         )}
-
+        <Link to="/">
+          <Avatar variant="rounded" src={`/img/logo.png`} />
+        </Link>
         <Link
           to="/"
           style={{
@@ -105,7 +107,7 @@ const Navbar = () => {
             variant="h4"
             noWrap
             sx={{
-              display: "flex",
+              display: { xs: "none", md: "flex" },
               flexGrow: { xs: 1, md: 2 },
               textDecoration: "none",
               mx: 2,
@@ -206,6 +208,7 @@ const Navbar = () => {
             <Fragment>
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                 <Avatar
+                  variant="rounded"
                   alt={user.nickname}
                   src={user.picture}
                   sx={{ minHeight: 45, minWidth: 45 }}

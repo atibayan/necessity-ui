@@ -11,7 +11,7 @@ import ProductScreen from "./ProductScreen";
 import CategoryScreen from "./CategoryScreen";
 import OrderHistory from "./OrderHistory";
 import { useAuth0 } from "@auth0/auth0-react";
-import AdminPanel from "../components/AdminPanel";
+import AdminPanel from "./AdminPanel";
 import { ShoppingCartProvider } from "../context/ShoppingCartContext";
 import { Routes, Route, Navigate } from "react-router-dom";
 

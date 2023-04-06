@@ -90,8 +90,9 @@ const Product = ({
   };
   return (
     <TableRow>
+      <TableCell sx={{ width: "3%" }}>{id}</TableCell>
       <TableCell sx={{ width: "15%" }}>{name.toUpperCase()}</TableCell>
-      <TableCell sx={{ width: "30%" }}>{description}</TableCell>
+      <TableCell sx={{ width: "27%" }}>{description}</TableCell>
       <TableCell sx={{ width: "5%" }}>
         {activeFlag ? "Active" : "Deactivated"}
       </TableCell>
@@ -223,6 +224,7 @@ const ManageProducts = () => {
       <Table>
         <TableHead>
           <TableRow>
+            <TableHeading>ID</TableHeading>
             <TableHeading>Name</TableHeading>
             <TableHeading>Description</TableHeading>
             <TableHeading>Active?</TableHeading>
@@ -231,7 +233,7 @@ const ManageProducts = () => {
             <TableHeading>Tags</TableHeading>
             <TableHeading>Quantity</TableHeading>
             <TableHeading>Images</TableHeading>
-            <TableHeading>Controls</TableHeading>
+            <TableHeading>Actions</TableHeading>
           </TableRow>
         </TableHead>
         <TableBody>

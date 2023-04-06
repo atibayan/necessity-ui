@@ -41,3 +41,7 @@
   cursor: pointer;
   color: #888;
 }
+
+video {
+    object-fit: cover;
+}
