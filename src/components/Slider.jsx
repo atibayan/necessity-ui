@@ -121,7 +121,7 @@ function Slider() {
               </Typography>
               <Box my={1}>
                 <Link
-                  to="/product/category/men"
+                  to="/product/category/Men"
                   style={{ textDecoration: "none" }}>
                   <Button
                     size="large"
@@ -156,7 +156,7 @@ function Slider() {
               </Typography>
               <Box my={1}>
                 <Link
-                  to="/product/category/women"
+                  to="/product/category/Women"
                   style={{ textDecoration: "none" }}>
                   <Button
                     size="large"
