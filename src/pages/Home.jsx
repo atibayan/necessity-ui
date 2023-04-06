@@ -13,7 +13,8 @@ import OrderHistory from "./OrderHistory";
 import { useAuth0 } from "@auth0/auth0-react";
 import AdminPanel from "./AdminPanel";
 import { ShoppingCartProvider } from "../context/ShoppingCartContext";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
+import '../App.css'
 
 const Landing = () => {
   return (
@@ -26,6 +27,7 @@ const Landing = () => {
 
 const Home = () => {
   const { user } = useAuth0();
+  const navigate = useNavigate();
   return (
     <ShoppingCartProvider>
       <Announcement />
@@ -36,6 +38,12 @@ const Home = () => {
 
       {!user || user?.user_role !== "admin" ? (
         <>
+        { window.location.pathname !== "/" ? (
+          <div className="button-container">
+          <button onClick={() => navigate(-1)}>⇦</button>
+          </div>
+        ) : null
+        }
           <Routes>
             <Route path="/" element={<Landing />} />
             <Route path="/products" element={<Products />} />
@@ -59,9 +67,15 @@ const Home = () => {
             <Route path="/orderhistory" element={<OrderHistory />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
-          <Footer />
+          { window.location.pathname !== "/" ? (
+            <div className="button-container">
+            <button onClick={() => navigate(-1)}>⇦</button>
+           </div>
+            ) : null
+          }
         </>
       ) : null}
+          <Footer />
     </ShoppingCartProvider>
   );
 };
