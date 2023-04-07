@@ -219,8 +219,6 @@ const ArchiveOrder = ({ oh, onUpdateCb }) => {
     day: "numeric",
   });
 
-  console.log(orderId + " " + orderState);
-
   return (
     <Stack direction="row" p={1} gap={1}>
       <Typography>

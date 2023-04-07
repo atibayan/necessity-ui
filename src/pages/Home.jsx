@@ -15,8 +15,9 @@ import { useAuth0 } from "@auth0/auth0-react";
 import AdminPanel from "./AdminPanel";
 import { ShoppingCartProvider } from "../context/ShoppingCartContext";
 import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
-import '../App.css'
+import "../App.css";
 import { SnackbarProvider } from "notistack";
+import { Button } from "@mui/material";
 
 const Landing = () => {
   return (
@@ -33,21 +34,6 @@ const Home = () => {
   return (
     <Fragment>
       <Announcement />
-<<<<<<< HEAD
-      <Navbar />
-      <CartDrawer />
-
-      {user?.user_role === "admin" ? <AdminPanel /> : null}
-
-      {!user || user?.user_role !== "admin" ? (
-        <>
-        { window.location.pathname !== "/" ? (
-          <div className="button-container">
-          <button onClick={() => navigate(-1)}>⇦</button>
-          </div>
-        ) : null
-        }
-=======
       {user?.user_role === "admin" ? (
         <Fragment>
           <NavbarAdmin />
@@ -56,10 +42,14 @@ const Home = () => {
       ) : (
         <ShoppingCartProvider>
           <Navbar />
+          {window.location.pathname !== "/" ? (
+            <Button variant="outlined" onClick={() => navigate(-1)}>
+              Back
+            </Button>
+          ) : null}
           <SnackbarProvider>
             <CartDrawer />
           </SnackbarProvider>
->>>>>>> 632c562 (fixes and activeFlag/discount implementation)
           <Routes>
             <Route path="/" element={<Landing />} />
             <Route path="/products" element={<Products />} />
@@ -83,23 +73,15 @@ const Home = () => {
             <Route path="/orderhistory" element={<OrderHistory />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
-<<<<<<< HEAD
-          { window.location.pathname !== "/" ? (
-            <div className="button-container">
-            <button onClick={() => navigate(-1)}>⇦</button>
-           </div>
-            ) : null
-          }
-        </>
-      ) : null}
-          <Footer />
-    </ShoppingCartProvider>
-=======
+          {window.location.pathname !== "/" ? (
+            <Button variant="outlined" onClick={() => navigate(-1)}>
+              Back
+            </Button>
+          ) : null}
           <Footer />
         </ShoppingCartProvider>
       )}
     </Fragment>
->>>>>>> 632c562 (fixes and activeFlag/discount implementation)
   );
 };
 
