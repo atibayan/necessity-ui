@@ -31,6 +31,7 @@ const ProductUploader = ({ open, handleClose, selected }) => {
   const [price, setPrice] = useState(0);
   const [discount, setDiscount] = useState(0);
   const [description, setDescription] = useState("");
+  const [credits, setCredits] = useState([]);
   const [tags, setTags] = useState([]);
   const [qtyOnHand, setQtyOnHand] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
@@ -73,6 +74,7 @@ const ProductUploader = ({ open, handleClose, selected }) => {
     setPrice(0);
     setDiscount(0);
     setDescription("");
+    setCredits([]);
     setTags([]);
     setQtyOnHand(0);
     setIsLoading(false);
@@ -88,6 +90,7 @@ const ProductUploader = ({ open, handleClose, selected }) => {
       discount,
       quantity_on_hand: qtyOnHand,
       discount,
+      credits,
     };
 
     let pid = "";
@@ -170,6 +173,7 @@ const ProductUploader = ({ open, handleClose, selected }) => {
         <TextField
           variant="filled"
           fullWidth
+          multiline
           label="Product Description"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
@@ -236,6 +240,16 @@ const ProductUploader = ({ open, handleClose, selected }) => {
           label="Tags"
           onKeyUp={addTag}
           placeholder="Click right arrow key to add more tags."
+          required
+        />
+        <TextField
+          variant="filled"
+          fullWidth
+          multiline
+          label="Photo Credits"
+          placeholder="Separate each link by space."
+          value={credits?.join(" ")}
+          onChange={(e) => setCredits(e.target.value.split(" "))}
           required
         />
         <Stack>

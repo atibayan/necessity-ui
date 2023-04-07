@@ -3,13 +3,12 @@ import { useShoppingCart } from "../context/ShoppingCartContext";
 import { useParams } from "react-router-dom";
 import {
   Box,
-  Card,
   Stack,
   Typography,
   Avatar,
   Button,
-  Checkbox,
   useTheme,
+  Popover,
 } from "@mui/material";
 import {
   CartBtnLong,
@@ -25,6 +24,15 @@ const ProductScreen = () => {
   const routeParams = useParams();
   const [item, setItem] = useState();
   const [index, setIndex] = useState(0);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+  const openCredits = Boolean(anchorEl);
   const theme = useTheme();
 
   useEffect(() => {
@@ -72,45 +80,79 @@ const ProductScreen = () => {
               );
             })}
           </Stack>
-          <Box
-            sx={{
-              minWidth: "calc(200px + 10vw)",
-              width: "calc(200px + 10vw)",
-              height: "calc(200px + 10vw)",
-              maxHeight: "calc(200px + 10vw)",
-              overflow: "hidden",
-            }}>
-            <Carousel
-              navButtonsAlwaysVisible={false}
-              index={index}
-              indicators={false}
-              fullHeightHover={false}
-              stopAutoPlayOnHover={true}
-              duration={300}
-              autoPlay={false}
-              animation="slide"
-              next={(next, active) => {
-                setIndex(next);
-              }}
-              prev={(prev, active) => {
-                setIndex(prev);
+          <Stack gap={0.2}>
+            <Box
+              sx={{
+                minWidth: "calc(200px + 10vw)",
+                width: "calc(200px + 10vw)",
+                height: "calc(200px + 10vw)",
+                maxHeight: "calc(200px + 10vw)",
+                overflow: "hidden",
               }}>
-              {item.images.map((img, idx) => {
-                return (
-                  <Avatar
-                    key={idx}
-                    variant="rounded"
-                    src={img.signedImage}
-                    sx={{
-                      width: "calc(200px + 10vw)",
-                      height: "calc(200px + 10vw)",
-                      objectFit: "contain",
-                    }}
-                  />
-                );
-              })}
-            </Carousel>
-          </Box>
+              <Carousel
+                navButtonsAlwaysVisible={false}
+                index={index}
+                indicators={false}
+                fullHeightHover={false}
+                stopAutoPlayOnHover={true}
+                duration={300}
+                autoPlay={false}
+                animation="slide"
+                next={(next, active) => {
+                  setIndex(next);
+                }}
+                prev={(prev, active) => {
+                  setIndex(prev);
+                }}>
+                {item.images.map((img, idx) => {
+                  return (
+                    <Avatar
+                      key={idx}
+                      variant="rounded"
+                      src={img.signedImage}
+                      sx={{
+                        width: "calc(200px + 10vw)",
+                        height: "calc(200px + 10vw)",
+                        objectFit: "contain",
+                      }}
+                    />
+                  );
+                })}
+              </Carousel>
+            </Box>
+            <Box>
+              <Button
+                variant="outlined"
+                sx={{
+                  textTransform: "none",
+                  color: "rgba(0,0,0,0.5)",
+                  ["&:hover"]: {
+                    backgroundColor: "rgba(0,0,0,0.1)",
+                    border: "1px solid rgba(0,0,0,0.1)",
+                  },
+                  border: "1px solid rgba(0,0,0,0.3)",
+                }}
+                onClick={handleClick}>
+                Photo Credit
+              </Button>
+              <Popover
+                open={openCredits}
+                anchorEl={anchorEl}
+                onClose={handleClose}
+                anchorOrigin={{
+                  vertical: "bottom",
+                  horizontal: "left",
+                }}>
+                {item.credits.map((item, idx) => (
+                  <Stack px={3} py={1}>
+                    <a target="_blank" href={item}>
+                      {item}
+                    </a>
+                  </Stack>
+                ))}
+              </Popover>
+            </Box>
+          </Stack>
         </Stack>
         <Stack gap={2}>
           <Typography variant="h4" sx={{}}>
@@ -128,7 +170,7 @@ const ProductScreen = () => {
                   CAD ${(item.price * 1).toFixed(2)}
                 </Typography>
                 <Typography variant="h4">
-                  CAD ${((item.price * 1 * item.discount) / 100).toFixed(2)}
+                  CAD ${(((100 - item.discount) / 100) * item.price).toFixed(2)}
                 </Typography>
               </Fragment>
             )

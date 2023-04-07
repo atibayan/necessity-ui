@@ -124,7 +124,9 @@ export function ShoppingCartProvider({ children }) {
               ? product?.discount === 0
                 ? sum + product?.price * item.quantity
                 : sum +
-                  product.price * (product?.discount / 100) * item.quantity
+                  ((100 - product.discount) / 100) *
+                    product.price *
+                    item.quantity
               : sum + 0;
             return discounted_price;
           }, 0)

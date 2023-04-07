@@ -176,7 +176,9 @@ const Wishlist = () => {
                         </Typography>
                         <Typography variant="h6">
                           CAD $
-                          {((item.price * 1 * item.discount) / 100).toFixed(2)}
+                          {(((100 - item.discount) / 100) * item.price).toFixed(
+                            2
+                          )}
                         </Typography>
                       </Stack>
                     )

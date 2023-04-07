@@ -81,7 +81,7 @@ export default function ProductCard({ item }) {
                   CAD ${(item.price * 1).toFixed(2)}
                 </Typography>
                 <Typography>
-                  CAD ${((item.price * 1 * item.discount) / 100).toFixed(2)}
+                  CAD ${(((100 - item.discount) / 100) * item.price).toFixed(2)}
                 </Typography>
               </Stack>
             )

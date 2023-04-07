@@ -104,7 +104,8 @@ const CartItem = ({ id, quantity }) => {
                 CAD ${(product.price * 1).toFixed(2)}
               </Typography>
               <Typography>
-                CAD ${((product.price * 1 * product.discount) / 100).toFixed(2)}
+                CAD $
+                {(((100 - product.discount) / 100) * product.price).toFixed(2)}
               </Typography>
             </Stack>
           )
@@ -127,8 +128,9 @@ const CartItem = ({ id, quantity }) => {
             {product.discount === 0
               ? (product.price * getQuantity(id)).toFixed(2)
               : (
-                  ((product.price * 1 * product.discount) / 100) *
-                  getQuantity(id)
+                  (((100 - product.discount) / 100) * product.price).toFixed(
+                    2
+                  ) * getQuantity(id)
                 ).toFixed(2)}
           </Fragment>
         ) : null}
