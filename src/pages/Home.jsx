@@ -1,5 +1,6 @@
-import React from "react";
+import React, { Fragment } from "react";
 import Navbar from "../components/Navbar";
+import NavbarAdmin from "../components/NavbarAdmin";
 import CartDrawer from "../components/CartDrawer";
 import Announcement from "../components/Announcement";
 import Slider from "../components/Slider";
@@ -15,6 +16,7 @@ import AdminPanel from "./AdminPanel";
 import { ShoppingCartProvider } from "../context/ShoppingCartContext";
 import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import '../App.css'
+import { SnackbarProvider } from "notistack";
 
 const Landing = () => {
   return (
@@ -29,8 +31,9 @@ const Home = () => {
   const { user } = useAuth0();
   const navigate = useNavigate();
   return (
-    <ShoppingCartProvider>
+    <Fragment>
       <Announcement />
+<<<<<<< HEAD
       <Navbar />
       <CartDrawer />
 
@@ -44,6 +47,19 @@ const Home = () => {
           </div>
         ) : null
         }
+=======
+      {user?.user_role === "admin" ? (
+        <Fragment>
+          <NavbarAdmin />
+          <AdminPanel />
+        </Fragment>
+      ) : (
+        <ShoppingCartProvider>
+          <Navbar />
+          <SnackbarProvider>
+            <CartDrawer />
+          </SnackbarProvider>
+>>>>>>> 632c562 (fixes and activeFlag/discount implementation)
           <Routes>
             <Route path="/" element={<Landing />} />
             <Route path="/products" element={<Products />} />
@@ -67,6 +83,7 @@ const Home = () => {
             <Route path="/orderhistory" element={<OrderHistory />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
+<<<<<<< HEAD
           { window.location.pathname !== "/" ? (
             <div className="button-container">
             <button onClick={() => navigate(-1)}>⇦</button>
@@ -77,6 +94,12 @@ const Home = () => {
       ) : null}
           <Footer />
     </ShoppingCartProvider>
+=======
+          <Footer />
+        </ShoppingCartProvider>
+      )}
+    </Fragment>
+>>>>>>> 632c562 (fixes and activeFlag/discount implementation)
   );
 };
 

@@ -9,37 +9,36 @@ import {
   Button,
   Checkbox,
 } from "@mui/material";
-import {
-  CartBtnLong,
-  MinusCartBtn,
-  AddCartBtn,
-  QtyBtn,
-} from "../components/CartButtons";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteBorder from "@mui/icons-material/FavoriteBorder";
 import Favorite from "@mui/icons-material/Favorite";
 import { useAuth0 } from "@auth0/auth0-react";
 import LoginButton from "../components/LoginButton";
+import CartControls from "../components/CartControls";
+import { Link } from "react-router-dom";
+
+const WishlistHeading = () => {
+  return (
+    <Typography
+      variant="h5"
+      sx={{
+        display: { xs: "flex", md: "flex" },
+        flexGrow: { xs: 1, md: 0 },
+        letterSpacing: ".3rem",
+        justifyContent: "center",
+        my: "5vh",
+      }}>
+      YOUR WISHLIST <FavoriteBorderIcon />
+    </Typography>
+  );
+};
 
 const EmptyWishlist = () => {
   return (
     <Box>
+      <WishlistHeading />
       <Typography
-        variant="h5"
-        sx={{
-          display: { xs: "flex", md: "flex" },
-          flexGrow: { xs: 1, md: 0 },
-          letterSpacing: ".3rem",
-          color: "inherit",
-          textDecoration: "none",
-          borderRadius: "5px",
-          padding: "0px 5px",
-          justifyContent: "center",
-          mt: "10vh",
-        }}>
-        YOUR WISHLIST <FavoriteBorderIcon />
-      </Typography>
-      <Typography
+        variant="h6"
         sx={{
           margin: 10,
           justifyContent: "center",
@@ -108,15 +107,8 @@ const NeedLogin = () => {
 
 const Wishlist = () => {
   const { isAuthenticated } = useAuth0();
-  const { products, wishlistItems, isInWishlist, addToWishlist, isInCart } =
+  const { products, wishlistItems, isInWishlist, addToWishlist } =
     useShoppingCart();
-
-  const getWishlistItems = () => {
-    const items = products.filter((product) => {
-      return wishlistItems.includes(product._id);
-    });
-    return items;
-  };
 
   return !isAuthenticated ? (
     <NeedLogin />
@@ -124,79 +116,76 @@ const Wishlist = () => {
     <EmptyWishlist />
   ) : (
     <Box sx={{ width: "80%", mx: "auto", mb: "5vh", mt: "3vh" }}>
-      <Typography
-        variant="h4"
-        noWrap
-        sx={{
-          display: { xs: "flex", md: "flex" },
-          flexGrow: { xs: 1, md: 0 },
-          textDecoration: "none",
-          borderRadius: "5px",
-          padding: "0px 5px",
-          justifyContent: "center",
-          m: 3,
-        }}>
-        Your WishList <FavoriteBorderIcon />
-      </Typography>
+      <WishlistHeading />
       <Stack gap={2} sx={{ display: "flex", flexFlow: "row wrap" }}>
-        {getWishlistItems().map((item, idx) => (
-          <Card
-            key={idx}
-            sx={{
-              flex: "1 1 400px",
-              maxWidth: "600px",
-              p: 2,
-              background: "rgba(215, 215, 215, 0.2)",
-            }}>
-            <Stack direction="row" gap={3}>
-              <Stack gap={1} sx={{ position: "relative" }}>
-                <Avatar
-                  variant="rounded"
-                  src={item.images[0].signedImage}
-                  sx={{
-                    width: "calc(100px + 5vw)",
-                    height: "calc(100px + 5vw)",
-                  }}
-                />
-                <Box
-                  sx={{
-                    position: "absolute",
-                    top: 0,
-                    right: 0,
-                    padding: 0,
-                  }}>
-                  <Checkbox
-                    icon={<FavoriteBorder />}
-                    checkedIcon={<Favorite />}
-                    checked={isInWishlist(item._id)}
-                    onClick={() => addToWishlist(item._id)}
-                  />
-                </Box>
-                {isInCart(item._id) ? (
+        {wishlistItems.map((wishlist, idx) => {
+          const item = products.find((p) => p._id === wishlist);
+          return item ? (
+            <Card
+              key={idx}
+              sx={{
+                flex: "1 1 400px",
+                maxWidth: "600px",
+                p: 2,
+                background: "rgba(215, 215, 215, 0.2)",
+              }}>
+              <Stack direction="row" gap={3}>
+                <Stack gap={1} sx={{ position: "relative" }}>
+                  <Link to={`/product/${item._id}`}>
+                    <Avatar
+                      variant="rounded"
+                      src={item.images[0].signedImage}
+                      sx={{
+                        width: "calc(100px + 5vw)",
+                        height: "calc(100px + 5vw)",
+                      }}
+                    />
+                  </Link>
                   <Box
                     sx={{
-                      display: "flex",
-                      flexWrap: "nowrap",
-                      justifyContent: "center",
+                      position: "absolute",
+                      top: 0,
+                      right: 0,
+                      padding: 0,
                     }}>
-                    <MinusCartBtn item={item} />
-                    <QtyBtn item={item} />
-                    <AddCartBtn item={item} />
+                    <Checkbox
+                      icon={<FavoriteBorder />}
+                      checkedIcon={<Favorite />}
+                      checked={isInWishlist(item._id)}
+                      onClick={() => addToWishlist(item._id)}
+                    />
                   </Box>
-                ) : (
-                  <CartBtnLong item={item} />
-                )}
+                  <CartControls item={item} longBtn={true} />
+                </Stack>
+                <Stack gap={1}>
+                  <Typography variant="h5">
+                    {item.name.toUpperCase()}
+                  </Typography>
+                  <Typography>{item.description}</Typography>
+                  {item.activeFlag ? (
+                    item.discount === 0 ? (
+                      <Typography variant="h6">
+                        CAD ${(item.price * 1).toFixed(2)}
+                      </Typography>
+                    ) : (
+                      <Stack>
+                        <Typography
+                          variant="caption"
+                          sx={{ textDecoration: "line-through" }}>
+                          CAD ${(item.price * 1).toFixed(2)}
+                        </Typography>
+                        <Typography variant="h6">
+                          CAD $
+                          {((item.price * 1 * item.discount) / 100).toFixed(2)}
+                        </Typography>
+                      </Stack>
+                    )
+                  ) : null}
+                </Stack>
               </Stack>
-              <Box>
-                <Typography variant="h5">{item.name.toUpperCase()}</Typography>
-                <Typography>{item.description}</Typography>
-                <Typography variant="h6">
-                  CAD ${(item.price * 1).toFixed(2)}
-                </Typography>
-              </Box>
-            </Stack>
-          </Card>
-        ))}
+            </Card>
+          ) : null;
+        })}
       </Stack>
     </Box>
   );

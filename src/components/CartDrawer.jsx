@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import {
   Box,
   Typography,
@@ -13,11 +13,12 @@ import {
   TableCell,
   TableBody,
 } from "@mui/material";
-import { AddCartBtn, MinusCartBtn, QtyBtn, DeleteBtn } from "./CartButtons";
+import { DeleteBtn } from "./CartButtons";
 import { Link } from "react-router-dom";
 import CartEmpty from "./CartEmpty";
-
+import { useSnackbar } from "notistack";
 import { useShoppingCart } from "../context/ShoppingCartContext";
+import CartControls from "./CartControls";
 
 const styledTableCell = {
   padding: 0.5,
@@ -89,23 +90,48 @@ const CartItem = ({ id, quantity }) => {
         sx={{ height: 100, width: 100 }}
       />
       <Box sx={{ width: 1 / 2 }}>
-        <Box>{product.name.toUpperCase()}</Box>
-        <Box>${product.price * 1}</Box>
+        <Typography>{product.name.toUpperCase()}</Typography>
+        {product.activeFlag ? (
+          product.discount === 0 ? (
+            <Typography variant="caption">
+              CAD ${(product.price * 1).toFixed(2)}
+            </Typography>
+          ) : (
+            <Stack direction="row" gap={1}>
+              <Typography
+                variant="caption"
+                sx={{ textDecoration: "line-through" }}>
+                CAD ${(product.price * 1).toFixed(2)}
+              </Typography>
+              <Typography>
+                CAD ${((product.price * 1 * product.discount) / 100).toFixed(2)}
+              </Typography>
+            </Stack>
+          )
+        ) : null}
+        <Stack alignItems="flex-start">
+          <CartControls item={product} longBtn={false} />
+        </Stack>
         <Box>
-          <MinusCartBtn item={{ _id: id, quantity }} />
-          <QtyBtn item={{ _id: id, quantity }} />
-          <AddCartBtn item={{ _id: id, quantity }} />
-        </Box>
-        <Box>
-          {product.quantity_on_hand < 200 ? (
+          {product.activeFlag && product.quantity_on_hand < 50 ? (
             <Typography variant="caption">Only a few left in stock!</Typography>
           ) : null}
         </Box>
       </Box>
 
       <Box sx={{ width: 1 / 3, textAlign: "right" }}>
-        Subtotal
-        <br />${(product.price * getQuantity(id)).toFixed(2)}
+        {product.activeFlag ? (
+          <Fragment>
+            Subtotal
+            <br />$
+            {product.discount === 0
+              ? (product.price * getQuantity(id)).toFixed(2)
+              : (
+                  ((product.price * 1 * product.discount) / 100) *
+                  getQuantity(id)
+                ).toFixed(2)}
+          </Fragment>
+        ) : null}
       </Box>
 
       <Box>
@@ -116,8 +142,9 @@ const CartItem = ({ id, quantity }) => {
 };
 
 export default function CartDrawer() {
-  const { drawerState, toggleDrawer, cartItems, cartQuantity } =
+  const { drawerState, toggleDrawer, cartItems, cartQuantity, canCheckout } =
     useShoppingCart();
+  const { enqueueSnackbar } = useSnackbar();
 
   return (
     <Drawer
@@ -144,17 +171,11 @@ export default function CartDrawer() {
             variant="h5"
             noWrap
             sx={{
-              display: { xs: "flex", md: "flex" },
-              flexGrow: { xs: 1, md: 0 },
               letterSpacing: ".2rem",
-              color: "inherit",
-              textDecoration: "none",
-              borderRadius: "5px",
-              padding: "0px 5px",
               justifyContent: "center",
               m: 3,
             }}>
-            Your Cart
+            YOUR CART
           </Typography>
           <Stack
             direction={"column"}
@@ -168,10 +189,17 @@ export default function CartDrawer() {
           <Divider sx={{ my: 1, backgroundColor: "black", opacity: 0.3 }} />
           <CartSummary />
           <Box m={2} p={2}>
-            <Link to="/checkout">
-              <Button variant="contained" onClick={() => toggleDrawer()}>
-                Checkout
-              </Button>
+            <Link
+              to={canCheckout() ? "/checkout" : {}}
+              style={{ textDecoration: "none" }}
+              onClick={() => {
+                canCheckout()
+                  ? toggleDrawer()
+                  : enqueueSnackbar("Delete unavailable products from cart.", {
+                      variant: "error",
+                    });
+              }}>
+              <Button variant="contained">Checkout</Button>
             </Link>
           </Box>
         </Box>

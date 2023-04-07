@@ -33,7 +33,7 @@ const CategoryScreen = () => {
     params.cat == "All" &&
     location !== "/product/category/" + params.cat
   ) {
-    console.log("Hello");
+    // console.log("Hello");
     filteredProducts = products.filter((product) =>
       product.tags.includes(clickedNavLink)
     );
@@ -43,7 +43,7 @@ const CategoryScreen = () => {
     location == "/product/category/" + params.cat
   ) {
     filteredProducts = products;
-    console.log("Hi" + products);
+    // console.log("Hi" + products);
   }
 
   const handleTabChange = (event, value) => {

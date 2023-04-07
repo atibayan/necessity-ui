@@ -25,7 +25,8 @@ const serverUrl = process.env.REACT_APP_SERVER_URL;
 
 const ColorBadge = styled(Box)(({ theme }) => ({
   backgroundColor: theme.palette.primary.main,
-  color: "white",
+  color: "black",
+  fontWeight: "bold",
   borderRadius: "50%",
   width: "30px",
   height: "30px",
@@ -118,31 +119,31 @@ const OHBody = ({ productId, quantity }) => {
           gap: { xs: 2, md: 2 },
         }}>
         <Box sx={{ width: "80px", height: "80px" }}>
-          <Badge
-            overlap="circular"
-            anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-            badgeContent={<ColorBadge>{quantity}</ColorBadge>}>
-            <Avatar
-              variant="rounded"
-              src={product.images[0].signedImage}
-              sx={{ width: "80px", height: "80px" }}
-            />
-          </Badge>
+          <Link to={`/product/${product._id}`}>
+            <Badge
+              overlap="circular"
+              anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+              badgeContent={<ColorBadge>{quantity}</ColorBadge>}>
+              <Avatar
+                variant="rounded"
+                src={product.images[0].signedImage}
+                sx={{ width: "80px", height: "80px" }}
+              />
+            </Badge>
+          </Link>
         </Box>
         <Stack>
           <Link
             to={`/product/${product._id}`}
             style={{
-              color: theme.palette.primary.main,
+              color: "inherit",
+              textDecoration: "none",
             }}>
             <Typography variant="h6" sx={{ fontWeight: "bold" }}>
               {product.name.toUpperCase()}
             </Typography>
           </Link>
-          <Typography variant="body">{product.description}</Typography>
-          <Typography variant="h6">
-            CAD ${parseFloat(product.price).toFixed(2)}
-          </Typography>
+          <Typography>{product.description}</Typography>
         </Stack>
       </Stack>
     </Box>
@@ -151,15 +152,39 @@ const OHBody = ({ productId, quantity }) => {
 
 const ArchiveOrder = ({ oh, onUpdateCb }) => {
   const orderId = oh._id;
-  const [open, setOpen] = useState(false);
+  const [openArchive, setOpenArchive] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
 
-  const handleClickOpen = () => {
-    setOpen(true);
+  const handleConfirmDelivered = async () => {
+    await axios
+      .patch(`${serverUrl}order/${orderId}`, {
+        orderStatus: "Delivery Confirmed",
+      })
+      .then((response) => {
+        if (response.status === 204) {
+          enqueueSnackbar("Successfully confirmed delivery!", {
+            variant: "success",
+          });
+          onUpdateCb(orderId);
+        } else {
+          enqueueSnackbar("Failed to update product!", {
+            variant: "error",
+          });
+        }
+      })
+      .catch(() => {
+        enqueueSnackbar("Failed to update product!", {
+          variant: "error",
+        });
+      });
   };
 
-  const handleClose = () => {
-    setOpen(false);
+  const handleClickOpenArchive = () => {
+    setOpenArchive(true);
+  };
+
+  const handleCloseArchive = () => {
+    setOpenArchive(false);
   };
   const handleArchiveOrder = async () => {
     await axios
@@ -182,7 +207,7 @@ const ArchiveOrder = ({ oh, onUpdateCb }) => {
         });
       });
 
-    setOpen(false);
+    setOpenArchive(false);
   };
 
   const orderState = oh.orderStatus.toLowerCase();
@@ -194,32 +219,38 @@ const ArchiveOrder = ({ oh, onUpdateCb }) => {
     day: "numeric",
   });
 
+  console.log(orderId + " " + orderState);
+
   return (
     <Stack direction="row" p={1} gap={1}>
-      <Typography variant="h6">
+      <Typography>
         {orderState === "order received"
           ? `Your order was received. Please allow us 2-3 days to process your payment.`
-          : orderState === "order shipped"
+          : orderState === "processing"
+          ? `We are processing your order. Relax, it will be shipped soon!`
+          : orderState === "shipped"
           ? `Your order was shipped! Estimated delivery is on or before ${estimatedDelivery}.`
           : orderState === "delivered"
           ? `Your item was marked delivered by 3rd party courier.`
           : orderState === "delivery confirmed"
           ? `Your item was delivered!`
+          : orderState === "cancelled"
+          ? `Your order was cancelled. You account will be automatically refunded. In case your refund is not reflected in your account by ${estimatedDelivery}, please contact us and provide the order reference id.`
           : null}
       </Typography>
       {orderState === "delivered" ? (
-        <Button variant="contained" onClick={handleClickOpen}>
-          Mark as Delivered
+        <Button variant="contained" onClick={handleConfirmDelivered}>
+          Confirm Delivered
+        </Button>
+      ) : orderState === "delivery confirmed" ? (
+        <Button variant="contained" onClick={handleClickOpenArchive}>
+          Archive Order
         </Button>
       ) : null}
 
-      <Button variant="contained" onClick={handleClickOpen}>
-        Archive Order
-      </Button>
-
       <Dialog
-        open={open}
-        onClose={handleClose}
+        open={openArchive}
+        onClose={handleCloseArchive}
         sx={{ backdropFilter: "blur(3px)" }}>
         <DialogTitle color="error">
           {"You are about to archive this order!"}
@@ -231,7 +262,7 @@ const ArchiveOrder = ({ oh, onUpdateCb }) => {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>No</Button>
+          <Button onClick={handleCloseArchive}>No</Button>
           <Button onClick={handleArchiveOrder} autoFocus>
             Yes
           </Button>
@@ -267,11 +298,20 @@ const OrderHistory = () => {
       autoHideDuration={2000}
       hideIconVariant={true}>
       <Box mt={"5vh"} mx="auto" width={"calc(200px + 50vw)"}>
-        <Typography variant="h5" my={2}>
+        <Typography
+          variant="h4"
+          my={2}
+          sx={{
+            display: { xs: "flex", md: "flex" },
+            flexGrow: { xs: 1, md: 0 },
+            letterSpacing: ".2rem",
+            borderRadius: "5px",
+            justifyContent: "center",
+          }}>
           ORDER HISTORY
         </Typography>
         {orderHistory.map((item, idx) => (
-          <Card key={idx} sx={{ m: 2 }}>
+          <Card key={idx} sx={{ my: 3 }}>
             <OHHeading {...item} />
             <ArchiveOrder {...item} onUpdateCb={updateOrderHistory} />
             <Divider />

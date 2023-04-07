@@ -222,7 +222,9 @@ const Navbar = () => {
                   MenuListProps={{
                     "aria-labelledby": "basic-button",
                   }}>
-                  <Link to="/orderhistory">
+                  <Link
+                    to="/orderhistory"
+                    style={{ textDecoration: "none", color: "inherit" }}>
                     <MenuItem onClick={handleCloseUserMenu}>
                       Order History
                     </MenuItem>

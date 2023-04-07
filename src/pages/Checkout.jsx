@@ -208,7 +208,7 @@ const OrderAcknowledgment = () => {
               justifyContent: "center",
               padding: 2,
             }}>
-            <Link to="/products">
+            <Link to="/products" style={{ textDecoration: "none" }}>
               <Button
                 variant="contained"
                 onClick={() => {
@@ -262,8 +262,84 @@ const CheckoutCartEmpty = () => {
   );
 };
 
+const CannotCheckout = () => {
+  const { setDrawerState } = useShoppingCart();
+  return (
+    <Fragment>
+      <StyledStack>
+        <Typography
+          variant="h5"
+          color="error"
+          sx={{
+            display: { xs: "flex", md: "flex" },
+            letterSpacing: ".2rem",
+            justifyContent: "center",
+            m: 3,
+          }}>
+          UNAVAILABLE PRODUCT!
+        </Typography>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}>
+          <figure style={{ display: "flex", flexFlow: "column" }}>
+            <img
+              src="/img/cancel.png"
+              alt="/img/cancel.png"
+              style={{ width: "calc(80px + 50%)" }}
+            />
+            <Button
+              variant="text"
+              color="secondary"
+              size="small"
+              href="https://www.flaticon.com/free-icons/close"
+              sx={{
+                ":hover": {
+                  backgroundColor: "transparent",
+                },
+              }}>
+              Credits: Flaticon
+            </Button>
+          </figure>
+          <Typography
+            variant="h6"
+            sx={{
+              display: { xs: "flex", md: "flex" },
+              justifyContent: "center",
+              m: 3,
+            }}>
+            Looks like you have unavailable products in your cart. Delete from
+            cart before check out.
+          </Typography>
+        </Box>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}>
+          <Link to={{}} style={{ textDecoration: "none" }}>
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={() => setDrawerState(true)}>
+              Open Cart
+            </Button>
+          </Link>
+        </Box>
+      </StyledStack>
+    </Fragment>
+  );
+};
+
 const Checkout = () => {
-  const { cartQuantity } = useShoppingCart();
+  const { cartQuantity, canCheckout } = useShoppingCart();
+
+  if (!canCheckout()) {
+    return <CannotCheckout />;
+  }
 
   return (
     <CheckoutProvider>
