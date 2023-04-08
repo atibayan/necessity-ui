@@ -62,9 +62,14 @@ const SearchBar = ({ value, onChange }) => {
   };
 
   return (
-    <Search sx={{ display: { xs: "none", md: "flex" } }}>
+    <Search sx={{ display: { xs: "none", md: "flex" }, flexGrow: 1 }}>
       <SearchIconWrapper>
-        <SearchIcon type="submit" value={value} onChange={onChange} />
+        <SearchIcon
+          type="submit"
+          value={value}
+          onChange={onChange}
+          sx={{ color: "#fff" }}
+        />
       </SearchIconWrapper>
       <StyledInputBase
         placeholder="Search…"

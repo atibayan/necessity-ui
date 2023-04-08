@@ -51,7 +51,7 @@ const Navbar = () => {
   };
 
   const { cartQuantity, wishlistQuantity, toggleDrawer } = useShoppingCart();
-  const fGrow = user && user.user_role == "admin" ? 5 : 0.7;
+  const fGrow = user && user.user_role == "admin" ? 5 : 2;
 
   return (
     <AppBar
@@ -82,7 +82,8 @@ const Navbar = () => {
               open={Boolean(anchorElNav)}
               onClose={handleCloseNavMenu}
               sx={{
-                display: { xs: "block", md: "none" },
+                display: { xs: "flex", md: "none" },
+                flexGrow: 1,
               }}>
               {pages.map((page, idx) => (
                 <MenuItem key={idx} onClick={handleCloseNavMenu}>
@@ -94,27 +95,27 @@ const Navbar = () => {
             </Menu>
           </Box>
         )}
-        <Link to="/">
-          <Avatar variant="rounded" src={`/img/logo.png`} />
-        </Link>
         <Link
           to="/"
           style={{
             textDecoration: "none",
             color: theme.palette.text.custom,
           }}>
-          <Typography
-            variant="h4"
-            noWrap
-            sx={{
-              display: { xs: "none", md: "flex" },
-              flexGrow: { xs: 1, md: 2 },
-              textDecoration: "none",
-              mx: 2,
-              color: theme.palette.text.custom,
-            }}>
-            NECESSITY
-          </Typography>
+          <Stack direction="row">
+            <Avatar variant="rounded" src={`/img/logo.png`} />
+            <Typography
+              variant="h4"
+              noWrap
+              sx={{
+                display: { xs: "none", md: "flex" },
+                flexGrow: { xs: 1, md: 2 },
+                textDecoration: "none",
+                mx: 2,
+                color: theme.palette.text.custom,
+              }}>
+              NECESSITY
+            </Typography>
+          </Stack>
         </Link>
 
         <Box
@@ -168,7 +169,7 @@ const Navbar = () => {
                     variant="h6"
                     sx={{
                       my: 2,
-                      mx: 2,
+                      mx: 3,
                     }}>
                     {page.toUpperCase()}
                   </Typography>
@@ -181,10 +182,12 @@ const Navbar = () => {
           gap={1}
           sx={{
             display: "flex",
-            flexGrow: 1,
+            flexGrow: 0.5,
+            gap: 4,
             justifyContent: "space-around",
             alignItems: "center",
             mx: 2,
+            // backgroundColor: "red",
           }}>
           {user && user.user_role == "admin" ? null : (
             <Fragment>

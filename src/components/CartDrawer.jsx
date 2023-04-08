@@ -77,20 +77,31 @@ const CartSummary = () => {
 };
 
 const CartItem = ({ id, quantity }) => {
-  const { products, getQuantity } = useShoppingCart();
+  const { products, getQuantity, toggleDrawer } = useShoppingCart();
 
   const product = products.find((item) => item._id === id);
 
   if (product === null) return null;
   return (
     <Stack direction="row" spacing={2} justifyContent="space-between">
-      <Avatar
-        src={product.images[0].signedImage}
-        variant="rounded"
-        sx={{ height: 100, width: 100 }}
-      />
+      <Link to={`/product/${product._id}`} onClick={() => toggleDrawer()}>
+        <Avatar
+          src={product.images[0].signedImage}
+          variant="rounded"
+          sx={{ height: 100, width: 100 }}
+        />
+      </Link>
       <Box sx={{ width: 1 / 2 }}>
-        <Typography>{product.name.toUpperCase()}</Typography>
+        <Link
+          to={`/product/${product._id}`}
+          onClick={() => toggleDrawer()}
+          style={{
+            textDecoration: "none",
+            color: "inherit",
+            fontWeight: "bold",
+          }}>
+          <Typography>{product.name.toUpperCase()}</Typography>
+        </Link>
         {product.activeFlag ? (
           product.discount === 0 ? (
             <Typography variant="caption">

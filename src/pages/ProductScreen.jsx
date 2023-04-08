@@ -24,7 +24,7 @@ import Carousel from "react-material-ui-carousel";
 
 const StyledIconButton = styled(IconButton)(({ theme }) => ({
   color: "rgba(1,1,1,0.5)",
-  animation: "ripple 0.2s infinite alternate",
+  animation: "ripple 1s infinite alternate",
   "@keyframes ripple": {
     to: { transform: "scale(1.2)" },
   },
@@ -35,6 +35,7 @@ const StyledIconButton = styled(IconButton)(({ theme }) => ({
 
 const ProductScreen = () => {
   const navigate = useNavigate();
+  const theme = useTheme();
   const { products, handleSearch, isInCart } = useShoppingCart();
   const routeParams = useParams();
   const [item, setItem] = useState();
@@ -165,6 +166,9 @@ const ProductScreen = () => {
                     py: 0.1,
                     mx: 0.2,
                     my: 0,
+                    "&:hover": {
+                      background: theme.palette.primary.light,
+                    },
                   }}
                   onClick={() => {
                     handleSearch(tag);

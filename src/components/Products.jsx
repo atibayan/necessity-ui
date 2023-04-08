@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 import ProductCard from "./ProductCard";
-import { Stack, Box, Typography } from "@mui/material";
+import { Stack, Box, Typography, Container } from "@mui/material";
 import { useShoppingCart } from "../context/ShoppingCartContext";
 
 const Products = () => {
@@ -23,14 +23,22 @@ const Products = () => {
           ALL PRODUCTS
         </Typography>
       </Box>
-      <Stack
+      {/* <Stack
         my={"5vh"}
         mx="auto"
         direction="row"
         justifyContent="center"
         alignItems="center"
         flexWrap="wrap"
-        gap={2}>
+        gap={2}> */}
+      <Container
+        sx={{
+          display: "flex",
+          gap: "1rem",
+          flexWrap: "wrap",
+          my: "20px",
+          justifyContent: "center",
+        }}>
         {products.map((item) =>
           item.activeFlag ? (
             <ProductCard
@@ -40,7 +48,8 @@ const Products = () => {
             />
           ) : null
         )}
-      </Stack>
+      </Container>
+      {/* </Stack> */}
     </Fragment>
   );
 };

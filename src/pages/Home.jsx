@@ -46,11 +46,7 @@ const Home = () => {
           <Navbar />
           {window.location.pathname !== "/" ? (
             <Box p={2}>
-              <IconButton
-                color="inherit"
-                size="large"
-                onClick={() => navigate(-1)}
-                sx={{ background: "rgba(1,1,1,0.1)" }}>
+              <IconButton color="inherit" onClick={() => navigate(-1)}>
                 <NavigateBeforeIcon />
               </IconButton>
             </Box>
@@ -84,11 +80,7 @@ const Home = () => {
           </Routes>
           {window.location.pathname !== "/" ? (
             <Box p={2}>
-              <IconButton
-                color="inherit"
-                size="large"
-                onClick={() => navigate(-1)}
-                sx={{ background: "rgba(1,1,1,0.1)" }}>
+              <IconButton color="inherit" onClick={() => navigate(-1)}>
                 <NavigateBeforeIcon />
               </IconButton>
             </Box>
