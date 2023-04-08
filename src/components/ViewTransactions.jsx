@@ -1,7 +1,6 @@
-import React, { useState, Fragment } from "react";
+import React, { useState, Fragment, useEffect } from "react";
 import axios from "axios";
 import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
-
 import {
   Box,
   Avatar,
@@ -50,9 +49,14 @@ const Order = ({
   orderStatus,
 }) => {
   const [openConfirmProcessing, setOpenConfirmProcessing] = useState(false);
+  const [openConfirmCancel, setOpenConfirmCancel] = useState(false);
   const [openConfirmShipped, setOpenConfirmShipped] = useState(false);
   const [openConfirmDelivered, setOpenConfirmDelivered] = useState(false);
-  const { updateOrders } = useProductManagement();
+  const [productAvailability, setProductAvailability] = useState([]);
+  const { enqueueSnackbar } = useSnackbar();
+
+  const { updateOrders, orders, products, updateProducts } =
+    useProductManagement();
   let shipping = "";
   if (custInfo) {
     shipping += custInfo.address + ", ";
@@ -87,8 +91,39 @@ const Order = ({
     await axios.patch(`${serverUrl}order/${orderId}`, {
       orderStatus: "Processing",
     });
+
+    for (let i = 0; i < orderItems.length; i++) {
+      const item = orderItems[i];
+      const pid = item.productId;
+      const product = products.find((p) => p._id === pid);
+      if (product && Object.keys(product).length > 0)
+        await axios
+          .patch(`${serverUrl}product/${item.productId}`, {
+            quantity_on_hand: product.quantity_on_hand - item.quantity,
+          })
+          .then((response) => {
+            if (response.status === 200) {
+              enqueueSnackbar(`Successfully updated stock level of ${pid}`, {
+                variant: "success",
+              });
+              updateProducts();
+            } else {
+              enqueueSnackbar("Failed to update stock level!", {
+                variant: "error",
+              });
+            }
+          });
+    }
     updateOrders();
     setOpenConfirmProcessing(false);
+  };
+
+  const handleMarkAsCancelled = async () => {
+    await axios.patch(`${serverUrl}order/${orderId}`, {
+      orderStatus: "Cancelled",
+    });
+    updateOrders();
+    setOpenConfirmCancel(false);
   };
 
   const handleMarkAsShipped = async () => {
@@ -106,6 +141,22 @@ const Order = ({
     updateOrders();
     setOpenConfirmDelivered(false);
   };
+
+  useEffect(() => {
+    const getProductAvailability = async () => {
+      const result = [];
+      orderItems.forEach((item) => {
+        const pid = item.productId;
+        const product = products.find((p) => p._id === pid);
+        if (product && Object.keys(product).length > 0)
+          result.push({ pid, qty: product.quantity_on_hand });
+        else result.push({ pid, qty: 0 });
+      });
+      setProductAvailability(result);
+    };
+
+    getProductAvailability();
+  }, [products, orders]);
 
   return (
     <Fragment>
@@ -143,11 +194,25 @@ const Order = ({
         <TableCell>{orderStatus}</TableCell>
         <TableCell>
           {oStat === "order received" ? (
-            <Button
-              variant="contained"
-              onClick={() => setOpenConfirmProcessing(true)}>
-              Mark as Processing
-            </Button>
+            <Stack gap={1}>
+              <Stack>
+                {productAvailability.map((item, idx) => (
+                  <Typography variant="caption" key={idx}>
+                    {item.pid} : {item.qty}
+                  </Typography>
+                ))}
+              </Stack>
+              <Button
+                variant="contained"
+                onClick={() => setOpenConfirmProcessing(true)}>
+                Mark as Processing
+              </Button>
+              <Button
+                variant="contained"
+                onClick={() => setOpenConfirmCancel(true)}>
+                Decline Order
+              </Button>
+            </Stack>
           ) : oStat === "processing" ? (
             <Button
               variant="contained"
@@ -168,6 +233,12 @@ const Order = ({
         openConfirm={openConfirmProcessing}
         setOpenConfirm={setOpenConfirmProcessing}
         orderStatus="Processing"
+      />
+      <Prompt
+        handleConfirm={handleMarkAsCancelled}
+        openConfirm={openConfirmCancel}
+        setOpenConfirm={setOpenConfirmCancel}
+        orderStatus="Cancelled"
       />
       <Prompt
         handleConfirm={handleMarkAsShipped}

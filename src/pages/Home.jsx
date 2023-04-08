@@ -1,5 +1,6 @@
-import React from "react";
+import React, { Fragment } from "react";
 import Navbar from "../components/Navbar";
+import NavbarAdmin from "../components/NavbarAdmin";
 import CartDrawer from "../components/CartDrawer";
 import Announcement from "../components/Announcement";
 import Slider from "../components/Slider";
@@ -15,7 +16,9 @@ import { useAuth0 } from "@auth0/auth0-react";
 import AdminPanel from "./AdminPanel";
 import { ShoppingCartProvider } from "../context/ShoppingCartContext";
 import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
-import '../App.css'
+import "../App.css";
+import { SnackbarProvider } from "notistack";
+import { Button } from "@mui/material";
 
 const Landing = () => {
   return (
@@ -30,21 +33,24 @@ const Home = () => {
   const { user } = useAuth0();
   const navigate = useNavigate();
   return (
-    <ShoppingCartProvider>
+    <Fragment>
       <Announcement />
-      <Navbar />
-      <CartDrawer />
-
-      {user?.user_role === "admin" ? <AdminPanel /> : null}
-
-      {!user || user?.user_role !== "admin" ? (
-        <>
-        { window.location.pathname !== "/" ? (
-          <div className="button-container">
-          <button onClick={() => navigate(-1)}>⇦</button>
-          </div>
-        ) : null
-        }
+      {user?.user_role === "admin" ? (
+        <Fragment>
+          <NavbarAdmin />
+          <AdminPanel />
+        </Fragment>
+      ) : (
+        <ShoppingCartProvider>
+          <Navbar />
+          {window.location.pathname !== "/" ? (
+            <Button variant="outlined" onClick={() => navigate(-1)}>
+              Back
+            </Button>
+          ) : null}
+          <SnackbarProvider>
+            <CartDrawer />
+          </SnackbarProvider>
           <Routes>
             <Route path="/" element={<Landing />} />
             <Route path="/products" element={<Products />} />
@@ -69,16 +75,15 @@ const Home = () => {
             <Route path="/orderhistory" element={<OrderHistory />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
-          { window.location.pathname !== "/" ? (
-            <div className="button-container">
-            <button onClick={() => navigate(-1)}>⇦</button>
-           </div>
-            ) : null
-          }
-        </>
-      ) : null}
+          {window.location.pathname !== "/" ? (
+            <Button variant="outlined" onClick={() => navigate(-1)}>
+              Back
+            </Button>
+          ) : null}
           <Footer />
-    </ShoppingCartProvider>
+        </ShoppingCartProvider>
+      )}
+    </Fragment>
   );
 };
 

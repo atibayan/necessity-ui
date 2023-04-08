@@ -41,8 +41,8 @@ export function ProductManagementProvider({ children }) {
 
   async function handleImageUpload(imageFile) {
     const options = {
-      maxSizeMB: 1,
-      maxWidthOrHeight: 1920,
+      maxSizeMB: 0.6,
+      maxWidthOrHeight: 1000,
     };
     try {
       const compressedFile = await imageCompression(imageFile, options);

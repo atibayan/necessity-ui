@@ -19,7 +19,6 @@ const Products = () => {
             letterSpacing: ".3rem",
             borderRadius: "5px",
             justifyContent: "center",
-            background: "rgba(215,215,215,0.3)",
           }}>
           ALL PRODUCTS
         </Typography>
@@ -32,13 +31,15 @@ const Products = () => {
         alignItems="center"
         flexWrap="wrap"
         gap={2}>
-        {products.map((item) => (
-          <ProductCard
-            handleSelectProduct={handleOnClick}
-            item={item}
-            key={item._id}
-          />
-        ))}
+        {products.map((item) =>
+          item.activeFlag ? (
+            <ProductCard
+              handleSelectProduct={handleOnClick}
+              item={item}
+              key={item._id}
+            />
+          ) : null
+        )}
       </Stack>
     </Fragment>
   );

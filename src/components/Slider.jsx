@@ -29,10 +29,10 @@ const Media = ({ source }) => {
     <video
       width={"100%"}
       preload="true"
-      muted="true"
-      autoplay="true"
-      loop="true"
-      playsinline="true"
+      muted={true}
+      autoPlay={true}
+      loop={true}
+      playsInline={true}
       src={source}
       data-delay-time="28000"
       style={{ borderRadius: "10px" }}
@@ -96,6 +96,19 @@ function Slider() {
                     Browse Products
                   </Button>
                 </Link>
+                <Button
+                  size="small"
+                  target="_blank"
+                  href="https://www.pexels.com/video/female-model-posing-6805354/"
+                  sx={{
+                    textTransform: "none",
+                    color: "white",
+                    ":hover": {
+                      backgroundColor: "transparent",
+                    },
+                  }}>
+                  Credits: Media By Harry Cooke
+                </Button>
               </Box>
             </Stack>
           </Box>
@@ -105,7 +118,7 @@ function Slider() {
             <Stack
               sx={{
                 position: "absolute",
-                bottom: "5%",
+                bottom: "10%",
                 right: "5%",
                 zIndex: 1,
                 color: "#fff",
@@ -131,6 +144,19 @@ function Slider() {
                     BROWSE MEN'S WEAR
                   </Button>
                 </Link>
+                <Button
+                  size="small"
+                  target="_blank"
+                  href="https://www.pexels.com/video/people-wearing-pastel-color-clothes-7872920/"
+                  sx={{
+                    color: "white",
+                    textTransform: "none",
+                    ":hover": {
+                      backgroundColor: "transparent",
+                    },
+                  }}>
+                  Credits: Media By Cottonbro Studio
+                </Button>
               </Box>
             </Stack>
           </Box>
@@ -140,7 +166,7 @@ function Slider() {
             <Stack
               sx={{
                 position: "absolute",
-                bottom: "20%",
+                bottom: "15%",
                 left: "5%",
                 zIndex: 1,
                 color: "#fff",
@@ -166,6 +192,19 @@ function Slider() {
                     BROWSE WOMEN'S WEAR
                   </Button>
                 </Link>
+                <Button
+                  size="small"
+                  target="_blank"
+                  href="https://www.pexels.com/video/model-wearing-a-white-top-3753687/"
+                  sx={{
+                    color: "white",
+                    textTransform: "none",
+                    ":hover": {
+                      backgroundColor: "transparent",
+                    },
+                  }}>
+                  Credits: Media By Ba Tik
+                </Button>
               </Box>
             </Stack>
           </Box>

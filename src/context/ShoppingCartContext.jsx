@@ -44,17 +44,20 @@ export function ShoppingCartProvider({ children }) {
 
   useEffectOnce(() => {
     const getProducts = async () => {
+      console.log(`getting product...`);
       const { data } = await axios.get(`${serverUrl}product`);
       setProducts(data.products);
     };
     getProducts();
 
     const getCartItemsFromDB = async (userId) => {
+      console.log(`getting cart...`);
       const { data } = await axios.get(`${serverUrl}cart/${userId}`);
       return data.cartItems;
     };
 
     const getWishlistItemsFromDB = async (userId) => {
+      console.log(`getting wishlist...`);
       const { data } = await axios.get(`${serverUrl}wishlist/${userId}`);
       return data.wishlist;
     };
@@ -70,8 +73,6 @@ export function ShoppingCartProvider({ children }) {
     if (isAuthenticated) {
       setSession(user.sub);
       getWishlistItemsFromDB(user.sub).then((wishlist) => {
-        console.log(wishlist);
-        console.log(`setting wishlist`);
         setWishlistItems(wishlist);
       });
     }
@@ -103,12 +104,9 @@ export function ShoppingCartProvider({ children }) {
         })
         .catch((err) => console.log(err));
     }
-    console.log(`State of cartItems is: `);
-    console.log(cartItems);
   }, []);
 
   useEffect(() => {
-    console.log(`is authenticatedssss` + isAuthenticated);
     if (!isAuthenticated) {
       window.localStorage.setItem("cartItems", JSON.stringify(cartItems));
     } else {
@@ -119,11 +117,11 @@ export function ShoppingCartProvider({ children }) {
   useEffect(() => {
     if (!isAuthenticated && !isLoading) return;
     async function updateWishlistInDB(userId) {
-      if (wishlistItems != 0)
-        await axios.put(`${serverUrl}wishlist/`, {
-          userId,
-          wishlistItems,
-        });
+      if (wishlistItems != 0) console.log(`updating wishlist...`);
+      await axios.put(`${serverUrl}wishlist/`, {
+        userId,
+        wishlistItems,
+      });
     }
     updateWishlistInDB(user.sub);
   }, [wishlistItems, isAuthenticated, user]);
@@ -138,7 +136,15 @@ export function ShoppingCartProvider({ children }) {
       ? cartItems
           .reduce((sum, item) => {
             const product = products.find((p) => p._id === item.id);
-            return product ? sum + product.price * item.quantity : 0;
+            const discounted_price = product?.activeFlag
+              ? product?.discount === 0
+                ? sum + product?.price * item.quantity
+                : sum +
+                  ((100 - product.discount) / 100) *
+                    product.price *
+                    item.quantity
+              : sum + 0;
+            return discounted_price;
           }, 0)
           .toFixed(2)
       : 0;
@@ -152,14 +158,22 @@ export function ShoppingCartProvider({ children }) {
   ).toFixed(2);
 
   async function updateCartInDB(userId) {
+    console.log(`updating cart...`);
     const { data } = await axios.put(`${serverUrl}cart`, {
       userId,
       cartItems,
     });
   }
 
+  function canCheckout() {
+    const found = cartItems.find((cartItem) => {
+      const pdetails = products.find((p) => cartItem.id === p._id);
+      return pdetails && pdetails.activeFlag === false ? true : false;
+    });
+    return found && Object.keys(found).length > 0 ? false : true;
+  }
+
   async function resetCart() {
-    console.log(`Resetting cart...`);
     setCartItems([]);
   }
 
@@ -229,7 +243,7 @@ export function ShoppingCartProvider({ children }) {
   }
 
   function isInWishlist(id) {
-    return wishlistItems.find((item) => item === id);
+    return wishlistItems.find((item) => item === id) ? true : false;
   }
 
   function removeFromWishlist(id) {
@@ -274,6 +288,7 @@ export function ShoppingCartProvider({ children }) {
         removeFromWishlist,
         handleSearch,
         searchResult
+        canCheckout,
       }}>
       {children}
     </ShoppingCartContext.Provider>

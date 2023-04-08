@@ -61,7 +61,10 @@ const CartBtn = ({ item }) => {
 const CartBtnLong = ({ item }) => {
   const { increaseCartQuantity } = useShoppingCart();
   return (
-    <Button variant="contained" onClick={() => increaseCartQuantity(item._id)}>
+    <Button
+      variant="contained"
+      sx={cardActionBtnStyle}
+      onClick={() => increaseCartQuantity(item._id)}>
       Add To Cart
     </Button>
   );

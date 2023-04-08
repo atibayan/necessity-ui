@@ -7,10 +7,10 @@ import {
   CardMedia,
   Typography,
   Checkbox,
+  Stack,
 } from "@mui/material";
 import FavoriteBorder from "@mui/icons-material/FavoriteBorder";
 import Favorite from "@mui/icons-material/Favorite";
-import { AddCartBtn, MinusCartBtn, QtyBtn, CartBtn } from "./CartButtons";
 import { useShoppingCart } from "../context/ShoppingCartContext";
 import { Link } from "react-router-dom";
 import Slider from "react-slick";
@@ -18,9 +18,10 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
 import { useAuth0 } from "@auth0/auth0-react";
+import CartControls from "./CartControls";
 
 export default function ProductCard({ item }) {
-  const { isInCart, addToWishlist, isInWishlist } = useShoppingCart();
+  const { addToWishlist, isInWishlist } = useShoppingCart();
   const { isAuthenticated, loginWithRedirect } = useAuth0();
   return (
     <Card
@@ -40,9 +41,9 @@ export default function ProductCard({ item }) {
           slidesToScroll={1}
           autoplay={true}
           autoplaySpeed={3000}>
-          {item.images.map((image) => (
+          {item.images.map((image, idx) => (
             <CardMedia
-              key={image._id}
+              key={idx}
               sx={{ height: 230, width: 230, cursor: "pointer" }}
               image={image.signedImage}
               title={item.name}
@@ -53,11 +54,12 @@ export default function ProductCard({ item }) {
 
       <CardContent>
         <Typography
+          mt={1}
           gutterBottom
-          variant="h6"
+          variant="body"
           component="div"
           sx={{
-            minHeight: "100px",
+            minHeight: "60px",
           }}>
           {item.name.toUpperCase()}
         </Typography>
@@ -66,30 +68,28 @@ export default function ProductCard({ item }) {
             display: "flex",
             flexWrap: "nowrap",
             justifyContent: "space-between",
+            minHeight: "40px",
           }}>
-          <Typography
-            variant="h6"
-            component="div"
-            sx={{
-              mt: 1,
-            }}>
-            CAD $ {(item.price * 1).toFixed(2)}
-          </Typography>
+          {item.activeFlag ? (
+            item.discount === 0 ? (
+              <Typography>CAD ${(item.price * 1).toFixed(2)}</Typography>
+            ) : (
+              <Stack>
+                <Typography
+                  variant="caption"
+                  sx={{ textDecoration: "line-through" }}>
+                  CAD ${(item.price * 1).toFixed(2)}
+                </Typography>
+                <Typography>
+                  CAD ${(((100 - item.discount) / 100) * item.price).toFixed(2)}
+                </Typography>
+              </Stack>
+            )
+          ) : null}
 
-          {isInCart(item._id) ? (
-            <Box
-              sx={{
-                display: "flex",
-                flexWrap: "nowrap",
-                justifyContent: "space-between",
-              }}>
-              <MinusCartBtn item={item} />
-              <QtyBtn item={item} />
-              <AddCartBtn item={item} />
-            </Box>
-          ) : (
-            <CartBtn item={item} />
-          )}
+          <Box>
+            <CartControls item={item} longBtn={false} />
+          </Box>
         </Box>
       </CardContent>
       <CardActions

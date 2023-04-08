@@ -31,6 +31,7 @@ const ProductEditor = ({ open, handleClose, selected }) => {
   const [name, setName] = useState("");
   const [price, setPrice] = useState(0);
   const [discount, setDiscount] = useState(0);
+  const [credits, setCredits] = useState([]);
   const [description, setDescription] = useState("");
   const [tags, setTags] = useState([]);
   const [qtyOnHand, setQtyOnHand] = useState(0);
@@ -42,6 +43,7 @@ const ProductEditor = ({ open, handleClose, selected }) => {
   const [nameChanged, setNameChanged] = useState(false);
   const [priceChanged, setPriceChanged] = useState(false);
   const [discountChanged, setDiscountChanged] = useState(false);
+  const [creditsChanged, setCreditsChanged] = useState(false);
   const [descriptionChanged, setDescriptionChanged] = useState(false);
   const [quantityChanged, setQuantityChanged] = useState(false);
   const [product, setProduct] = useState({});
@@ -57,6 +59,7 @@ const ProductEditor = ({ open, handleClose, selected }) => {
       setDescription(product.description);
       setPrice(product.price);
       setDiscount(product.discount);
+      setCredits(product.credits);
       setQtyOnHand(product.quantity_on_hand);
       setTags(product.tags);
       setInitialTags(product.tags);
@@ -109,6 +112,7 @@ const ProductEditor = ({ open, handleClose, selected }) => {
     if (priceChanged) body.price = price;
     if (discountChanged) body.discount = discount;
     if (quantityChanged) body.quantity_on_hand = qtyOnHand;
+    if (creditsChanged) body.credits = credits;
 
     const addedTags = [];
     const deletedTags = [];
@@ -257,6 +261,7 @@ const ProductEditor = ({ open, handleClose, selected }) => {
         <TextField
           variant="filled"
           fullWidth
+          multiline
           label="Product Description"
           value={description}
           onChange={(e) => {
@@ -335,6 +340,19 @@ const ProductEditor = ({ open, handleClose, selected }) => {
           label="Tags"
           onKeyUp={addTag}
           placeholder="Click right arrow key to add more tags."
+          required
+        />
+        <TextField
+          variant="filled"
+          fullWidth
+          multiline
+          label="Photo Credits"
+          placeholder="Separate each link by space."
+          value={credits?.join(" ")}
+          onChange={(e) => {
+            setCredits(e.target.value.split(" "));
+            setCreditsChanged(true);
+          }}
           required
         />
         <Stack>
