@@ -9,41 +9,45 @@ import "../components/CategoryScreen.css";
 const CategoryScreen = () => {
   const params = useParams();
   const { products } = useShoppingCart();
-  const [clickedNavLink, setClickedNavLink] = useState("All");
+  const [clickedNavLink, setClickedNavLink] = useState("all");
 
   let location = window.location.pathname;
+  let category = params.cat.toLowerCase();
+  let subRoute = clickedNavLink.toLowerCase();
 
   useEffect(() => {
-    setClickedNavLink("All");
-  }, [params.cat]);
+    setClickedNavLink("all");
+  }, [category]);
 
   let filteredProducts = products;
   if (
-    params.cat &&
-    params.cat !== "All" &&
-    location == "/product/category/" + params.cat
+    category &&
+    category !== "all" &&
+    location == "/product/category/" + category
   ) {
     filteredProducts = products.filter((product) =>
-      product.tags.includes(params.cat)
+      product.tags.map((tag) => tag.toLowerCase()).includes(category)
     );
-  } else if (params.cat && params.cat !== "All") {
+  } else if (category && category !== "all") {
     filteredProducts = products.filter(
       (product) =>
-        product.tags.includes(params.cat) &&
-        product.tags.includes(clickedNavLink)
+      product.tags.map((tag) => tag.toLowerCase()).includes(category) &&
+      product.tags.map((tag) => tag.toLowerCase()).includes(subRoute)
+        
     );
   } else if (
-    params.cat &&
-    params.cat == "All" &&
-    location !== "/product/category/" + params.cat
+    category &&
+    category == "all" &&
+    location !== "/product/category/" + category
   ) {
     filteredProducts = products.filter((product) =>
-      product.tags.includes(clickedNavLink)
+    product.tags.map((tag) => tag.toLowerCase()).includes(subRoute)
+      
     );
   } else if (
-    params.cat &&
-    params.cat == "All" &&
-    location == "/product/category/" + params.cat
+    category &&
+    category == "all" &&
+    location == "/product/category/" + category
   ) {
     filteredProducts = products;
   }
@@ -55,10 +59,10 @@ const CategoryScreen = () => {
   return (
     <>
       <Tabs value={clickedNavLink} onChange={handleTabChange} centered>
-        <Tab label="All" value="All" component={NavLink} to={""}/>
-        <Tab label="Top" value="Top" component={NavLink} to={"Top"} />
-        <Tab label="Bottom" value="Bottom" component={NavLink} to={"Bottom"} />
-        <Tab label="Footwear" value="Footwear" component={NavLink} to={"Footwear"} />
+        <Tab label="All" value="all" component={NavLink} to={""}/>
+        <Tab label="Top" value="top" component={NavLink} to={"top"} />
+        <Tab label="Bottom" value="bottom" component={NavLink} to={"bottom"} />
+        <Tab label="Footwear" value="footwear" component={NavLink} to={"footwear"} />
       </Tabs>
       {filteredProducts.length > 0 ? (
         <Container

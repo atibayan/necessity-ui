@@ -24,7 +24,7 @@ import LogoutButton from "./LogoutButton";
 import SearchBar from "./SearchBar";
 import { useShoppingCart } from "../context/ShoppingCartContext";
 
-const pages = ["Women", "Men", "Kids", "All"];
+const pages = ["women", "men", "kids", "all"];
 const adminPages = ["Manage Products", "View Transactions"];
 
 const Navbar = () => {
