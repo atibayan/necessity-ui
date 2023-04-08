@@ -3,15 +3,19 @@ import { useShoppingCart } from "../context/ShoppingCartContext";
 import ProductCard from "../components/ProductCard";
 import { Container, Typography, Tab, Tabs } from "@mui/material";
 import { NavLink } from "react-router-dom";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../components/CategoryScreen.css";
 
 const CategoryScreen = () => {
   const params = useParams();
   const { products } = useShoppingCart();
-  const [clickedNavLink, setClickedNavLink] = useState("");
+  const [clickedNavLink, setClickedNavLink] = useState("All");
 
   let location = window.location.pathname;
+
+  useEffect(() => {
+    setClickedNavLink("All");
+  }, [params.cat]);
 
   let filteredProducts = products;
   if (
@@ -33,7 +37,6 @@ const CategoryScreen = () => {
     params.cat == "All" &&
     location !== "/product/category/" + params.cat
   ) {
-    // console.log("Hello");
     filteredProducts = products.filter((product) =>
       product.tags.includes(clickedNavLink)
     );
@@ -43,7 +46,6 @@ const CategoryScreen = () => {
     location == "/product/category/" + params.cat
   ) {
     filteredProducts = products;
-    // console.log("Hi" + products);
   }
 
   const handleTabChange = (event, value) => {
@@ -53,14 +55,10 @@ const CategoryScreen = () => {
   return (
     <>
       <Tabs value={clickedNavLink} onChange={handleTabChange} centered>
+        <Tab label="All" value="All" component={NavLink} to={""}/>
         <Tab label="Top" value="Top" component={NavLink} to={"Top"} />
         <Tab label="Bottom" value="Bottom" component={NavLink} to={"Bottom"} />
-        <Tab
-          label="Footwear"
-          value="Footwear"
-          component={NavLink}
-          to={"Footwear"}
-        />
+        <Tab label="Footwear" value="Footwear" component={NavLink} to={"Footwear"} />
       </Tabs>
       {filteredProducts.length > 0 ? (
         <Container
