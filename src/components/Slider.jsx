@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 
-import { Stack, Typography, useTheme } from "@mui/material";
+import { Stack, Typography } from "@mui/material";
 import Carousel from "react-material-ui-carousel";
-import { Paper, Button, Box } from "@mui/material";
+import { Button, Box } from "@mui/material";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
 import { Link } from "react-router-dom";

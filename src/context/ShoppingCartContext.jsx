@@ -23,19 +23,19 @@ export function ShoppingCartProvider({ children }) {
   const [searchResult, setSearchResult] = useState([]);
 
   const handleSearch = (search) => {
-
     var filteredProducts = products.filter((product) => {
-      if ((
-        product.tags.toString().toLowerCase().includes(search) ||
-        product.name.toLowerCase().includes(search) ||
-        product.description.toLowerCase().includes(search) 
-      ) && (search !== '' )) {
+      if (
+        (product.tags.toString().toLowerCase().includes(search) ||
+          product.name.toLowerCase().includes(search) ||
+          product.description.toLowerCase().includes(search)) &&
+        search !== ""
+      ) {
         return true;
-      };
+      }
       return false;
-    }); 
-      setSearchResult(filteredProducts)
-  }
+    });
+    setSearchResult(filteredProducts);
+  };
 
   const handleSelected = (item) => {
     setSelected(item);

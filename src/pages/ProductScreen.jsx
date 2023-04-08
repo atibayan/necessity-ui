@@ -1,6 +1,6 @@
 import React, { useState, useEffect, Fragment } from "react";
 import { useShoppingCart } from "../context/ShoppingCartContext";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import {
   Box,
   Stack,
@@ -9,6 +9,8 @@ import {
   Button,
   useTheme,
   Popover,
+  IconButton,
+  styled,
 } from "@mui/material";
 import {
   CartBtnLong,
@@ -16,11 +18,24 @@ import {
   AddCartBtn,
   QtyBtn,
 } from "../components/CartButtons";
+import CopyrightIcon from "@mui/icons-material/Copyright";
 
 import Carousel from "react-material-ui-carousel";
 
+const StyledIconButton = styled(IconButton)(({ theme }) => ({
+  color: "rgba(1,1,1,0.5)",
+  animation: "ripple 0.2s infinite alternate",
+  "@keyframes ripple": {
+    to: { transform: "scale(1.2)" },
+  },
+  "&:hover": {
+    background: "none",
+  },
+}));
+
 const ProductScreen = () => {
-  const { products, isInWishlist, addToWishlist, isInCart } = useShoppingCart();
+  const navigate = useNavigate();
+  const { products, handleSearch, isInCart } = useShoppingCart();
   const routeParams = useParams();
   const [item, setItem] = useState();
   const [index, setIndex] = useState(0);
@@ -33,7 +48,6 @@ const ProductScreen = () => {
     setAnchorEl(null);
   };
   const openCredits = Boolean(anchorEl);
-  const theme = useTheme();
 
   useEffect(() => {
     const prod = products.find((item) => item._id === routeParams.id);
@@ -79,6 +93,25 @@ const ProductScreen = () => {
                 />
               );
             })}
+            <StyledIconButton onClick={handleClick}>
+              <CopyrightIcon />
+            </StyledIconButton>
+            <Popover
+              open={openCredits}
+              anchorEl={anchorEl}
+              onClose={handleClose}
+              anchorOrigin={{
+                vertical: "bottom",
+                horizontal: "left",
+              }}>
+              {item.credits.map((item, idx) => (
+                <Stack px={3} py={1}>
+                  <a target="_blank" href={item}>
+                    {item}
+                  </a>
+                </Stack>
+              ))}
+            </Popover>
           </Stack>
           <Stack gap={0.2}>
             <Box
@@ -120,38 +153,27 @@ const ProductScreen = () => {
                 })}
               </Carousel>
             </Box>
-            <Box>
-              <Button
-                variant="outlined"
-                sx={{
-                  textTransform: "none",
-                  color: "rgba(0,0,0,0.5)",
-                  ["&:hover"]: {
-                    backgroundColor: "rgba(0,0,0,0.1)",
-                    border: "1px solid rgba(0,0,0,0.1)",
-                  },
-                  border: "1px solid rgba(0,0,0,0.3)",
-                }}
-                onClick={handleClick}>
-                Photo Credit
-              </Button>
-              <Popover
-                open={openCredits}
-                anchorEl={anchorEl}
-                onClose={handleClose}
-                anchorOrigin={{
-                  vertical: "bottom",
-                  horizontal: "left",
-                }}>
-                {item.credits.map((item, idx) => (
-                  <Stack px={3} py={1}>
-                    <a target="_blank" href={item}>
-                      {item}
-                    </a>
-                  </Stack>
-                ))}
-              </Popover>
-            </Box>
+            <Stack direction="row" flexWrap="wrap">
+              {item.tags.map((tag, idx) => (
+                <Button
+                  variant="outlined"
+                  color="inherit"
+                  sx={{
+                    minHeight: 0,
+                    minWidth: 0,
+                    px: 1,
+                    py: 0.1,
+                    mx: 0.2,
+                    my: 0,
+                  }}
+                  onClick={() => {
+                    handleSearch(tag);
+                    navigate("/products/search-result");
+                  }}>
+                  {tag}
+                </Button>
+              ))}
+            </Stack>
           </Stack>
         </Stack>
         <Stack gap={2}>

@@ -11,14 +11,15 @@ import Footer from "../components/Footer";
 import ProductScreen from "./ProductScreen";
 import CategoryScreen from "./CategoryScreen";
 import OrderHistory from "./OrderHistory";
-import SearchResult from "../components/SearchResult"
+import SearchResult from "../components/SearchResult";
 import { useAuth0 } from "@auth0/auth0-react";
 import AdminPanel from "./AdminPanel";
 import { ShoppingCartProvider } from "../context/ShoppingCartContext";
 import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import "../App.css";
 import { SnackbarProvider } from "notistack";
-import { Button } from "@mui/material";
+import { IconButton, Box } from "@mui/material";
+import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
 
 const Landing = () => {
   return (
@@ -44,9 +45,15 @@ const Home = () => {
         <ShoppingCartProvider>
           <Navbar />
           {window.location.pathname !== "/" ? (
-            <Button variant="outlined" onClick={() => navigate(-1)}>
-              Back
-            </Button>
+            <Box p={2}>
+              <IconButton
+                color="inherit"
+                size="large"
+                onClick={() => navigate(-1)}
+                sx={{ background: "rgba(1,1,1,0.1)" }}>
+                <NavigateBeforeIcon />
+              </IconButton>
+            </Box>
           ) : null}
           <SnackbarProvider>
             <CartDrawer />
@@ -56,7 +63,7 @@ const Home = () => {
             <Route path="/products" element={<Products />} />
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/wishlist" element={<Wishlist />} />
-            <Route path="/products/search-result/" element={<SearchResult/>}/>
+            <Route path="/products/search-result/" element={<SearchResult />} />
             <Route path="/product/:id" element={<ProductScreen />} />
             <Route path="/product/category/:cat" element={<CategoryScreen />}>
               <Route
@@ -76,9 +83,15 @@ const Home = () => {
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
           {window.location.pathname !== "/" ? (
-            <Button variant="outlined" onClick={() => navigate(-1)}>
-              Back
-            </Button>
+            <Box p={2}>
+              <IconButton
+                color="inherit"
+                size="large"
+                onClick={() => navigate(-1)}
+                sx={{ background: "rgba(1,1,1,0.1)" }}>
+                <NavigateBeforeIcon />
+              </IconButton>
+            </Box>
           ) : null}
           <Footer />
         </ShoppingCartProvider>
