@@ -10,6 +10,7 @@ import Footer from "../components/Footer";
 import ProductScreen from "./ProductScreen";
 import CategoryScreen from "./CategoryScreen";
 import OrderHistory from "./OrderHistory";
+import SearchResult from "../components/SearchResult"
 import { useAuth0 } from "@auth0/auth0-react";
 import AdminPanel from "./AdminPanel";
 import { ShoppingCartProvider } from "../context/ShoppingCartContext";
@@ -49,6 +50,7 @@ const Home = () => {
             <Route path="/products" element={<Products />} />
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/wishlist" element={<Wishlist />} />
+            <Route path="/products/search-result/" element={<SearchResult/>}/>
             <Route path="/product/:id" element={<ProductScreen />} />
             <Route path="/product/category/:cat" element={<CategoryScreen />}>
               <Route

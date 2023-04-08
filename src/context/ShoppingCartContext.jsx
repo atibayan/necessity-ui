@@ -20,6 +20,22 @@ export function ShoppingCartProvider({ children }) {
   const [products, setProducts] = useState([]);
   const [selected, setSelected] = useState(null);
   const [session, setSession] = useState(null);
+  const [searchResult, setSearchResult] = useState([]);
+
+  const handleSearch = (search) => {
+
+    var filteredProducts = products.filter((product) => {
+      if ((
+        product.tags.toString().toLowerCase().includes(search) ||
+        product.name.toLowerCase().includes(search) ||
+        product.description.toLowerCase().includes(search) 
+      ) && (search !== '' )) {
+        return true;
+      };
+      return false;
+    }); 
+      setSearchResult(filteredProducts)
+  }
 
   const handleSelected = (item) => {
     setSelected(item);
@@ -256,6 +272,8 @@ export function ShoppingCartProvider({ children }) {
         setDrawerState,
         session,
         removeFromWishlist,
+        handleSearch,
+        searchResult
       }}>
       {children}
     </ShoppingCartContext.Provider>
