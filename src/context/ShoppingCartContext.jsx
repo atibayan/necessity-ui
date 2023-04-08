@@ -287,7 +287,7 @@ export function ShoppingCartProvider({ children }) {
         session,
         removeFromWishlist,
         handleSearch,
-        searchResult
+        searchResult,
         canCheckout,
       }}>
       {children}
