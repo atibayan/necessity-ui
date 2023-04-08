@@ -1,5 +1,4 @@
-import React from "react";
-
+import React, { useState } from "react";
 import { Stack, Typography } from "@mui/material";
 import Carousel from "react-material-ui-carousel";
 import { Button, Box } from "@mui/material";
@@ -35,28 +34,39 @@ const Media = ({ source }) => {
       playsInline={true}
       src={source}
       data-delay-time="28000"
-      style={{ borderRadius: "10px" }}
+      // style={{ borderRadius: "10px" }}
     />
   );
 };
 
 function Slider() {
+  const randomStart = Math.floor(Math.random() * 3);
+  const [index, setIndex] = useState(randomStart);
+
   return (
     <Box // to hide slider on small screen
       sx={{
         display: { xs: "none", sm: "block", md: "block" },
-        p: 2,
+        // p: 2,
       }}>
       <div // hidden overflow video
         style={{
-          maxHeight: "80vh",
-          width: "calc(150px + 70vw)",
+          maxHeight: "90vh",
+          // width: "calc(150px + 70vw)",
+          width: "100%",
           overflow: "hidden",
           margin: "0px auto",
-          borderRadius: "10px",
+          // borderRadius: "10px",
         }}>
         <Carousel
           navButtonsAlwaysVisible={true}
+          index={index}
+          next={(next, active) => {
+            setIndex(next);
+          }}
+          prev={(prev, active) => {
+            setIndex(prev);
+          }}
           interval={10000}
           indicators={false}
           fullHeightHover={false}
@@ -118,7 +128,7 @@ function Slider() {
             <Stack
               sx={{
                 position: "absolute",
-                bottom: "10%",
+                bottom: "15%",
                 right: "5%",
                 zIndex: 1,
                 color: "#fff",
