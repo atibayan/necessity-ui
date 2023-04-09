@@ -92,18 +92,14 @@ const ProductUploader = ({ open, handleClose, selected }) => {
       discount,
       credits,
     };
-
+    let success = true;
     let pid = "";
     await axios.post(`${serverUrl}product`, product_info).then((response) => {
       if (response.status === 201) {
         pid = response.data._id;
-        enqueueSnackbar("Successfully added product", {
-          variant: "success",
-        });
+        success = success && true;
       } else {
-        enqueueSnackbar("Failed to add product!", {
-          variant: "error",
-        });
+        success = success && false;
       }
     });
 
@@ -114,39 +110,40 @@ const ProductUploader = ({ open, handleClose, selected }) => {
       formData.append("image", resized_blob);
     }
 
-    await axios
-      .post(`${serverUrl}product/${pid}/photos`, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      })
-      .then((response) => {
-        if (response.status === 200) {
-          enqueueSnackbar("Successfully uploaded photo", {
-            variant: "success",
-          });
-        } else {
-          enqueueSnackbar("Failed to upload photo!", {
-            variant: "error",
-          });
-        }
-      })
-      .catch(() => {
-        enqueueSnackbar("Failed to upload photo!", {
-          variant: "error",
+    if (success && selectedImages?.length > 0)
+      await axios
+        .post(`${serverUrl}product/${pid}/photos`, formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        })
+        .then((response) => {
+          if (response.status === 200) {
+            success = success && true;
+          } else {
+            success = success && false;
+          }
+        })
+        .catch(() => {
+          success = success && false;
         });
-      });
 
-    await axios
-      .post(`${serverUrl}product/${pid}/tags`, { tags })
-      .then((response) => {
-        if (response.status === 200) {
-          enqueueSnackbar("Successfully added tags", {
-            variant: "success",
-          });
-        } else {
-          enqueueSnackbar("Failed to add tags!", {
-            variant: "error",
-          });
-        }
+    if (success && tags?.length > 0)
+      await axios
+        .post(`${serverUrl}product/${pid}/tags`, { tags })
+        .then((response) => {
+          if (response.status === 200) {
+            success = success && true;
+          } else {
+            success = success && false;
+          }
+        });
+
+    if (success)
+      enqueueSnackbar("Successfully added product", {
+        variant: "success",
+      });
+    else
+      enqueueSnackbar("Failed to add product!", {
+        variant: "error",
       });
     updateProducts();
     setIsLoading(false);
@@ -183,13 +180,11 @@ const ProductUploader = ({ open, handleClose, selected }) => {
           <InputLabel htmlFor="filled-adornment-amount">Amount</InputLabel>
           <FilledInput
             id="filled-adornment-amount"
-            value={parseFloat(price).toFixed(2)}
-            inputProps={{
-              step: "0.01",
-              min: 0,
+            value={price}
+            onChange={(e) => {
+              if (isNaN(e.target.value)) setPrice(0);
+              else setPrice(e.target.value);
             }}
-            onChange={(e) => setPrice(e.target.value)}
-            type="number"
             startAdornment={<InputAdornment position="start">$</InputAdornment>}
           />
         </FormControl>

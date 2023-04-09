@@ -17,16 +17,18 @@ import {
   DialogContent,
   DialogTitle,
   DialogContentText,
+  InputLabel,
+  TextField,
 } from "@mui/material";
 import ProductEditor from "./ProductEditor";
 import { useProductManagement } from "../context/ProductManagementContext";
 import { useSnackbar } from "notistack";
 
 const serverUrl = process.env.REACT_APP_SERVER_URL;
-
+const tableCellPadding = 0.2;
 const TableHeading = (props) => {
   return (
-    <TableCell>
+    <TableCell sx={{ py: 0.2 }}>
       <Typography sx={{ fontWeight: "bold" }}>
         {props.children.toUpperCase()}
       </Typography>
@@ -90,17 +92,23 @@ const Product = ({
   };
   return (
     <TableRow>
-      <TableCell sx={{ width: "3%" }}>{id}</TableCell>
-      <TableCell sx={{ width: "15%" }}>{name.toUpperCase()}</TableCell>
-      <TableCell sx={{ width: "27%" }}>{description}</TableCell>
-      <TableCell sx={{ width: "5%" }}>
+      <TableCell sx={{ width: "3%", py: tableCellPadding }}>{id}</TableCell>
+      <TableCell sx={{ width: "15%", py: tableCellPadding }}>
+        {name.toUpperCase()}
+      </TableCell>
+      <TableCell sx={{ width: "27%", py: tableCellPadding }}>
+        {description}
+      </TableCell>
+      <TableCell sx={{ width: "5%", py: tableCellPadding }}>
         {activeFlag ? "Active" : "Deactivated"}
       </TableCell>
-      <TableCell sx={{ width: "5%" }}>
+      <TableCell sx={{ width: "5%", py: tableCellPadding }}>
         ${parseFloat(price).toFixed(2)}
       </TableCell>
-      <TableCell sx={{ width: "5%" }}>{parseInt(discount)}%</TableCell>
-      <TableCell sx={{ width: "15%" }}>
+      <TableCell sx={{ width: "5%", py: tableCellPadding }}>
+        {parseInt(discount)}%
+      </TableCell>
+      <TableCell sx={{ width: "15%", py: tableCellPadding }}>
         <Box sx={{ display: "flex", flexFlow: "row wrap" }}>
           {tags.map((tag, index) => {
             return (
@@ -125,8 +133,10 @@ const Product = ({
           })}
         </Box>
       </TableCell>
-      <TableCell sx={{ width: "5%" }}>{quantity_on_hand}</TableCell>
-      <TableCell sx={{ width: "15%" }}>
+      <TableCell sx={{ width: "5%", py: tableCellPadding }}>
+        {quantity_on_hand}
+      </TableCell>
+      <TableCell sx={{ width: "15%", py: tableCellPadding }}>
         <div
           className="image-display"
           style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
@@ -140,7 +150,7 @@ const Product = ({
           ))}
         </div>
       </TableCell>
-      <TableCell sx={{ width: "5%" }}>
+      <TableCell sx={{ width: "5%", py: tableCellPadding }}>
         <Stack gap={0.5}>
           <Button variant="contained" onClick={handleClickEdit}>
             Edit
@@ -193,6 +203,27 @@ const Product = ({
 const ManageProducts = () => {
   const { products } = useProductManagement();
   const [openAdd, setOpenAdd] = useState(false);
+  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [prodFilter, setProdFilter] = useState("");
+
+  useEffect(() => {
+    if (prodFilter === "") setFilteredProducts(products);
+    else {
+      const res = products.filter((product) => {
+        return (
+          product._id.toLowerCase().includes(prodFilter.toLowerCase()) ||
+          product.name.toLowerCase().includes(prodFilter.toLowerCase()) ||
+          (product.activeFlag == false &&
+            "deactivated".includes(prodFilter.toLowerCase())) ||
+          product.tags
+            .toString()
+            .toLowerCase()
+            .includes(prodFilter.toLowerCase())
+        );
+      });
+      setFilteredProducts(res);
+    }
+  }, [prodFilter, products]);
 
   const handleClickAdd = () => {
     setOpenAdd(true);
@@ -203,7 +234,25 @@ const ManageProducts = () => {
   };
 
   return (
-    <Box sx={{ width: "calc(200px + 70vw)", mx: "auto", p: 2, mt: "5vh" }}>
+    <Box sx={{ width: "95%", mx: "auto", p: 2, mt: "5vh" }}>
+      <Stack
+        direction="row"
+        flex="wrap"
+        justifyContent={"center"}
+        alignItems={"center"}
+        gap={1}
+        my={1}>
+        <InputLabel sx={{ flexGrow: 1, textAlign: "right" }}>
+          Filter Products (Product ID/Name/Deactivated/Tags):
+        </InputLabel>
+        <TextField
+          sx={{ flexGrow: 5 }}
+          variant="outlined"
+          value={prodFilter}
+          onChange={(e) => setProdFilter(e.target.value)}
+          required
+        />
+      </Stack>
       <Stack
         direction="row"
         sx={{
@@ -237,9 +286,14 @@ const ManageProducts = () => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {products?.map((p) => {
+          {filteredProducts &&
+            filteredProducts.length > 0 &&
+            filteredProducts?.map((p) => {
+              return <Product key={p._id} id={p._id} {...p} />;
+            })}
+          {/* {products?.map((p) => {
             return <Product key={p._id} id={p._id} {...p} />;
-          })}
+          })} */}
         </TableBody>
       </Table>
     </Box>

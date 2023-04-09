@@ -20,6 +20,8 @@ import {
   Divider,
   Popover,
   useTheme,
+  TextField,
+  InputLabel,
 } from "@mui/material";
 import { useProductManagement } from "../context/ProductManagementContext";
 import { useSnackbar } from "notistack";
@@ -28,14 +30,18 @@ const serverUrl = process.env.REACT_APP_SERVER_URL;
 
 const TableHeading = (props) => {
   return (
-    <TableCell>
+    <StyledTableCell>
       <Typography sx={{ fontWeight: "bold" }}>
         {props.children.hasOwnProperty("toUpperCase")
           ? props.children.toUpperCase()
           : props.children}
       </Typography>
-    </TableCell>
+    </StyledTableCell>
   );
+};
+
+const StyledTableCell = (props) => {
+  return <TableCell sx={{ py: 0.2 }}>{props.children}</TableCell>;
 };
 
 const Order = ({
@@ -161,9 +167,9 @@ const Order = ({
   return (
     <Fragment>
       <TableRow sx={{ backgroundColor: bg }}>
-        <TableCell>{orderId}</TableCell>
-        <TableCell>{order_date}</TableCell>
-        <TableCell>
+        <StyledTableCell>{orderId}</StyledTableCell>
+        <StyledTableCell>{order_date}</StyledTableCell>
+        <StyledTableCell>
           <Stack divider={<Divider />}>
             {orderItems.map((item, idx) => (
               <Fragment key={idx}>
@@ -172,8 +178,8 @@ const Order = ({
               </Fragment>
             ))}
           </Stack>
-        </TableCell>
-        <TableCell>
+        </StyledTableCell>
+        <StyledTableCell>
           {custInfo ? (
             <Fragment>
               {(custInfo.firstName + " " + custInfo.lastName).toUpperCase()}{" "}
@@ -185,14 +191,14 @@ const Order = ({
           ) : (
             "GUEST USER"
           )}
-        </TableCell>
-        <TableCell>
+        </StyledTableCell>
+        <StyledTableCell>
           {shippingMode.toLowerCase() == "standard" ? "S" : "E"}
-        </TableCell>
-        <TableCell>{totalPaid}</TableCell>
-        <TableCell>{paid_date}</TableCell>
-        <TableCell>{orderStatus}</TableCell>
-        <TableCell>
+        </StyledTableCell>
+        <StyledTableCell>{totalPaid}</StyledTableCell>
+        <StyledTableCell>{paid_date}</StyledTableCell>
+        <StyledTableCell>{orderStatus}</StyledTableCell>
+        <StyledTableCell>
           {oStat === "order received" ? (
             <Stack gap={1}>
               <Stack>
@@ -226,7 +232,7 @@ const Order = ({
               Mark as Delivered
             </Button>
           ) : null}
-        </TableCell>
+        </StyledTableCell>
       </TableRow>
       <Prompt
         handleConfirm={handleMarkAsProcessing}
@@ -285,8 +291,23 @@ const Prompt = ({
 
 const ViewTransactions = () => {
   const { orders } = useProductManagement();
+  const [filteredOrders, setFilteredOrders] = useState([]);
+  const [filter, setFilter] = useState("");
   const [anchorEl, setAnchorEl] = React.useState(null);
   const theme = useTheme();
+
+  useEffect(() => {
+    if (filter === "") setFilteredOrders(orders);
+    else {
+      const res = orders.filter((order) => {
+        return (
+          order.orderId.toLowerCase().includes(filter.toLowerCase()) ||
+          order.orderStatus.toLowerCase().includes(filter.toLowerCase())
+        );
+      });
+      setFilteredOrders(res);
+    }
+  }, [filter, orders]);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -299,7 +320,25 @@ const ViewTransactions = () => {
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
   return (
-    <Box sx={{ width: "95%", mx: "auto", p: 2, mt: "5vh" }}>
+    <Stack gap={2} sx={{ width: "95%", mx: "auto", p: 2, mt: "3vh" }}>
+      <Stack
+        direction="row"
+        flex="wrap"
+        justifyContent={"center"}
+        alignItems={"center"}
+        gap={1}
+        my={1}>
+        <InputLabel sx={{ flexGrow: 1, textAlign: "right" }}>
+          Filter Transactions (Order ID or Status):
+        </InputLabel>
+        <TextField
+          sx={{ flexGrow: 5 }}
+          variant="outlined"
+          value={filter}
+          onChange={(e) => setFilter(e.target.value)}
+          required
+        />
+      </Stack>
       <Stack
         direction="row"
         sx={{
@@ -338,9 +377,14 @@ const ViewTransactions = () => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {orders?.map((o, idx) => {
-            return <Order key={idx} {...o} />;
-          })}
+          {filteredOrders &&
+            filteredOrders.length > 0 &&
+            filteredOrders?.map((o, idx) => {
+              return <Order key={idx} id={idx} {...o} />;
+            })}
+          {/* {orders?.map((o, idx) => {
+            return <Order key={idx} id={idx} {...o} />;
+          })} */}
         </TableBody>
       </Table>
       <Popover
@@ -359,7 +403,7 @@ const ViewTransactions = () => {
           E - Express
         </Typography>
       </Popover>
-    </Box>
+    </Stack>
   );
 };
 
