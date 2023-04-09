@@ -106,7 +106,7 @@ const ProductScreen = () => {
                 horizontal: "left",
               }}>
               {item.credits.map((item, idx) => (
-                <Stack px={3} py={1}>
+                <Stack px={3} py={1} key={idx}>
                   <a target="_blank" href={item}>
                     {item}
                   </a>
@@ -157,6 +157,7 @@ const ProductScreen = () => {
             <Stack direction="row" flexWrap="wrap">
               {item.tags.map((tag, idx) => (
                 <Button
+                  key={idx}
                   variant="outlined"
                   color="inherit"
                   sx={{
@@ -171,7 +172,7 @@ const ProductScreen = () => {
                     },
                   }}
                   onClick={() => {
-                    handleSearch(tag);
+                    handleSearch(tag.toLowerCase());
                     navigate("/products/search-result");
                   }}>
                   {tag}
