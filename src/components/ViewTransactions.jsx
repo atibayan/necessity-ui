@@ -53,6 +53,7 @@ const Order = ({
   totalPaid,
   datePaid,
   orderStatus,
+  filteredOrders,
 }) => {
   const [openConfirmProcessing, setOpenConfirmProcessing] = useState(false);
   const [openConfirmCancel, setOpenConfirmCancel] = useState(false);
