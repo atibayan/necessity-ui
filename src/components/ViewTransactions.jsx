@@ -162,7 +162,7 @@ const Order = ({
     };
 
     getProductAvailability();
-  }, [products, orders]);
+  }, [products, orders, filteredOrders]);
 
   return (
     <Fragment>
@@ -380,7 +380,14 @@ const ViewTransactions = () => {
           {filteredOrders &&
             filteredOrders.length > 0 &&
             filteredOrders?.map((o, idx) => {
-              return <Order key={idx} id={idx} {...o} />;
+              return (
+                <Order
+                  key={idx}
+                  id={idx}
+                  {...o}
+                  filteredOrders={filteredOrders}
+                />
+              );
             })}
           {/* {orders?.map((o, idx) => {
             return <Order key={idx} id={idx} {...o} />;
