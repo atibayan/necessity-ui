@@ -176,11 +176,10 @@ const CategoryScreen = () => {
             onChange={(e) => {
               setProdsPerPage(e.target.value);
             }}>
-            <MenuItem value={1}>1</MenuItem>
             <MenuItem value={4}>4</MenuItem>
-            <MenuItem value={6}>8</MenuItem>
+            <MenuItem value={8}>8</MenuItem>
             <MenuItem value={12}>12</MenuItem>
-            <MenuItem value={18}>16</MenuItem>
+            <MenuItem value={16}>16</MenuItem>
           </Select>
         </FormControl>
       </Stack>
