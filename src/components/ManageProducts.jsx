@@ -64,7 +64,7 @@ const Product = ({
 
   const handlerDeleteProduct = async () => {
     await axios
-      .patch(`${serverUrl}product/${id}`, { activeFlag: !activeFlag })
+      .patch(`${serverUrl}product/${_id}`, { activeFlag: !activeFlag })
       .then((response) => {
         if (response.status === 200) {
           enqueueSnackbar("Successfully updated product", {
@@ -203,7 +203,7 @@ const Product = ({
         <ProductEditor
           open={openEdit}
           handleClose={handleCloseEdit}
-          selected={id}
+          selected={_id}
         />
         <Dialog
           open={openDeleteDialog}
