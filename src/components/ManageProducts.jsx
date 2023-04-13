@@ -149,7 +149,7 @@ const Product = ({
                     borderRadius: "10px",
                     border: "1px solid gray",
                   }}>
-                  {tag}
+                  {tag.toLowerCase()}
                 </Typography>
               </Box>
             );

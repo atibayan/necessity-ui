@@ -26,7 +26,7 @@ const WishlistHeading = () => {
         flexGrow: { xs: 1, md: 0 },
         letterSpacing: ".3rem",
         justifyContent: "center",
-        my: "5vh",
+        my: "3vh",
       }}>
       YOUR WISHLIST <FavoriteBorderIcon />
     </Typography>

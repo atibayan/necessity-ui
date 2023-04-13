@@ -143,7 +143,16 @@ const OHBody = ({ productId, quantity }) => {
               {product.name.toUpperCase()}
             </Typography>
           </Link>
-          <Typography>{product.description}</Typography>
+          <Typography
+            sx={{
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              display: "-webkit-box",
+              WebkitLineClamp: "4",
+              WebkitBoxOrient: "vertical",
+            }}>
+            {product.description}
+          </Typography>
         </Stack>
       </Stack>
     </Box>
@@ -295,14 +304,14 @@ const OrderHistory = () => {
       maxSnack={1}
       autoHideDuration={2000}
       hideIconVariant={true}>
-      <Box mt={"5vh"} mx="auto" width={"calc(200px + 50vw)"}>
+      <Box mt={"3vh"} mx="auto" width={"calc(200px + 50vw)"}>
         <Typography
           variant="h4"
           my={2}
           sx={{
             display: { xs: "flex", md: "flex" },
             flexGrow: { xs: 1, md: 0 },
-            letterSpacing: ".2rem",
+            letterSpacing: ".3rem",
             borderRadius: "5px",
             justifyContent: "center",
           }}>

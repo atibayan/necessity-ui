@@ -28,7 +28,7 @@ export default function ProductCard({ item }) {
       sx={{
         maxWidth: 230,
         minWidth: 230,
-        minHeight: "350px",
+        minHeight: "330px",
         position: "relative",
         background: "rgba(215, 215, 215, 0.2)",
       }}>
@@ -59,7 +59,7 @@ export default function ProductCard({ item }) {
           variant="body"
           component="div"
           sx={{
-            minHeight: "60px",
+            minHeight: "50px",
           }}>
           {item.name.toUpperCase()}
         </Typography>
@@ -68,7 +68,7 @@ export default function ProductCard({ item }) {
             display: "flex",
             flexWrap: "nowrap",
             justifyContent: "space-between",
-            minHeight: "40px",
+            minHeight: "30px",
           }}>
           {item.activeFlag ? (
             item.discount === 0 ? (
