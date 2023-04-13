@@ -166,7 +166,7 @@ const ProductScreen = () => {
                     px: 1,
                     py: 0.1,
                     mx: 0.2,
-                    my: 0,
+                    my: 0.2,
                     "&:hover": {
                       background: theme.palette.primary.light,
                     },
@@ -185,10 +185,10 @@ const ProductScreen = () => {
           <Typography variant="h4" sx={{}}>
             {item.name.toUpperCase()}
           </Typography>
-          <Typography variant="h6">{item.description}</Typography>
+          <Typography>{item.description}</Typography>
           {item.activeFlag ? (
             item.discount === 0 ? (
-              <Typography variant="h4">
+              <Typography variant="h5">
                 CAD ${(item.price * 1).toFixed(2)}
               </Typography>
             ) : (
@@ -196,7 +196,7 @@ const ProductScreen = () => {
                 <Typography sx={{ textDecoration: "line-through" }}>
                   CAD ${(item.price * 1).toFixed(2)}
                 </Typography>
-                <Typography variant="h4">
+                <Typography variant="h5">
                   CAD ${(((100 - item.discount) / 100) * item.price).toFixed(2)}
                 </Typography>
               </Fragment>

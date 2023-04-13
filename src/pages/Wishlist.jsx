@@ -161,7 +161,16 @@ const Wishlist = () => {
                   <Typography variant="h5">
                     {item.name.toUpperCase()}
                   </Typography>
-                  <Typography>{item.description}</Typography>
+                  <Typography
+                    sx={{
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      display: "-webkit-box",
+                      WebkitLineClamp: "4",
+                      WebkitBoxOrient: "vertical",
+                    }}>
+                    {item.description}
+                  </Typography>
                   {item.activeFlag ? (
                     item.discount === 0 ? (
                       <Typography variant="h6">

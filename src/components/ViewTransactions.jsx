@@ -2,8 +2,6 @@ import React, { useState, Fragment, useEffect } from "react";
 import axios from "axios";
 import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
 import {
-  Box,
-  Avatar,
   Button,
   Typography,
   Stack,
@@ -30,7 +28,7 @@ const serverUrl = process.env.REACT_APP_SERVER_URL;
 
 const TableHeading = (props) => {
   return (
-    <StyledTableCell>
+    <StyledTableCell sx={{ py: 0.1, px: 1 }}>
       <Typography sx={{ fontWeight: "bold" }}>
         {props.children.hasOwnProperty("toUpperCase")
           ? props.children.toUpperCase()
@@ -41,10 +39,15 @@ const TableHeading = (props) => {
 };
 
 const StyledTableCell = (props) => {
-  return <TableCell sx={{ py: 0.2 }}>{props.children}</TableCell>;
+  return (
+    <TableCell sx={{ width: props.width, py: 0.2, px: 1 }}>
+      {props.children}
+    </TableCell>
+  );
 };
 
 const Order = ({
+  id,
   orderId,
   orderDate,
   orderItems,
@@ -91,7 +94,7 @@ const Order = ({
   if (datePaid)
     paid_date = new Date(datePaid).toLocaleDateString("en-us", date_format);
 
-  let bg = "inherit";
+  let bg = id % 2 === 0 ? "rgba(215,215,215,0.2)" : "inherit";
   if (orderStatus === "Archived") bg = "lightgray";
 
   const handleMarkAsProcessing = async () => {
@@ -168,19 +171,23 @@ const Order = ({
   return (
     <Fragment>
       <TableRow sx={{ backgroundColor: bg }}>
-        <StyledTableCell>{orderId}</StyledTableCell>
-        <StyledTableCell>{order_date}</StyledTableCell>
-        <StyledTableCell>
+        <StyledTableCell width="5%">{orderId.substring(0, 10)}</StyledTableCell>
+        <StyledTableCell width="15%">{order_date}</StyledTableCell>
+        <StyledTableCell width="10%">
           <Stack divider={<Divider />}>
             {orderItems.map((item, idx) => (
-              <Fragment key={idx}>
-                PID: {item.productId} <br />
-                QTY: {item.quantity}
-              </Fragment>
+              <Stack direction="row" key={idx}>
+                <Typography variant="body" sx={{ fontWeight: "bold" }}>
+                  ({item.quantity})
+                </Typography>
+                <Typography variant="body">
+                  {item.productId.substring(0, 10)}
+                </Typography>
+              </Stack>
             ))}
           </Stack>
         </StyledTableCell>
-        <StyledTableCell>
+        <StyledTableCell width="30%">
           {custInfo ? (
             <Fragment>
               {(custInfo.firstName + " " + custInfo.lastName).toUpperCase()}{" "}
@@ -193,29 +200,31 @@ const Order = ({
             "GUEST USER"
           )}
         </StyledTableCell>
-        <StyledTableCell>
+        <StyledTableCell width="5%">
           {shippingMode.toLowerCase() == "standard" ? "S" : "E"}
         </StyledTableCell>
-        <StyledTableCell>{totalPaid}</StyledTableCell>
-        <StyledTableCell>{paid_date}</StyledTableCell>
-        <StyledTableCell>{orderStatus}</StyledTableCell>
-        <StyledTableCell>
+        <StyledTableCell width="5%">{totalPaid}</StyledTableCell>
+        <StyledTableCell width="15%">{paid_date}</StyledTableCell>
+        <StyledTableCell width="5%">{orderStatus}</StyledTableCell>
+        <StyledTableCell width="10%">
           {oStat === "order received" ? (
             <Stack gap={1}>
               <Stack>
                 {productAvailability.map((item, idx) => (
                   <Typography variant="caption" key={idx}>
-                    {item.pid} : {item.qty}
+                    {item.pid.substring(0, 10)} : {item.qty}
                   </Typography>
                 ))}
               </Stack>
               <Button
                 variant="contained"
+                sx={{ minWidth: 0, px: 1, py: 0.1 }}
                 onClick={() => setOpenConfirmProcessing(true)}>
                 Mark as Processing
               </Button>
               <Button
                 variant="contained"
+                sx={{ minWidth: 0, px: 1, py: 0.1 }}
                 onClick={() => setOpenConfirmCancel(true)}>
                 Decline Order
               </Button>
@@ -223,12 +232,14 @@ const Order = ({
           ) : oStat === "processing" ? (
             <Button
               variant="contained"
+              sx={{ minWidth: 0, px: 1, py: 0.1 }}
               onClick={() => setOpenConfirmShipped(true)}>
               Mark as Shipped
             </Button>
           ) : oStat === "shipped" ? (
             <Button
               variant="contained"
+              sx={{ minWidth: 0, px: 1, py: 0.1 }}
               onClick={() => setOpenConfirmDelivered(true)}>
               Mark as Delivered
             </Button>
@@ -361,15 +372,17 @@ const ViewTransactions = () => {
             <TableHeading>Order Items</TableHeading>
             <TableHeading>Customer Information</TableHeading>
             <TableHeading>
-              ShippingInfo
-              <QuestionMarkIcon
-                fontSize="small"
-                sx={{
-                  cursor: "pointer",
-                  color: theme.palette.primary.main,
-                }}
-                onClick={handleClick}
-              />
+              <Stack direction="row">
+                Delivery
+                <QuestionMarkIcon
+                  fontSize="small"
+                  sx={{
+                    cursor: "pointer",
+                    color: theme.palette.primary.main,
+                  }}
+                  onClick={handleClick}
+                />
+              </Stack>
             </TableHeading>
             <TableHeading>Total Paid</TableHeading>
             <TableHeading>Date Paid</TableHeading>
@@ -390,9 +403,6 @@ const ViewTransactions = () => {
                 />
               );
             })}
-          {/* {orders?.map((o, idx) => {
-            return <Order key={idx} id={idx} {...o} />;
-          })} */}
         </TableBody>
       </Table>
       <Popover

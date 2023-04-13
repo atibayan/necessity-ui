@@ -25,10 +25,11 @@ import { useProductManagement } from "../context/ProductManagementContext";
 import { useSnackbar } from "notistack";
 
 const serverUrl = process.env.REACT_APP_SERVER_URL;
-const tableCellPadding = 0.2;
+const tableCellPadding = 0.5;
+const tableCellPaddingX = 1.3;
 const TableHeading = (props) => {
   return (
-    <TableCell sx={{ py: 0.2 }}>
+    <TableCell sx={{ py: tableCellPadding, px: tableCellPaddingX }}>
       <Typography sx={{ fontWeight: "bold" }}>
         {props.children.toUpperCase()}
       </Typography>
@@ -38,6 +39,7 @@ const TableHeading = (props) => {
 
 const Product = ({
   id,
+  _id,
   name,
   description,
   activeFlag,
@@ -90,38 +92,59 @@ const Product = ({
   const handleCloseEdit = () => {
     setOpenEdit(false);
   };
+
+  const bg = id % 2 === 0 ? "rgba(215,215,215,0.2)" : "inherit";
   return (
-    <TableRow>
-      <TableCell sx={{ width: "3%", py: tableCellPadding }}>{id}</TableCell>
-      <TableCell sx={{ width: "15%", py: tableCellPadding }}>
+    <TableRow sx={{ background: bg }}>
+      <TableCell
+        sx={{ width: "5%", py: tableCellPadding, px: tableCellPaddingX }}>
+        {_id.substring(0, 10)}
+      </TableCell>
+      <TableCell
+        sx={{ width: "10%", py: tableCellPadding, px: tableCellPaddingX }}>
         {name.toUpperCase()}
       </TableCell>
-      <TableCell sx={{ width: "27%", py: tableCellPadding }}>
-        {description}
+      <TableCell
+        sx={{ width: "20%", py: tableCellPadding, px: tableCellPaddingX }}>
+        <Typography
+          variant="body"
+          sx={{
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            display: "-webkit-box",
+            WebkitLineClamp: "4",
+            WebkitBoxOrient: "vertical",
+          }}>
+          {description}
+        </Typography>
       </TableCell>
-      <TableCell sx={{ width: "5%", py: tableCellPadding }}>
+      <TableCell
+        sx={{ width: "5%", py: tableCellPadding, px: tableCellPaddingX }}>
         {activeFlag ? "Active" : "Deactivated"}
       </TableCell>
-      <TableCell sx={{ width: "5%", py: tableCellPadding }}>
+      <TableCell
+        sx={{ width: "5%", py: tableCellPadding, px: tableCellPaddingX }}>
         ${parseFloat(price).toFixed(2)}
       </TableCell>
-      <TableCell sx={{ width: "5%", py: tableCellPadding }}>
+      <TableCell
+        sx={{ width: "5%", py: tableCellPadding, px: tableCellPaddingX }}>
         {parseInt(discount)}%
       </TableCell>
-      <TableCell sx={{ width: "15%", py: tableCellPadding }}>
+      <TableCell
+        sx={{ width: "20%", py: tableCellPadding, px: tableCellPaddingX }}>
         <Box sx={{ display: "flex", flexFlow: "row wrap" }}>
           {tags.map((tag, index) => {
             return (
               <Box
                 key={index}
                 sx={{
-                  mx: 0.3,
+                  mx: 0.1,
                   my: 1,
                 }}>
                 <Typography
                   variant="body"
                   sx={{
-                    py: 0.5,
+                    py: 0.2,
                     px: 1,
                     borderRadius: "10px",
                     border: "1px solid gray",
@@ -133,10 +156,12 @@ const Product = ({
           })}
         </Box>
       </TableCell>
-      <TableCell sx={{ width: "5%", py: tableCellPadding }}>
+      <TableCell
+        sx={{ width: "5%", py: tableCellPadding, px: tableCellPaddingX }}>
         {quantity_on_hand}
       </TableCell>
-      <TableCell sx={{ width: "15%", py: tableCellPadding }}>
+      <TableCell
+        sx={{ width: "15%", py: tableCellPadding, px: tableCellPaddingX }}>
         <div
           className="image-display"
           style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
@@ -150,17 +175,27 @@ const Product = ({
           ))}
         </div>
       </TableCell>
-      <TableCell sx={{ width: "5%", py: tableCellPadding }}>
-        <Stack gap={0.5}>
-          <Button variant="contained" onClick={handleClickEdit}>
+      <TableCell
+        sx={{ width: "10%", py: tableCellPadding, px: tableCellPaddingX }}>
+        <Stack direction="row" gap={0.5}>
+          <Button
+            variant="contained"
+            sx={{ minWidth: 0, px: 1, py: 0.1 }}
+            onClick={handleClickEdit}>
             Edit
           </Button>
           {activeFlag ? (
-            <Button variant="contained" onClick={handleClickDelete}>
+            <Button
+              variant="contained"
+              sx={{ minWidth: 0, px: 1, py: 0.1 }}
+              onClick={handleClickDelete}>
               Deactivate
             </Button>
           ) : (
-            <Button variant="contained" onClick={handleClickDelete}>
+            <Button
+              variant="contained"
+              sx={{ minWidth: 0, px: 1, py: 0.1 }}
+              onClick={handleClickDelete}>
               Activate
             </Button>
           )}
@@ -288,12 +323,9 @@ const ManageProducts = () => {
         <TableBody>
           {filteredProducts &&
             filteredProducts.length > 0 &&
-            filteredProducts?.map((p) => {
-              return <Product key={p._id} id={p._id} {...p} />;
+            filteredProducts?.map((p, idx) => {
+              return <Product key={p._id} id={idx} {...p} />;
             })}
-          {/* {products?.map((p) => {
-            return <Product key={p._id} id={p._id} {...p} />;
-          })} */}
         </TableBody>
       </Table>
     </Box>

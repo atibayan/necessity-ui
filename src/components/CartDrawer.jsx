@@ -125,7 +125,7 @@ const CartItem = ({ id, quantity }) => {
           <CartControls item={product} longBtn={false} />
         </Stack>
         <Box>
-          {product.activeFlag && product.quantity_on_hand < 50 ? (
+          {product.activeFlag && product.quantity_on_hand < 20 ? (
             <Typography variant="caption">Only a few left in stock!</Typography>
           ) : null}
         </Box>
